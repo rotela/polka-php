@@ -1,0 +1,10 @@
+# Make sure directory listing is disabled
+Options +FollowSymLinks -Indexes
+# disable the Apache MultiViews directive if it is enabled on the server. It plays havoc with URL rewriting
+Options -MultiViews
+RewriteEngine on
+RewriteCond $1 !^(index.php)
+# Todos los recursos sin extensiones, son procesados por el index.php
+# los recursos como .js, .css, .font, etc. no son procesados. ;-)
+#RewriteRule ^([a-zA-Z0-9_/-]+)$ index.php/$1 [L]
+RewriteRule ^([a-zA-Z0-9_/-]+)$ index.php?url=$1 [L]

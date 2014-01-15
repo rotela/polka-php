@@ -1,0 +1,6 @@
+.function{
+	color: blue;
+}
+.private .public .static{
+	color: red;
+}
