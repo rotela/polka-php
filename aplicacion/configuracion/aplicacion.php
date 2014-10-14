@@ -28,7 +28,7 @@ $config['csrf'] = FALSE;
 // Nombre interno y de campo para los token (aplicable sólo si lo anterior está en TRUE);
 $config['csrf_nom'] = 'token';
 // Seguimiento (si se activa puede sobrecargar un poco el tiempo de ejecución)
-$config['seguir'] = TRUE;
+$config['seguir'] = false;
 // Se utiliza gancho
 $config['gancho'] = false;
 // De utlizar gancho, indicar cual es la clase y el método a disparar o ejecutarse
