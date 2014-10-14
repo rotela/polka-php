@@ -1,0 +1,17 @@
+# Make sure directory listing is disabled
+Options +FollowSymLinks -Indexes
+# disable the Apache MultiViews directive if it is enabled on the server. It plays havoc with URL rewriting
+Options -MultiViews
+
+RewriteEngine on
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+RewriteCond $1 !^(index.php)
+
+php_value zlib.output_compression 16386
+
+ErrorDocument 403 /errores/pagina/403
+ErrorDocument 404 /errores/pagina/404
+ErrorDocument 500 /errores/pagina/500
+
+RewriteRule ^([a-zA-Z0-9_/-]+)$ index.php?url=$1 [L]
