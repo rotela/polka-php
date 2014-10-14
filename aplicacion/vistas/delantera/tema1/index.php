@@ -83,8 +83,8 @@
                             </div>
                         </div>
                     </div>
-                </div>      </div>
-            <div id="push"></div>
+                </div>      
+            </div>
         </div>
         <div id="footer">
             <div class="container">
