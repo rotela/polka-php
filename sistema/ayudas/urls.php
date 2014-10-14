@@ -75,7 +75,7 @@ function url_base($agr = '') {
 
 function url_ctr($value = '') {
     $sub_carpeta = sistema\nucleo\PK_Solicitud::$sub_carpeta;
-    $sub_carpeta = str_replace("\\", "/", $sub_carpeta);
+    $sub_carpeta = str_replace("\\", SD, $sub_carpeta);
     if (empty($value)) {
         return empty($sub_carpeta) ? url_base(url_seg(1)) : url_base($sub_carpeta . url_seg(2));
     } else {
