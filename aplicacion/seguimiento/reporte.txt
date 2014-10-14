@@ -353,3 +353,23 @@
 2014-10-14 13:29:39:5463 > Registrando configuracion aplicacion/configuracion/autocargas.php
 2014-10-14 13:29:39:5464 > Instanciando sistema\nucleo\PK_Coleccion
 2014-10-14 13:29:39:5465 > Obteniendo sistema\librerias\sesion
+2014-10-14 13:38:04:9102 > ||| Iniciando Seguimiento |||
+2014-10-14 13:38:04:9105 > Instanciando sistema\nucleo\PK_Config
+2014-10-14 13:38:04:9106 > Registrando configuracion aplicacion/configuracion/aplicacion.php
+2014-10-14 13:38:04:9108 > Registrando configuracion aplicacion/configuracion/rutas.php
+2014-10-14 13:38:04:9112 > Instanciando sistema\nucleo\PK_Vista
+2014-10-14 13:38:04:9113 > Registrando configuracion aplicacion/configuracion/vistas.php
+2014-10-14 13:38:04:9114 > Registrando configuracion sistema/configuracion/sis_autocargas.php
+2014-10-14 13:38:04:9116 > Registrando configuracion aplicacion/configuracion/autocargas.php
+2014-10-14 13:38:04:9118 > Instanciando sistema\nucleo\PK_Coleccion
+2014-10-14 13:38:04:9119 > Obteniendo sistema\librerias\sesion
+2014-10-14 13:38:12:4646 > ||| Iniciando Seguimiento |||
+2014-10-14 13:38:12:465 > Instanciando sistema\nucleo\PK_Config
+2014-10-14 13:38:12:4651 > Registrando configuracion aplicacion/configuracion/aplicacion.php
+2014-10-14 13:38:12:4653 > Registrando configuracion aplicacion/configuracion/rutas.php
+2014-10-14 13:38:12:4657 > Instanciando sistema\nucleo\PK_Vista
+2014-10-14 13:38:12:4658 > Registrando configuracion aplicacion/configuracion/vistas.php
+2014-10-14 13:38:12:4659 > Registrando configuracion sistema/configuracion/sis_autocargas.php
+2014-10-14 13:38:12:4661 > Registrando configuracion aplicacion/configuracion/autocargas.php
+2014-10-14 13:38:12:4663 > Instanciando sistema\nucleo\PK_Coleccion
+2014-10-14 13:38:12:4664 > Obteniendo sistema\librerias\sesion
