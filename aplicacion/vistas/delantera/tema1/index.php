@@ -1,28 +1,59 @@
+<?php
+if (!defined('APLICACION')) {
+    exit('No se permite acceso directo al script');
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
         <meta charset="utf-8">
-        <title>Polka</title>
+        <title><?= ap_titulo(); ?></title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <meta name="description" content="">
-        <meta name="author" content="">
+        <link href="<?= url_base('sistema/vistas/css/') . 'bootstrap.min.css'; ?>" rel="stylesheet" >
+        <link href="<?= url_base('sistema/vistas/css/') . 'index.css'; ?>" rel="stylesheet" >
     </head>
     <body>
         <div id="wrap">
-            <div class="container">
-                <!-- principal -->
-                <div class="jumbotron">
-                    <div class="container">
-                        <h1>Polka <small>1.0</small></h1>
-                        <h3>En hora buena!</h3>
-                        <p>Si puede ver esto es porque Polka está instalado correctamente en su servidor.</p>
-                        <p>Polka es un Marco de desarrollo echo en y para PHP.</p>
-                        <p>Polka es Fácil, Rápido, Seguro y Gratis!!!</p>
-                        <p>Piense en las soluciones, no en los problemas</p>
-                        <a class="btn btn-primary btn-large" href="https://github.com/joeblack0/polka-php"><span class="glyphicon glyphicon-ok"></span> Ir al Proyecto</a>
+            <nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation">
+                <div class="container">
+                    <div class="navbar-header">
+                        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                            <span class="sr-only">Toggle navigation</span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                            <span class="icon-bar"></span>
+                        </button>
+                        <a class="navbar-brand" href="<?= url_base(); ?>"><?= ap_titulo(); ?></a>
+                    </div>
+                    <div class="collapse navbar-collapse navbar-ex1-collapse">
+                        <ul class="nav navbar-nav">
+                        </ul>
                     </div>
                 </div>
-                <hr class="colorgraph">
+            </nav>
+
+            <div class="container">
+                <h1>Polka-php</h1>
+                <h2>Marco de Desarrollo</h2>
+                <hr>
+                <h3>Polka es fácil, rápido, seguro, gratis y en tú Idioma!!!</h3>
+                <p>Polka-php es un marco de desarrollo echo en y para php. Permite desarrollar 
+                    aplicaciones mucho más rápido ya que no es necesario empezar desde cero. 
+                    Polka-php brinda varias herramientas para el desarrollo del aplicaciones, 
+                    cuenta con poderosas librerías, ayudantes y varios componentes que hará más 
+                    placentero escribir código, dejando que programador se concentre en la lógica 
+                    de negocio y no en la estructura. Polka-php brinda una estructura básica 
+                    pero poderosa sobre la cual se puede desarrollar aplicaciones simple como complejas.</p>
+
+                <a class="btn btn-success" href="https://github.com/joeblack0/polka-php">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Github
+                </a>
+                <a class="btn btn-primary" href="https://github.com/joeblack0/polka-php/wiki">
+                    <span class="glyphicon glyphicon-ok"></span>
+                    Wiki
+                </a>
+                <br><br>
                 <!-- secciones -->
                 <div class="row">
                     <div class="col-md-4">
@@ -32,7 +63,6 @@
                             </div>
                             <div class="panel-body">
                                 <ul class="list-unstyled">
-                                    <li>Modelo Vista Controlador</li>
                                     <li>Modelo de Abstracción de datos propio</li>
                                     <li>Manejador de plantillas propio</li>
                                     <li>Manejos de sesiones</li>
@@ -49,7 +79,7 @@
                     <div class="col-md-4">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Soporte para base de datos</h3>
+                                <h3 class="panel-title">Soportes para bases de datos</h3>
                             </div>
                             <div class="panel-body">
                                 <ul class="list-unstyled">
@@ -86,11 +116,14 @@
                 </div>      
             </div>
         </div>
-        <div id="footer">
-            <div class="container">
-                <p class="muted credit pie">Polka PHP - Marco de desarrollo<br>
-                    Polka 1.0 | Copyright Polka Copyright 2014©</p>
-            </div>
-        </div>   
-    </body>
+    </div>
+    <div id="footer">
+        <div class="container">
+            <p class="muted credit pie">Marco de desarrollo | página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada(); ?> MB<br>
+<?= ap_titulo() . ' ' . ap_version(); ?> | Copyright 2014©</p>
+        </div>
+    </div>
+    <script src="<?= url_base('sistema/vistas/js/') . 'jquery.js'; ?>"></script>
+    <script src="<?= url_base('sistema/vistas/js/') . 'bootstrap.min.js'; ?>"></script>
+</body>
 </html>

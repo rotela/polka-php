@@ -15,7 +15,7 @@ class Bienvenido extends PK_Controlador {
     }
 
     public function principal() {
-        /*envío una vista al navegador*/
+        /* envío una vista al navegador */
         $this->vista->ver('index');
     }
 

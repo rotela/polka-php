@@ -16,7 +16,7 @@ $config['mth_princ'] = 'principal';
 // Duración de sesion en segundos (1800/30m, 3600/1h, 7200/2h)
 $config['ses_tiempo'] = 7200;
 // Nombre de la aplicación
-$config['ap_titulo'] = 'Polka';
+$config['ap_titulo'] = 'Polka-php';
 // Derechos Reservados de la aplicación
 $config['ap_derechos'] = 'Polka Copyright ' . date('Y') . '©';
 // Versión la aplicación
