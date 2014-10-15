@@ -35,8 +35,8 @@ if (!defined('APLICACION')) {
             <div class="container">
                 <h1>Polka-php</h1>
                 <h2>Marco de Desarrollo</h2>
+                <h3>es fácil, rápido, seguro, gratis y en tú Idioma!!!</h3>
                 <hr>
-                <h3>Polka es fácil, rápido, seguro, gratis y en tú Idioma!!!</h3>
                 <p>Polka-php es un marco de desarrollo echo en y para php. Permite desarrollar 
                     aplicaciones mucho más rápido ya que no es necesario empezar desde cero. 
                     Polka-php brinda varias herramientas para el desarrollo del aplicaciones, 
