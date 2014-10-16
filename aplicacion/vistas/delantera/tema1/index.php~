@@ -45,11 +45,11 @@ if (!defined('APLICACION')) {
                     de negocio y no en la estructura. Polka-php brinda una estructura básica 
                     pero poderosa sobre la cual se puede desarrollar aplicaciones simple como complejas.</p>
 
-                <a class="btn btn-success" href="https://github.com/rotela/polka-php">
+                <a class="btn btn-success" href="https://github.com/joeblack0/polka-php">
                     <span class="glyphicon glyphicon-ok"></span>
                     Github
                 </a>
-                <a class="btn btn-primary" href="https://github.com/rotela/polka-php/wiki">
+                <a class="btn btn-primary" href="https://github.com/joeblack0/polka-php/wiki">
                     <span class="glyphicon glyphicon-ok"></span>
                     Wiki
                 </a>
