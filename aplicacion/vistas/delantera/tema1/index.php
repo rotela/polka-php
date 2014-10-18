@@ -39,7 +39,7 @@ if (!defined('APLICACION')) {
                 <hr>
                 <p>Polka-php es un marco de desarrollo echo en y para php. Permite desarrollar 
                     aplicaciones mucho más rápido ya que no es necesario empezar desde cero. 
-                    Polka-php brinda varias herramientas para el desarrollo del aplicaciones, 
+                    Polka-php brinda varias herramientas para el desarrollo de aplicaciones, 
                     cuenta con poderosas librerías, ayudantes y varios componentes que hará más 
                     placentero escribir código, dejando que programador se concentre en la lógica 
                     de negocio y no en la estructura. Polka-php brinda una estructura básica 
@@ -63,14 +63,14 @@ if (!defined('APLICACION')) {
                             </div>
                             <div class="panel-body">
                                 <ul class="list-unstyled">
-                                    <li>Modelo de Abstracción de datos propio</li>
-                                    <li>Manejador de plantillas propio</li>
+                                    <li>Modelo de Abstracción de datos</li>
+                                    <li>Manejador de plantillas</li>
                                     <li>Manejos de sesiones</li>
                                     <li>Url limpias (amigables)</li>
                                     <li>Manejos de formularios</li>
                                     <li>Manejos de seguridad</li>
                                     <li>Disparadores, hack's...</li>
-                                    <li>Librerías, Ayudantes propias y privadas</li>     
+                                    <li>Librerías, Ayudantes</li>     
                                     <li>y muchas otras...</li>
                                 </ul>
                             </div>
@@ -79,7 +79,7 @@ if (!defined('APLICACION')) {
                     <div class="col-md-4">
                         <div class="panel panel-default">
                             <div class="panel-heading">
-                                <h3 class="panel-title">Soportes para bases de datos</h3>
+                                <h3 class="panel-title">Soporte para bases de datos</h3>
                             </div>
                             <div class="panel-body">
                                 <ul class="list-unstyled">
