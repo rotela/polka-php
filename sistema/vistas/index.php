@@ -1,4 +1,8 @@
-<?php if (!defined('SISTEMA')) exit('No se permite acceso directo al script'); ?>
+<?php
+if (!defined('SISTEMA')) {
+    exit('No se permite acceso directo al script');
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
     <head>
