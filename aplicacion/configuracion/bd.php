@@ -14,8 +14,8 @@ $config['tipo_bd'] = 'mysql';
 // Usuario de la base de datos
 $config['user_bd'] = 'root';
 // Password de la base de datos
-$config['pass_bd'] = '123456';
+$config['pass_bd'] = '123';
 // Base de datos a utilizar
-$config['base_bd'] = 'paypar';
+$config['base_bd'] = 'test';
 // Cotejamiento de la datos a utilizar
 $config['cote_bd'] = 'utf8';
