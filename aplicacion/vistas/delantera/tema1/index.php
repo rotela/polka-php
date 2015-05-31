@@ -120,7 +120,7 @@ if (!defined('APLICACION')) {
     <div id="footer">
         <div class="container">
             <p class="muted credit pie">Marco de desarrollo | página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada(); ?> MB<br>
-<?= ap_titulo() . ' ' . ap_version(); ?> | Copyright 2014©</p>
+<?= ap_titulo() . ' ' . ap_version(); ?> | <?= ap_derechos(); ?></p>
         </div>
     </div>
     <script src="<?= url_base('sistema/vistas/js/') . 'jquery.js'; ?>"></script>

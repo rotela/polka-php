@@ -25,7 +25,7 @@ class PK_Controlador {
     public $vista;
 
     /**
-     * Uso singleton para instanciar, si es que se necesitare.
+     * Uso singleton para instanciar, si se necesitara.
      */
     use PK_Singleton;
 
