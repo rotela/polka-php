@@ -1,6 +1,7 @@
 <?php if (!defined('SISTEMA')) exit('No se permite el acceso directo al script.');
 use sistema\nucleo\PK_Coleccion as PK_Coleccion;
 use sistema\nucleo\PK_Controlador as PK_Controlador;
+
 if (!function_exists('agr_selector')) {
 	function agr_selector($nombre,$opciones,$id='',$seleccion='',$extra='')
 	{

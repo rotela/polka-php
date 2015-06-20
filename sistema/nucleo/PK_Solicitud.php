@@ -8,10 +8,10 @@ if (!defined('SISTEMA')) {
 
 class PK_Solicitud {
 
-    private static $controlador = '';
-    private static $metodo = '';
-    private static $argumentos = array();
-    public static $sub_carpeta = '';
+    private static $controlador  = '';
+    private static $metodo       = '';
+    private static $argumentos   = array();
+    public static $sub_carpeta   = '';
 
     use PK_Singleton;
 
@@ -44,6 +44,7 @@ class PK_Solicitud {
         if (empty(self::$controlador))
             self::configurar();
         return self::$controlador;
+
     }
 
     public static function obt_metodo() {

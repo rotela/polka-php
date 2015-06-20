@@ -10,13 +10,14 @@ use sistema\controladores\Errores as Errores;
 use \Exception;
 
 /**
+ *
  * Clase que supervisa que controlador, método y argumento se está
  * recibiendo, y donde debe dirigirla
  *
  * @author Ricardo Rotela González ricksystems->gmail.com
  * @package sistema
  * @subpackage nucleo
- * @copyright Ricksystems (c)2014
+ * @copyright Ricksystems (c)2015
  */
 class PK_Disparador {
 

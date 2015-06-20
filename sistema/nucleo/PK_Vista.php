@@ -104,7 +104,7 @@ class PK_Vista {
 
     public function obt_arc_js() {
         if (count($this->arch_js) > 0) {
-            return implode("\n", $this->arch_js);
+            return implode("\n", $this->arch_js)."\t\n";
         } else {
             return '';
         }

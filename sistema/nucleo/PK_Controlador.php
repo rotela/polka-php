@@ -24,8 +24,9 @@ class PK_Controlador {
      */
     public $vista;
 
+    private $controlador;
     /**
-     * Uso singleton para instanciar, si se necesitara.
+     * Uso singleton para instanciar, si es que se necesitare.
      */
     use PK_Singleton;
 
@@ -40,6 +41,7 @@ class PK_Controlador {
         // cargo los recursos del sistema y usuario
         $this->recursos_sistema();
         $this->recursos_usuario();
+        //
     }
 
     /**
@@ -106,9 +108,11 @@ class PK_Controlador {
      */
     private function recursos_sistema() {
         $this->configuracion('sis_autocargas');
+
         $itens_ayudas = $this->sis_autocargas->ayudas;
         $itens_librerias = $this->sis_autocargas->librerias;
         $itens_modelos = $this->sis_autocargas->modelos;
+
         if (count($itens_ayudas) > 0) {
             $this->ayudas($itens_ayudas);
         }
@@ -118,6 +122,8 @@ class PK_Controlador {
         if (count($itens_librerias) > 0) {
             $this->librerias($itens_librerias);
         }
+        //
+        $this->controlador = PK_Solicitud::obt_controlador();
     }
 
     /**
@@ -272,6 +278,10 @@ class PK_Controlador {
                 exit(mostrar_error('Ayudas', 'No existe el archivo de ayuda ' . $ayuda));
             }
         }
+    }
+
+    public function obt_nombre_ctrl(){
+        return $this->controlador;
     }
 
     public function es_ajax() {

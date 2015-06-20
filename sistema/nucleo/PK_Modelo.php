@@ -360,9 +360,9 @@ class PK_Modelo extends PDO {
         return $this;
     }
 
-    public function unir($tabla = '', $mientras = '', $tipo = '') {
-        $sql = "? JOIN $tabla ON $mientras";
-        $this->orden_l[] = str_replace('?', $tipo, $sql);
+    public function unir($tabla = '', $mientras = '', $tipo = 'INNER') {
+        $sql = "$tipo JOIN $tabla ON $mientras";
+        $this->orden_l[] = $sql;
         return $this;
     }
 
@@ -453,7 +453,9 @@ class PK_Modelo extends PDO {
     }
 
     public function obtener_mientras($condicion = '', $objeto = TRUE) {
-        $this->seleccionar()->desde();
+        if (count($this->orden_l <= 0)) {
+            $this->seleccionar()->desde();
+        }
         $this->mientras($condicion);
         return $this->obtener($objeto);
     }
@@ -498,7 +500,7 @@ class PK_Modelo extends PDO {
         return $this->tablas;
     }
 
-    public function insertar($datos = array()) {
+    public function insertar($datos = array(),$simular=false) {
         $this->comprobar_conexion();
         // se arma la plantilla
         $orden = 'INSERT INTO ' . $this->tabla . ' (';
@@ -524,9 +526,14 @@ class PK_Modelo extends PDO {
         }
         // se ejecuta
         $estado = $sentencia->execute($fila);
-        if ($this->comprobar($estado)) {
-            $this->ultimo_id = $this->lastInsertId();
-            return $estado;
+        if ($simular) {
+            echo $this->orden;
+            exit();
+        }else{
+            if ($this->comprobar($estado)) {
+                $this->ultimo_id = $this->lastInsertId();
+                return $estado;
+            }
         }
     }
 
@@ -618,7 +625,14 @@ class PK_Modelo extends PDO {
     public function obt_cam_pri() {
         return $this->campos[0];
     }
-
+    /**
+     * Devuelve la cantidad de registristros de forma general
+     * o según las candiciones pasada como parámetro
+     * @param  string $mientras Condición por las que se contarán los registros
+     *                          ejemplo: "idcategoria=1452" devolverá la cantidad
+     *                          de registros con el idcategoria 1452
+     * @return int           Cantidad de registros
+     */
     public function obt_cant_gral($mientras = '') {
         $this->comprobar_conexion();
         if (is_array($mientras)) {
@@ -649,17 +663,18 @@ class PK_Modelo extends PDO {
             if (empty($mientras)) {
                 $this->orden = 'SELECT COUNT(*) as cant FROM ' . $this->tabla . ' LIMIT 1';
                 $resultados = $this->ejecutar($this->orden);
-                $fila = $resultados;
-                return $fila[0]->cant;
             } else {
                 $this->orden = 'SELECT COUNT(*) as cant FROM ' . $this->tabla . ' WHERE ' . $mientras . ' LIMIT 1';
                 $resultados = $this->ejecutar($this->orden);
-                $fila = $resultados;
-                return $fila[0]->cant;
             }
+            $fila = $resultados;
+            return $fila[0]->cant;
         }
     }
-
+    public function obt_lista($offset=0,$limite=0)
+    {
+        return $this->seleccionar()->desde()->limite($offset,$limite)->obtener();
+    }
     public function obt_cant_filas() {
         return $this->cant_filas;
     }

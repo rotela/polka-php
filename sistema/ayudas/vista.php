@@ -134,11 +134,11 @@ if (!function_exists('vista_jquery')) {
 	}
 }
 
-if (!function_exists('vista_ver'))
+if (!function_exists('vista_capa'))
 {
 	function vista_capa($p='',$d=array())
 	{
-		return PK_Vista::obt_instancia()->capa($p);
+		return PK_Vista::obt_instancia()->capa($p, $d);
 	}
 }
 

@@ -5,6 +5,7 @@ if (!defined('SISTEMA')) {
 }
 
 use sistema\nucleo\PK_Config;
+use sistema\nucleo\PK_Solicitud;
 
 function dominio() {
     return $_SERVER['HTTP_HOST'];
@@ -16,6 +17,7 @@ function url_solicitud() {
 }
 
 function url_seg($seg = 0) {
+
     $tg = PK_Config::obt_instancia();
     $cfg = $tg->obtener('aplicacion');
     $url = 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
@@ -70,25 +72,50 @@ function url_base($agr = '') {
     } else {
         $url = $cfg->url_base;
     }
-    return empty($agr) ? $url : $url . '/' . $agr;
+    return empty($agr) ? $url : $url . $agr;
 }
 
-function url_ctr($value = '') {
-    $sub_carpeta = sistema\nucleo\PK_Solicitud::$sub_carpeta;
-    $sub_carpeta = str_replace("\\", SD, $sub_carpeta);
-    if (empty($value)) {
-        return empty($sub_carpeta) ? url_base(url_seg(1)) : url_base($sub_carpeta . url_seg(2));
-    } else {
-        $suburl = (url_seg(2)) ? url_seg(2) . '/' : '';
-        return empty($sub_carpeta) ? url_base(url_seg(1) . '/' . $value) : url_base($sub_carpeta . $suburl . $value);
+if(!function_exists('url_ctrl')){
+
+    function url_ctrl($value = '') {
+        $sub_carpeta = PK_Solicitud::$sub_carpeta;
+        $sub_carpeta = str_replace("\\", SD, $sub_carpeta);
+        $ctrl = PK_Solicitud::obt_controlador();
+        if (empty($value)) {
+            return empty($sub_carpeta) ? url_base($ctrl) : url_base($sub_carpeta . $ctrl);
+        } else {
+            //$suburl = (url_seg(2)) ? url_seg(2) . '/' : '';
+            //return empty($sub_carpeta) ? $ctrl.'/v/'.$value : url_base($sub_carpeta . $ctrl . '/n/' . $value);
+            return empty($sub_carpeta) ? url_base($ctrl.'/'.$value) : url_base($sub_carpeta . $ctrl . '/' . $value);
+        }
     }
+
+}
+if(!function_exists('url_ctrl_solo')){
+
+    function url_ctrl_solo($value = '') {
+        $sub_carpeta = PK_Solicitud::$sub_carpeta;
+        $sub_carpeta = str_replace("\\", SD, $sub_carpeta);
+        $ctrl = PK_Solicitud::obt_controlador();
+        if (empty($value)) {
+            return empty($sub_carpeta) ? $ctrl : $sub_carpeta . $ctrl;
+        } else {
+            //$suburl = (url_seg(2)) ? url_seg(2) . '/' : '';
+            //return empty($sub_carpeta) ? $ctrl.'/v/'.$value : url_base($sub_carpeta . $ctrl . '/n/' . $value);
+            return empty($sub_carpeta) ? $ctrl.'/'.$value : $sub_carpeta . $ctrl . $value;
+        }
+    }
+
 }
 
-function es_local() {
-    if (dominio() == 'localhost' || dominio() == '127.0.0.1') {
-        return TRUE;
-    } else {
-        return FALSE;
+if (!function_exists('es_local')) {
+
+    function es_local() {
+        if (dominio() == 'localhost' || dominio() == '127.0.0.1') {
+            return TRUE;
+        } else {
+            return FALSE;
+        }
     }
 }
 

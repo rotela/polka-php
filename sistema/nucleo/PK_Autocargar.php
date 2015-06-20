@@ -9,6 +9,7 @@ if (!defined('SISTEMA')) {
 if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50400) {
     exit('Polka requiere PHP 5.4 o superior, lo sentimos.');
 }
+
 spl_autoload_register('cargar');
 
 /**
