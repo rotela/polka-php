@@ -14,6 +14,7 @@ if (!defined('SISTEMA')) {
     </head>
     <body>
         <div id="wrap">
+            <!--<nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation">-->
             <nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation">
                 <div class="container">
                     <div class="navbar-header">

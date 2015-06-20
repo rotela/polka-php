@@ -3,10 +3,11 @@
 if (!defined('SISTEMA')) {
     exit('No se permite el acceso directo al script.');
 }
+
 if (!function_exists('alerta_suceso')) {
 
     function alerta_suceso($mensaje = '') {
-        $ale = '<div class="alert alert-success alert-dismissable">' . "\n";
+        $ale = '<div class="alert alert-success">' . "\n";
         $ale .= '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>' . "\n";
         $ale .= $mensaje . "\n";
         $ale .='</div>' . "\n";
@@ -71,4 +72,27 @@ if (!function_exists('pre_var_dump')) {
         }
     }
 
+}
+if (!function_exists('pre_objetos')) {
+
+    function pre_objetos($arreglo = array()) {
+        if (count($arreglo) > 0) {
+            echo "<pre>";
+            var_dump($arreglo);
+            exit();
+        }
+    }
+
+}
+
+if (!function_exists('buscar_errores')) {
+    function buscar_errores()
+    {
+        $errores = obt_errores();
+        if ($errores){
+          foreach ($errores as $value){
+            echo alerta_peligro($value);
+          }
+        }
+    }
 }

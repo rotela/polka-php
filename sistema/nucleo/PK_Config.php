@@ -28,7 +28,7 @@ if (!defined('SISTEMA')) {
  * @author  Ricardo Rotela González ricksystems->gmail.com ;-)
  * @package sistema
  * @subpackage nucleo
- * @copyright Ricksystems (c)2014
+ * @copyright Ricksystems (c)2015
  */
 class PK_Config {
 
@@ -47,7 +47,7 @@ class PK_Config {
      * Por el momento no hay nada en el constructor
      */
     private function __construct() {
-        
+
     }
 
     /**
