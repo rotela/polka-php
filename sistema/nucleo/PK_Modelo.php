@@ -687,7 +687,11 @@ class PK_Modelo extends PDO {
     }
 
     public function obt_error() {
-        $this->error = implode(",", $this->errorInfo());
+        if (count($this->error)>0) {
+            $this->error = implode(",", $this->errorInfo());
+        }else{
+            $this->error = "Al parecer no hay errores";
+        }
         return $this->error;
     }
 

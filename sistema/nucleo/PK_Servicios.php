@@ -8,28 +8,28 @@ abstract class PK_Servicios extends PK_Controlador {
      * Guarda nuevo registro
      * @return boolean No devuelve nada
      */
-    abstract protected function _alta();
+    abstract protected function _post();
 
     /**
      * Elimina un registro por su id
      * @param  integer $id Id del registro a eliminar
      * @return boolean No devuelve nada
      */
-    abstract protected function _baja($id = 0);
+    abstract protected function _delete($id = 0);
 
     /**
      * Modifica un registro por su id
      * @param  integer $id Id del registro a modificar
      * @return boolean No devuelve nada
      */
-    abstract protected function _modificacion($id = 0);
+    abstract protected function _put($id = 0);
 
     /**
      * Consulta u obtiene un registro por el Id, o todos sin el id
      * @param  integer $id Id del registro a consultar
      * @return array      Debe devolver un array del o los registros
      */
-    abstract protected function _consulta($id = 0);
+    abstract protected function _get($id = 0);
 
     /**
      * Función principal a ejecutar si no se indica el método en la url
@@ -42,48 +42,54 @@ abstract class PK_Servicios extends PK_Controlador {
 
     function __construct() {
         parent::__construct();
+
+        $entradas = array();
+
         if (count($_POST) > 0) {
-            $this->entradas = $_POST;
-        } else {
-            $this->entradas = (array) json_decode(@file_get_contents('php://input'));
+            $entradas = array_merge($entradas,$_POST);
         }
+        if (count($_GET) > 0) {
+            $entradas = array_merge($entradas,$_GET);
+        }
+        $otros = (array) json_decode(@file_get_contents('php://input'));
+        if (count($otros) > 0) {
+            $entradas = array_merge($entradas,$otros);;
+        }
+
         $this->ayudas('limpiador');
-        $this->entradas = sanear($this->entradas);
+        $this->entradas = sanear($entradas);
     }
 
     public function iniciar($id = 0) {
         switch (es_metodo()) {
             case 'GET':
+
                 if (!empty($id)) {
                     // METODO FECHT CON ID (CONSULTAR - OBTENER - UNITARIO)
-                    $this->_consulta($id);
+                    $this->_get($id);
                 } else {
                     // METODO FECHT SIN ID (TODAS)
-                    $this->_consulta();
+                    $this->_get();
                 }
                 break;
 
             case 'POST':
                 // METODO SAVE (ALTA)
-                if (empty($id)) {
-                    $this->_alta();
-                }
+                $this->_post();
                 break;
 
             case 'PUT':
                 // METODO PUT (MODIFICACION)
-                $this->_modificacion($id);
+                $this->_put($id);
                 break;
 
             case 'DELETE':
                 // METODO DESTROY (BAJA)
-                if (!empty($id)) {
-                    $this->_baja($id);
-                }
+                $this->_delete($id);
                 break;
 
             default:
-                return $this->_consulta();
+                return $this->_get();
                 break;
         }
     }
