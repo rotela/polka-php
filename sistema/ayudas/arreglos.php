@@ -3,10 +3,16 @@
 if (!function_exists('filtrar_arreglo')) {
 
     function filtrar_arreglo($filtros = array(), $arreglo) {
-        if (count($filtros) > 0) {
-            foreach ($filtros as $value) {
-                unset($arreglo[$value]);
+        if(is_array($filtros)){
+            if (count($filtros) > 0) {
+                foreach ($filtros as $value) {
+                    if (array_key_exists($value, $arreglo)) {
+                        unset($arreglo[$value]);
+                    }
+                }
             }
+        }else{
+            unset($arreglo[$filtros]);
         }
         return $arreglo;
     }
