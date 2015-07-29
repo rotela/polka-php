@@ -79,14 +79,12 @@ if(!function_exists('url_ctrl')){
 
     function url_ctrl($value = '') {
         $sub_carpeta = PK_Solicitud::$sub_carpeta;
-        $sub_carpeta = str_replace("\\", SD, $sub_carpeta);
+        $sub_carpeta = str_replace("\\", "/", $sub_carpeta);
         $ctrl = PK_Solicitud::obt_controlador();
         if (empty($value)) {
             return empty($sub_carpeta) ? url_base($ctrl) : url_base($sub_carpeta . $ctrl);
         } else {
-            //$suburl = (url_seg(2)) ? url_seg(2) . '/' : '';
-            //return empty($sub_carpeta) ? $ctrl.'/v/'.$value : url_base($sub_carpeta . $ctrl . '/n/' . $value);
-            return empty($sub_carpeta) ? url_base($ctrl.'/'.$value) : url_base($sub_carpeta . $ctrl . '/' . $value);
+            return empty($sub_carpeta) ? url_base($ctrl.'/'.$value) : url_base($sub_carpeta . $ctrl . $value);
         }
     }
 

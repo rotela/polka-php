@@ -10,7 +10,7 @@ use \Exception;
 
 /**
  * Clase individual para manejo de vistas,
- * ésta clase es usada dentro del controlador
+ * esta clase es usada dentro del controlador
  * y puede ser invocada con la cláusula $this
  * @package sistema
  * @subpackage nucleo
@@ -79,13 +79,13 @@ class PK_Vista {
         return $this->tema = $tema;
     }
 
-    public function env_arc_js($js = '') {
+    public function env_arc_js($js='',$pub=false) {
         $aux = 'nohay.js';
         if (is_array($js)) {
             if (count($js) > 0) {
                 foreach ($js as $value) {
                     $archivo = agr_ext($value, '.js');
-                    $url = vista_js($archivo);
+                    $url = vista_js($archivo,$pub);
                     $this->arch_js[] = '<script src="' . $url . '"></script>';
                 }
             } else {
@@ -94,7 +94,7 @@ class PK_Vista {
         } else {
             if (!empty($js)) {
                 $archivo = agr_ext($js, '.js');
-                $url = vista_js($archivo);
+                $url = vista_js($archivo,$pub);
                 $this->arch_js[] = '<script src="' . $url . '"></script>';
             } else {
                 $this->arch_js[] = $aux;
