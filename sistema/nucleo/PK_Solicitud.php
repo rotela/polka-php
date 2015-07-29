@@ -40,11 +40,16 @@ class PK_Solicitud {
         }
     }
 
+    public static function obt_seccion() {
+        if (empty(self::$sub_carpeta))
+            self::configurar();
+        return self::$sub_carpeta;
+    }
+
     public static function obt_controlador() {
         if (empty(self::$controlador))
             self::configurar();
         return self::$controlador;
-
     }
 
     public static function obt_metodo() {

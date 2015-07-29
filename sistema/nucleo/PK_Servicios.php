@@ -63,14 +63,7 @@ abstract class PK_Servicios extends PK_Controlador {
     public function iniciar($id = 0) {
         switch (es_metodo()) {
             case 'GET':
-
-                if (!empty($id)) {
-                    // METODO FECHT CON ID (CONSULTAR - OBTENER - UNITARIO)
-                    $this->_get($id);
-                } else {
-                    // METODO FECHT SIN ID (TODAS)
-                    $this->_get();
-                }
+                $this->_get($id);
                 break;
 
             case 'POST':

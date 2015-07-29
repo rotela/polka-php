@@ -200,7 +200,11 @@ class PK_Modelo extends PDO {
                     break;
 
                 case "firebird";
-                    parent::__construct("firebird:dbname=" . $this->base_bd . ';host=' . $this->host_bd, $this->user_bd, $this->pass_bd);
+                    $server = "firebird:dbname=". $this->host_bd . '/'.$this->port_bd.":".$this->base_bd;
+                    //"firebird:dbname=192.168.2.110/3050:/db/BDFINANSYS.fdb"
+                    //echo $server;
+                    //exit();
+                    parent::__construct($server, $this->user_bd, $this->pass_bd);
                     break;
 
                 default:
@@ -610,7 +614,11 @@ class PK_Modelo extends PDO {
 
     public function obt_campos() {
         $this->comprobar_conexion();
-        $resultado = $this->query('SELECT * FROM ' . $this->tabla . ' LIMIT 1');
+        if ($this->tipo_bd == 'firebird') {
+            $resultado = $this->query('SELECT FIRST 1 * FROM ' . $this->tabla);
+        }else{
+            $resultado = $this->query('SELECT * FROM ' . $this->tabla . ' LIMIT 1');
+        }
         $datos = array();
         for ($c = 0; $c <= $resultado->columnCount(); $c++) {
             $meta = $resultado->getColumnMeta($c);
