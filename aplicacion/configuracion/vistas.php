@@ -5,3 +5,5 @@ if (!defined('SISTEMA')) {
 }
 $config['seccion'] = 'delantera';
 $config['tema'] = 'tema1';
+// Carpeta que contiene los archivos compartidos
+$config['compartido']	= 'publico';
