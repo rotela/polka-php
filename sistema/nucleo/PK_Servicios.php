@@ -87,44 +87,17 @@ abstract class PK_Servicios extends PK_Controlador {
         }
     }
 
-    public function responder($datos = array(), $codigo = 200, $tipo = 'json') {
+    public function responder($datos = array(), $tipo = 'json', $codigo = 200) {
         if (is_array($datos)) {
             // si hay datos y es de tipo array, procesarlo normamente
-            $this->env_cabecera($codigo, $tipo);
             if (count($datos) > 0) {
-                if ($tipo == 'json') {
-                    echo json_encode($datos);
-                }
+                cargar('sistema/ayudas/xml_json');
+                mostrarxmljson($datos,$tipo,$codigo);
             }
         } else {
             // si no hay datos, enviar no encontrado
-            $this->env_cabecera(404, $tipo);
+            env_cabecera(404, $tipo);
         }
-    }
-
-    private function env_cabecera($codigo = 200, $tipo = 'json') {
-        header("HTTP/1.1 " . $codigo . " " . $this->obt_estado($codigo));
-        header('Content-Type:application/' . $tipo . ';charset=utf-8');
-    }
-
-    private function obt_estado($codigo) {
-        $estado = array(
-            200 => 'OK',
-            201 => 'Created',
-            202 => 'Accepted',
-            204 => 'No Content',
-            301 => 'Moved Permanently',
-            302 => 'Found',
-            303 => 'See Other',
-            304 => 'Not Modified',
-            400 => 'Bad Request',
-            401 => 'Unauthorized',
-            403 => 'Forbidden',
-            404 => 'Not Found',
-            405 => 'Method Not Allowed',
-            500 => 'Internal Server Error'
-        );
-        return $estado[$codigo];
     }
 
     public function entradas() {

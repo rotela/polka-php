@@ -20,11 +20,12 @@ if (!function_exists('fecha_hora')) {
 if (!function_exists('fecha_a')) {
 	function fecha_a($fecha,$formato='d-m-Y')
 	{
-		return date($formato, strtotime($fecha));
+		return (empty($fecha)) ? '' : date($formato, strtotime($fecha));
 	}
 }
 if(!function_exists('faltan_dias')){
-	function faltan_dias($end=null){
+	function faltan_dias($end=null)
+	{
 		$start = new DateTime();
 
 	    if(!($end instanceof DateTime)) {
@@ -44,7 +45,8 @@ if(!function_exists('faltan_dias')){
 	}
 }
 if(!function_exists('minutos_pasaron')){
-	function minutos_pasaron($start, $end=null){
+	function minutos_pasaron($start, $end=null)
+	{
 		if(!($start instanceof DateTime)) {
 	        $start = new DateTime($start);
 	    }
@@ -68,7 +70,8 @@ if(!function_exists('minutos_pasaron')){
 }
 if (!function_exists('fecha_pasaron')) {
 
-	function fecha_pasaron($start, $end=null) {
+	function fecha_pasaron($start, $end=null)
+	{
 	    if(!($start instanceof DateTime)) {
 	        $start = new DateTime($start);
 	    }

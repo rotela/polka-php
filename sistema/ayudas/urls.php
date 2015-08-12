@@ -84,7 +84,8 @@ if(!function_exists('url_ctrl')){
         if (empty($value)) {
             return empty($sub_carpeta) ? url_base($ctrl) : url_base($sub_carpeta . $ctrl);
         } else {
-            return empty($sub_carpeta) ? url_base($ctrl.'/'.$value) : url_base($sub_carpeta . $ctrl . $value);
+            $value="/$value";
+            return empty($sub_carpeta) ? url_base($ctrl.$value) : url_base($sub_carpeta . $ctrl . $value);
         }
     }
 

@@ -4,31 +4,58 @@ namespace sistema\librerias;
 
 class Genxml {
 
-    function __construct() {
-        header("Content-type: text/xml; charset=utf-8");
-        //{"status":1,"id":"2","nombres":"Bob","apellidos":"Simpson","email":"bobpatino@gmail.com"}
-        $xml = new \DomDocument('1.0', 'UTF-8');
-        $root = $xml->createElement('clientes');
-        $root = $xml->appendChild($root);
-
-        $cliente = $xml->createElement('cliente');
-        $cliente = $root->appendChild($cliente);
-
-
-        $id = $xml->createElement('id', '2');
-        $id = $cliente->appendChild($id);
-
-        $nom = $xml->createElement('nombre', 'Erick');
-        $nom = $cliente->appendChild($nom);
-
-        $apellido = $xml->createElement('apellido', 'campos');
-        $apellido = $cliente->appendChild($apellido);
-
-        $xml->formatOutput = true;
-
-        $strings_xml = $xml->saveXML();
-        echo $strings_xml;
-        //$xml->save('XML/prueba.xml');
+    public function mostrar($result,$tipo='xml',$codigo=200) {
+        $this->env_cabecera($codigo, $tipo);
+        if (strtolower($tipo) == "json") {
+            echo json_encode($result);
+        } else if (strtolower($tipo) == "xml") {
+            echo '<?xml version="1.0"?>';
+            echo "<resultados>";
+            $xml_array = json_decode(json_encode($result), true);
+            $this->xmlExplorador($xml_array, "registroo");
+            echo "</resultados>";
+        } else {
+            echo json_encode($result);
+        }
     }
 
+    private function xmlExplorador($xml_array, $parent) {
+         foreach($xml_array as $tag => $value) {
+            if ((int)$tag === $tag) {
+                $tag = mb_substr($parent, 0, -1);
+            }
+            echo "<" .$tag. ">";
+            if (is_array($value)) {
+                $this->xmlExplorador($value, $tag);
+            } else {
+                echo $value;
+            }
+            echo "</" .$tag. ">";
+        }
+    }
+
+    private function env_cabecera($codigo = 200, $tipo = 'json') {
+        header("HTTP/1.1 " . $codigo . " " . $this->obt_estado($codigo));
+        header('Content-type:application/' . $tipo . ';charset=utf-8');
+    }
+
+    private function obt_estado($codigo) {
+        $estado = array(
+            200 => 'OK',
+            201 => 'Created',
+            202 => 'Accepted',
+            204 => 'No Content',
+            301 => 'Moved Permanently',
+            302 => 'Found',
+            303 => 'See Other',
+            304 => 'Not Modified',
+            400 => 'Bad Request',
+            401 => 'Unauthorized',
+            403 => 'Forbidden',
+            404 => 'Not Found',
+            405 => 'Method Not Allowed',
+            500 => 'Internal Server Error'
+        );
+        return $estado[$codigo];
+    }
 }

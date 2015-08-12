@@ -38,9 +38,9 @@ class PK_Rutas {
     }
 
     private function subtraer($origen = '', $destino = '') {
-        $array_origen = explode('/', $origen);
+        $array_origen  = explode('/', $origen);
         $array_destino = explode('/', $destino);
-        $arg = array();
+        $arg           = array();
 
         foreach ($array_origen as $llave => $valor) {
             if ($valor == '?') {
@@ -64,6 +64,7 @@ class PK_Rutas {
     public function obt_controlador() {
         $cadena = $this->url_destino;
         $buscar = "/";
+
         $resultado = strpos($cadena, $buscar);
         if ($resultado !== FALSE) {
             $url_array = explode('/', $cadena);
