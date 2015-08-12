@@ -201,6 +201,9 @@ class PK_Modelo extends PDO {
 
                 case "firebird";
                     $server = "firebird:dbname=". $this->host_bd . '/'.$this->port_bd.":".$this->base_bd;
+                    //"firebird:dbname=192.168.2.110/3050:/db/BDFINANSYS.fdb"
+                    //echo $server;
+                    //exit();
                     parent::__construct($server, $this->user_bd, $this->pass_bd);
                     break;
 

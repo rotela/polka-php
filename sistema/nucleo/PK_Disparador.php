@@ -63,8 +63,8 @@ class PK_Disparador {
         // OBTENIENDO LA SOLICITUD
         self::$controlador = PK_Solicitud::obt_controlador();
         self::$controlador = !empty(self::$controlador) ? self::$controlador : $config->ctr_princ;
-        self::$metodo = PK_Solicitud::obt_metodo();
-        self::$metodo = !empty(self::$metodo) ? self::$metodo : $config->mth_princ;
+        self::$metodo      = PK_Solicitud::obt_metodo();
+        self::$metodo      = !empty(self::$metodo) ? self::$metodo : $config->mth_princ;
         // Ejecuto la pagina de error si es que existe
         if (self::$controlador == 'errores') {
             $controlador = new Errores();
@@ -125,7 +125,7 @@ class PK_Disparador {
                     throw new Exception(mostrar_error('php', error_get_last(), 'php_error'));
                 }
             } else {
-                throw new Exception(mostrar_error('Metodo', "El Método no existe."));
+                throw new Exception(mostrar_error('Metodo', "El Método ".self::$metodo." no existe."));
             }
         } else {
             throw new Exception(mostrar_error('no encontrado :-(', 'La página <strong>' . self::$controlador . '</strong> no existe '));
