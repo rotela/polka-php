@@ -3,7 +3,7 @@
 namespace sistema\nucleo;
 
 abstract class PK_Servicios extends PK_Controlador {
-
+    private static $tipo='servicio';
     /**
      * Guarda nuevo registro
      * @return boolean No devuelve nada
@@ -31,12 +31,6 @@ abstract class PK_Servicios extends PK_Controlador {
      */
     abstract protected function _get($id = 0);
 
-    /**
-     * Función principal a ejecutar si no se indica el método en la url
-     * @return [type] [description]
-     */
-    abstract protected function principal();
-
     // Propiedades
     private $entradas = array();
 
@@ -60,10 +54,10 @@ abstract class PK_Servicios extends PK_Controlador {
         $this->entradas = sanear($entradas);
     }
 
-    public function iniciar($id = 0) {
+    public function principal($param='') {
         switch (es_metodo()) {
             case 'GET':
-                $this->_get($id);
+                $this->_get($param);
                 break;
 
             case 'POST':
@@ -73,16 +67,16 @@ abstract class PK_Servicios extends PK_Controlador {
 
             case 'PUT':
                 // METODO PUT (MODIFICACION)
-                $this->_put($id);
+                $this->_put($param);
                 break;
 
             case 'DELETE':
                 // METODO DESTROY (BAJA)
-                $this->_delete($id);
+                $this->_delete($param);
                 break;
 
             default:
-                return $this->_get();
+                return $this->_get($param);
                 break;
         }
     }
@@ -102,6 +96,9 @@ abstract class PK_Servicios extends PK_Controlador {
 
     public function entradas() {
         return $this->entradas;
+    }
+    public static function obtTipo(){
+        return self::$tipo;
     }
 
 }
