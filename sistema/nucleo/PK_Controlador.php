@@ -15,6 +15,7 @@ if (!defined('SISTEMA')) {
  * @copyright Ricksystems (c)2014
  */
 class PK_Controlador {
+    private static $tipo='controlador';
 
     public $cargar;
 
@@ -289,6 +290,9 @@ class PK_Controlador {
             $this->ayudas('recursos');
         }
         return es_ajax();
+    }
+    public static function obtTipo(){
+        return self::$tipo;
     }
 
 }
