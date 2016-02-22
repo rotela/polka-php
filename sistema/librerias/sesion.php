@@ -2,11 +2,7 @@
 
 namespace sistema\librerias;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
-
-use sistema\nucleo\PK_Config as PK_Config;
+defined('SISTEMA') or exit('No se permite el acceso directo al script.');
 
 class sesion {
 
@@ -15,7 +11,7 @@ class sesion {
 
     public function __construct() {
         if (!isset($_SESSION['sesion_id'])) {
-            $sesion = PK_Config::obtener('aplicacion');
+            $sesion = obt_config('aplicacion');
             //session_set_cookie_params($sesion->ses_tiempo,'/',url_base(),true,true);
             @session_start();
             $this->id = session_id();

@@ -17,11 +17,11 @@ class paginador {
         if (!function_exists('ancla')) {
             PK_Controlador::obt_instancia()->ayudas('html');
         }
-        $tot_reg = $config['total_reg'];
-        $reg_pag = $config['reg_por_pag'];
-        $seg = $config['url_seg'];
-        $url = $config['url_pag'];
-        $can_pag = ceil($tot_reg / $reg_pag);
+        $tot_reg    = $config['total_reg'];
+        $reg_pag    = $config['reg_por_pag'];
+        $seg        = $config['url_seg'];
+        $url        = $config['url_pag'];
+        $can_pag    = ceil($tot_reg / $reg_pag);
         $this->info = array(
             'reg_act' => $reg_pag,
             'reg_tot' => $tot_reg,

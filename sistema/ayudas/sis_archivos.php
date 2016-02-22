@@ -1,8 +1,7 @@
 <?php
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
 if (!function_exists('nombre_archivo')) {
 
     /**
@@ -86,6 +85,7 @@ if (!function_exists('obt_archivos')) {
      *                      existe el directorio especificado
      */
     function obt_archivos($dir = '', $ext = TRUE) {
+        $dir = str_replace("/", SD, $dir);
         if (is_dir($dir)) {
             $archivos = array();
             if ($gestor = opendir($dir)) {
@@ -106,4 +106,63 @@ if (!function_exists('obt_archivos')) {
         }
     }
 
+
+}
+if (!function_exists('obt_directorios')) {
+
+    /**
+     * Lee todos los nombre de archivos y las devuelve
+     * @param  string  $dir La ruta del directorio
+     * @param  boolean $ext Agrega o quita (true/false) las extensiones de los archivos
+     * @return mixed        Arreglo de los nombres de archivos o false si no
+     *                      existe el directorio especificado
+     */
+    function obt_directorios($dir = '') {
+        $dir = str_replace("/", SD, $dir);
+        if (is_dir($dir)) {
+            $archivos = array();
+            if ($gestor = opendir($dir)) {
+                while (false !== ($entrada = readdir($gestor))) {
+
+                    $subject = '/[.]/';
+
+                    if ($entrada != "." && $entrada != ".." && !preg_match($subject, $entrada)) {
+                        $archivos[] = $entrada;
+                    }
+                }
+                closedir($gestor);
+            }
+            return $archivos;
+        } else {
+            return false;
+        }
+    }
+
+}
+
+function explorador($dir = '',$res=array()) {
+    $dir = str_replace("/", SD, $dir);
+
+    $archivos = $res;
+
+    if (is_dir($dir)) {
+
+        if ($gestor = opendir($dir)) {
+            while (false !== ($entrada = readdir($gestor))) {
+                if ($entrada != "." && $entrada != "..") {
+
+                    $item = $dir.'/'.$entrada;
+                    $archivos[] = $item;
+                    if (is_dir($item)) {
+                        explorador($item,$archivos);
+                    }
+                    eco_ln($item);
+                }
+            }
+            closedir($gestor);
+        }
+
+    }
+    eco_ln("-> can archivos ".count($archivos));
+    return $archivos;
 }

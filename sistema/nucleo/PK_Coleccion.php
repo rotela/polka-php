@@ -15,7 +15,7 @@ if (!defined('SISTEMA')) {
  * ADVERTENCIA
  *
  * Para obtener una librerías/modelos (clases) debe indicar su nombre completo de espacio,
- * PHP 5.4 vino con varios soporte tanto para los trait, namespace y los registros
+ * PHP 5.4 vino con varios soportes tanto para los trait, namespace y los registros
  * de autoloads, utilicémoslo. ;-)
  *
  * USOS

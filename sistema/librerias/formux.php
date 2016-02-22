@@ -148,4 +148,4 @@ class formux {
 
 // FIN formux Class
 /* FIN de archivo formux.php */
-/* Location: libraries/formux.php */
+/* Location: sistema/librerias/formux.php */

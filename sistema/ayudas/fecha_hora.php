@@ -8,17 +8,17 @@ if (!function_exists('fecha')) {
 if (!function_exists('hora')) {
 	function hora()
 	{
-		return date('h-i-s');
+		return date('H-i-s');
 	}
 }
 if (!function_exists('fecha_hora')) {
 	function fecha_hora()
 	{
-		return date('Y-m-d h:i:s');
+		return date('Y-m-d H:i:s');
 	}
 }
 if (!function_exists('fecha_a')) {
-	function fecha_a($fecha,$formato='d-m-Y')
+	function fecha_a($fecha,$formato='d:m:Y')
 	{
 		return (empty($fecha)) ? '' : date($formato, strtotime($fecha));
 	}

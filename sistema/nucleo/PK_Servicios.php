@@ -53,7 +53,22 @@ abstract class PK_Servicios extends PK_Controlador {
         $this->ayudas('limpiador');
         $this->entradas = sanear($entradas);
     }
+    public function hab_cors(){
+        if (isset($_SERVER['HTTP_ORIGIN'])) {
+            header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+            header('Access-Control-Allow-Credentials: true');
+            header('Access-Control-Max-Age: 86400');
+        }
 
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD']))
+                header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']))
+                header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+        }
+    }
     public function principal($param='') {
         switch (es_metodo()) {
             case 'GET':
@@ -82,10 +97,10 @@ abstract class PK_Servicios extends PK_Controlador {
     }
 
     public function responder($datos = array(), $tipo = 'json', $codigo = 200) {
+        cargar('sistema/ayudas/xml_json');
         if (is_array($datos)) {
             // si hay datos y es de tipo array, procesarlo normamente
             if (count($datos) > 0) {
-                cargar('sistema/ayudas/xml_json');
                 mostrarxmljson($datos,$tipo,$codigo);
             }
         } else {
@@ -97,6 +112,7 @@ abstract class PK_Servicios extends PK_Controlador {
     public function entradas() {
         return $this->entradas;
     }
+
     public static function obtTipo(){
         return self::$tipo;
     }

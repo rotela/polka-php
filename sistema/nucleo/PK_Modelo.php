@@ -169,6 +169,9 @@ class PK_Modelo extends PDO {
         } else {
             $this->tabla = trim($tabla);
         }
+        /*
+
+        */
     }
 
     /**
@@ -189,27 +192,29 @@ class PK_Modelo extends PDO {
         // según el tipo de base de datos, lo conecto,
         // por el momento se tiene preparado a mysql, pgsql, puedes extender a otros
         // tipos de base de datos, si sabes como se conecta
+        //echo 'mysql:host=' . $this->host_bd . ';dbname=' . $this->base_bd;
         try {
             switch ($this->tipo_bd) {
                 case 'mysql':
-                    parent::__construct('mysql:host=' . $this->host_bd . ';dbname=' . $this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $this->cote_bd));
-                    break;
+                //parent::__construct('mysql:host=ligadeclubes.com;dbname=bodegapp', 'ligadecl_bgapp', 'g3747237472', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+                parent::__construct('mysql:host=' . $this->host_bd . ';dbname=' . $this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $this->cote_bd));
+                break;
 
                 case 'pgsql';
-                    parent::__construct('pgsql:dbname=' . $this->base_bd . ';host=' . $this->host_bd, $this->user_bd, $this->pass_bd);
-                    break;
+                parent::__construct('pgsql:dbname=' . $this->base_bd . ';host=' . $this->host_bd, $this->user_bd, $this->pass_bd);
+                break;
 
                 case "firebird";
-                    $server = "firebird:dbname=". $this->host_bd . '/'.$this->port_bd.":".$this->base_bd;
+                $server = "firebird:dbname=". $this->host_bd . '/'.$this->port_bd.":".$this->base_bd;
                     //"firebird:dbname=192.168.2.110/3050:/db/BDFINANSYS.fdb"
                     //echo $server;
                     //exit();
-                    parent::__construct($server, $this->user_bd, $this->pass_bd);
-                    break;
+                parent::__construct($server, $this->user_bd, $this->pass_bd);
+                break;
 
                 default:
-                    parent::__construct('mysql:host=' . $this->host_bd . ';dbname=' . $this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $this->cote_bd));
-                    break;
+                parent::__construct('mysql:host=' . $this->host_bd . ';dbname=' . $this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $this->cote_bd));
+                break;
             }
             $this->conectado = true;
         } catch (\PDOException $e) {
@@ -339,17 +344,18 @@ class PK_Modelo extends PDO {
      * @return object         Se devuelve asi mismo
      */
     public function seleccionar($campos = array()) {
+        $this->orden_l = array();
         if (is_array($campos)) {
             if (count($campos) > 0) {
-                $this->orden_l[] = 'SELECT ' . implode(', ', $campos);
+                $this->orden_l[] = 'select ' . implode(', ', $campos);
             } else {
-                $this->orden_l[] = 'SELECT *';
+                $this->orden_l[] = 'select *';
             }
         } else {
             if (!empty($campos)) {
-                $this->orden_l[] = 'SELECT ' . $campos;
+                $this->orden_l[] = 'select ' . $campos;
             } else {
-                $this->orden_l[] = 'SELECT *';
+                $this->orden_l[] = 'select *';
             }
         }
         return $this;
@@ -357,15 +363,18 @@ class PK_Modelo extends PDO {
 
     public function desde($tabla = '') {
         if (!empty($tabla)) {
-            $this->orden_l[] = 'FROM ' . $tabla;
+            $this->orden_l[] = 'from ' . $tabla;
         } else {
-            $this->orden_l[] = 'FROM ' . $this->tabla;
+            $this->orden_l[] = 'from ' . $this->tabla;
         }
         return $this;
     }
 
     public function unir($tabla = '', $mientras = '', $tipo = 'INNER') {
-        $sql = "$tipo JOIN $tabla ON $mientras";
+        if (count($this->orden_l) <= 0) {
+            $this->seleccionar()->desde();
+        }
+        $sql = "$tipo JOIN $tabla ON $mientras ";
         $this->orden_l[] = $sql;
         return $this;
     }
@@ -410,17 +419,17 @@ class PK_Modelo extends PDO {
         } else {
             switch ($this->tipo_bd) {
                 case 'mysql':
-                    $limite = ' LIMIT ' . $segmento . ', ' . $limite;
-                    break;
+                $limite = ' LIMIT ' . $segmento . ', ' . $limite;
+                break;
                 case 'pgsql':
-                    $limite = ' LIMIT ' . $limite . ' OFFSET ' . $segmento;
-                    break;
+                $limite = ' LIMIT ' . $limite . ' OFFSET ' . $segmento;
+                break;
                 case 'firebird':
-                    $limite = ' LIMIT ' . $limite . ' OFFSET ' . $segmento;
-                    break;
+                $limite = ' LIMIT ' . $limite . ' OFFSET ' . $segmento;
+                break;
                 default:
-                    $limite = ' LIMIT ' . $segmento . ', ' . $limite;
-                    break;
+                $limite = ' LIMIT ' . $segmento . ', ' . $limite;
+                break;
             }
         }
         $this->orden_l[] = $limite;
@@ -444,6 +453,7 @@ class PK_Modelo extends PDO {
      */
     public function obtener($objeto = TRUE, $lista = TRUE) {
         $this->comprobar_conexion();
+
         if (count($this->orden_l) <= 0) {
             $this->seleccionar()->desde();
         }
@@ -457,6 +467,7 @@ class PK_Modelo extends PDO {
     }
 
     public function obtener_mientras($condicion = '', $objeto = TRUE) {
+        $this->orden_l = array();
         if (count($this->orden_l <= 0)) {
             $this->seleccionar()->desde();
         }
@@ -496,11 +507,11 @@ class PK_Modelo extends PDO {
         return $this->cant_filas;
     }
 
-    public function obt_tablas() {
+    public function obt_tablas($obt=true) {
         $this->comprobar_conexion();
         $this->orden = 'SHOW TABLES';
         $resultados = $this->query($this->orden);
-        $this->tablas = $resultados->fetchall(PDO::FETCH_OBJ);
+        $this->tablas = ($obt) ? $resultados->fetchall(PDO::FETCH_OBJ) : $resultados->fetchall();
         return $this->tablas;
     }
 
@@ -508,103 +519,103 @@ class PK_Modelo extends PDO {
         $this->comprobar_conexion();
         // se arma la plantilla
         $orden = 'INSERT INTO ' . $this->tabla . ' (';
-        foreach ($datos as $campo => $valor) {
-            $orden .= $campo . ', ';
-        }
-        $orden .= ') VALUES (';
-        foreach ($datos as $campo => $valor) {
-            $orden .= ':' . $campo . ', ';
-        }
-        $orden .= ')';
+            foreach ($datos as $campo => $valor) {
+                $orden .= $campo . ', ';
+            }
+            $orden .= ') VALUES (';
+            foreach ($datos as $campo => $valor) {
+                $orden .= ':' . $campo . ', ';
+            }
+            $orden .= ')';
         // se limpia
-        $this->orden = str_replace(', )', ')', $orden);
+$this->orden = str_replace(', )', ')', $orden);
 
-        $this->orden_hist[] = $this->orden;
-
-        // se prepara la plantilla
-        $sentencia = $this->prepare($this->orden);
-        // se arma la fila con los datos ingresados
-        $fila = array();
-        foreach ($datos as $campo => $valor) {
-            $fila[':' . $campo] = $valor;
-        }
-        // se ejecuta
-        $estado = $sentencia->execute($fila);
-        if ($simular) {
-            echo $this->orden;
-            exit();
-        }else{
-            if ($this->comprobar($estado)) {
-                $this->ultimo_id = $this->lastInsertId();
-                return $estado;
-            }
-        }
-    }
-
-    public function editar($datos = array(), $clave = array()) {
-        $this->comprobar_conexion();
-        // se arma la plantilla
-        $orden = 'UPDATE ' . $this->tabla . ' SET ';
-        foreach ($datos as $campo => $valor) {
-            $orden .= $campo . '=:' . $campo . ', ';
-        }
-        $orden .= 'WHERE ';
-        foreach ($clave as $key => $value) {
-            $orden .= $key . '=' . $value . ' AND ';
-        }
-        $orden = preg_replace('/AND $/', '', $orden);
-        $orden = str_replace(', WHERE', ' WHERE', $orden);
-        $this->orden = $orden;
+$this->orden_hist[] = $this->orden;
 
         // se prepara la plantilla
-        $sentencia = $this->prepare($this->orden);
+$sentencia = $this->prepare($this->orden);
         // se arma la fila con los datos ingresados
-        $fila = array();
-        foreach ($datos as $campo => $valor) {
-            $fila[':' . $campo] = $valor;
-        }
+$fila = array();
+foreach ($datos as $campo => $valor) {
+    $fila[':' . $campo] = $valor;
+}
         // se ejecuta
-        $estado = $sentencia->execute($fila);
-        if ($this->comprobar($estado)) {
-            return $estado;
-        }
+$estado = $sentencia->execute($fila);
+if ($simular) {
+    echo $this->orden;
+    exit();
+}else{
+    if ($this->comprobar($estado)) {
+        $this->ultimo_id = $this->lastInsertId();
+        return $estado;
     }
+}
+}
 
-    public function ejecutar($orden = '', $objeto = TRUE) {
-        $this->comprobar_conexion();
-        $this->orden = $orden;
-        $this->orden_hist[] = $this->orden;
-        $resultado = $this->query($this->orden);
-        if ($this->comprobar($resultado)) {
-            $this->cant_filas = $resultado->rowCount();
-            if ($objeto) {
-                return $resultado->fetchall(PDO::FETCH_OBJ);
-            } else {
-                return $resultado->fetchall(PDO::FETCH_ASSOC);
-            }
-        }
+public function editar($datos = array(), $clave = array()) {
+    $this->comprobar_conexion();
+            // se arma la plantilla
+    $orden = 'UPDATE ' . $this->tabla . ' SET ';
+    foreach ($datos as $campo => $valor) {
+        $orden .= $campo . '=:' . $campo . ', ';
     }
+    $orden .= 'WHERE ';
+    foreach ($clave as $key => $value) {
+        $orden .= $key . '=' . $value . ' AND ';
+    }
+    $orden = preg_replace('/AND $/', '', $orden);
+    $orden = str_replace(', WHERE', ' WHERE', $orden);
+    $this->orden = $orden;
 
-    private function comprobar($resultado) {
-        if ($resultado) {
-            return TRUE;
+            // se prepara la plantilla
+    $sentencia = $this->prepare($this->orden);
+            // se arma la fila con los datos ingresados
+    $fila = array();
+    foreach ($datos as $campo => $valor) {
+        $fila[':' . $campo] = $valor;
+    }
+            // se ejecuta
+    $estado = $sentencia->execute($fila);
+    if ($this->comprobar($estado)) {
+        return $estado;
+    }
+}
+
+public function ejecutar($orden = '', $objeto = TRUE) {
+    $this->comprobar_conexion();
+    $this->orden = $orden;
+    $this->orden_hist[] = $this->orden;
+    $resultado = $this->query($this->orden);
+    if ($this->comprobar($resultado)) {
+        $this->cant_filas = $resultado->rowCount();
+        if ($objeto) {
+            return $resultado->fetchall(PDO::FETCH_OBJ);
         } else {
-            exit(mostrar_error('Modelo', 'Error: ' . $this->obt_error()));
+            return $resultado->fetchall(PDO::FETCH_ASSOC);
         }
     }
+}
 
-    private function obt_tipo($value = '') {
-        $arreglo = explode('(', $value);
+private function comprobar($resultado) {
+    if ($resultado) {
+        return TRUE;
+    } else {
+        exit(mostrar_error('Modelo', 'Error: ' . $this->obt_error()));
+    }
+}
+
+private function obt_tipo($value = '') {
+    $arreglo = explode('(', $value);
         switch ($arreglo[0]) {
             case 'init':
-                return 0;
-                break;
+            return 0;
+            break;
             case 'tinyint':
-                return 0;
-                break;
+            return 0;
+            break;
             default:
-                return '';
-                break;
+            return '';
+            break;
         }
     }
 
@@ -681,8 +692,24 @@ class PK_Modelo extends PDO {
     }
     public function obt_lista($offset=0,$limite=0)
     {
-        return $this->seleccionar()->desde()->limite($offset,$limite)->obtener();
+
+        $this->orden_l = array();
+
+        $this->seleccionar();
+
+
+        $this->desde();
+
+
+        $this->limite($offset,$limite);
+
+
+        $result = $this->obtener();
+
+
+        return $result;
     }
+
     public function obt_cant_filas() {
         return $this->cant_filas;
     }

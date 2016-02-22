@@ -89,10 +89,12 @@ if (!function_exists('buscar_errores')) {
     function buscar_errores()
     {
         $errores = obt_errores();
+        $mx = '';
         if ($errores){
-          foreach ($errores as $value){
-            echo alerta_peligro($value);
-          }
+            foreach ($errores as $value){
+                $mx .= alerta_peligro($value);
+            }
         }
+        return $mx;
     }
 }

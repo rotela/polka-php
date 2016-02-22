@@ -106,7 +106,11 @@ if(!function_exists('url_ctrl_solo')){
     }
 
 }
-
+if (!function_exists('url_peticion')) {
+    function url_peticion(){
+        return implode('/',url_seg());
+    }
+}
 if (!function_exists('es_local')) {
 
     function es_local() {
