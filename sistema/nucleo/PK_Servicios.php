@@ -38,17 +38,35 @@ abstract class PK_Servicios extends PK_Controlador {
         parent::__construct();
 
         $entradas = array();
+        switch ($_SERVER['REQUEST_METHOD']) {
+          case 'POST':
+            $entradas = array_merge($entradas,$_POST);
+            break;
+          case 'GET':
+            $entradas = array_merge($entradas,$_GET);
+            break;
+          case 'PUT':
+            parse_str(file_get_contents("php://input"),$entradas);
+            $entradas = array_merge($entradas,$_GET);
+            break;
 
+          default:
+            $otros = (array) json_decode(@file_get_contents('php://input'));
+            if (count($otros) > 0) {
+              $entradas = array_merge($entradas,$otros);;
+            }
+            break;
+        }
+        /*
         if (count($_POST) > 0) {
             $entradas = array_merge($entradas,$_POST);
         }
         if (count($_GET) > 0) {
             $entradas = array_merge($entradas,$_GET);
         }
-        $otros = (array) json_decode(@file_get_contents('php://input'));
-        if (count($otros) > 0) {
-            $entradas = array_merge($entradas,$otros);;
-        }
+          */
+
+
 
         $this->ayudas('limpiador');
         $this->entradas = sanear($entradas);
