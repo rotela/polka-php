@@ -41,7 +41,16 @@ abstract class PK_Servicios extends PK_Controlador {
 
     switch (es_metodo()) {
       case 'POST':
-        $entradas = array_merge($entradas,$_POST);
+
+        if (count($_POST)>0) {
+          # code...
+          $entradas = array_merge($entradas,$_POST);
+        }else{
+          $otros = (array) json_decode(@file_get_contents('php://input'));
+          if (count($otros) > 0) {
+            $entradas = array_merge($entradas,$otros);;
+          }
+        }
         break;
 
       case 'GET':
@@ -49,7 +58,7 @@ abstract class PK_Servicios extends PK_Controlador {
         break;
 
       case 'PUT':
-        parse_str(file_get_contents("php://input"),$entradas);
+        parse_str(@file_get_contents("php://input"),$entradas);
         $entradas = array_merge($entradas,$_GET);
         break;
 
