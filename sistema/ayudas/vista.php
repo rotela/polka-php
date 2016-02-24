@@ -25,6 +25,13 @@ if (!function_exists('obt_arc_js'))
 		return PK_Vista::obt_instancia()->obt_arc_js();
 	}
 }
+if (!function_exists('obt_arc_css'))
+{
+	function obt_arc_css()
+	{
+		return PK_Vista::obt_instancia()->obt_arc_css();
+	}
+}
 if (!function_exists('vista_css'))
 {
 	function vista_css($css='',$pub=false)

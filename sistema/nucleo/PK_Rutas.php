@@ -1,5 +1,4 @@
 <?php
-
 namespace sistema\nucleo;
 
 if (!defined('SISTEMA')) {
@@ -29,6 +28,7 @@ class PK_Rutas {
         if (count($this->rutas) > 0) {
             // Buscamos cohincidencias entre rutas y la url actual
             foreach ($this->rutas as $key => $value) {
+                //echo "$key -> $value<br>";
                 if ($this->subtraer($key, $value)) {
                     $this->hay = true;
                     break;
@@ -55,9 +55,12 @@ class PK_Rutas {
             }
         }
 
-        $this->url_origen = implode('/', $array_origen);
+        $this->url_origen  = implode('/', $array_origen);
         $this->url_destino = implode('/', $array_destino);
-
+/*
+        echo $this->url_origen ."<br>". url_solicitud()."<br>";
+        exit();
+        */
         return ($this->url_origen == url_solicitud()) ? true : false;
     }
 

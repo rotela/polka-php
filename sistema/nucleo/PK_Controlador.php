@@ -1,5 +1,4 @@
 <?php
-
 namespace sistema\nucleo;
 
 if (!defined('SISTEMA')) {
@@ -169,7 +168,7 @@ class PK_Controlador {
             if (!method_exists($this, $alias_lib)) {
                 $libreria = 'aplicacion\librerias\\' . $nombre_libreria;
                 $this->$alias_lib = PK_Coleccion::obt_instancia()->obtener($libreria, $param);
-                seguir('existe la libreria del usuario pero no existe en el controaldor, ahora se creará');
+                seguir('existe la libreria del usuario pero no existe en el controlador, ahora se creará');
             }
         } else {
             // o, buscar en librerias del sistema e incluirlo,

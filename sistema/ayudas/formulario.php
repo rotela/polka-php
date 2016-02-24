@@ -41,8 +41,10 @@ if (!function_exists('obt_errores')) {
 		return $pk->errores();
 	}
 }
+
 if (!function_exists('obt_csrf')) {
-	function obt_csrf(){
+	function obt_csrf()
+	{
 		$csrf_nom = obt_config('aplicacion')->csrf_nom;
 		$token    = obt_coleccion('sistema\librerias\sesion')->obt_datos($csrf_nom);
 		$campo    = '<input type="hidden" name="'.$csrf_nom.'" id="'.$csrf_nom.'" value="'.$token.'">';

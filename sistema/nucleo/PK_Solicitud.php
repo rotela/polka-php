@@ -17,7 +17,7 @@ class PK_Solicitud {
 
     private static function configurar() {
         $ruta = new PK_Rutas();
-        $url = '';
+        $url  = '';
         // Si se encontró ruta
         if ($ruta->hay()) {
             // Si hay cohincidencia en la ruta
@@ -26,7 +26,7 @@ class PK_Solicitud {
             // Si No hay, procesar normalmente la url solicitada
             $url = filter_input(INPUT_GET, 'url', FILTER_SANITIZE_URL);
         }
-        // Si hay uno de los anteriores casos, sustraer sus componentes
+         // Si hay uno de los anteriores casos, sustraer sus componentes
         if (!empty($url)) {
             $url = explode('/', $url);
             $url = array_filter($url);
@@ -35,8 +35,8 @@ class PK_Solicitud {
                 unset($url[0]);
             }
             self::$controlador = array_shift($url);
-            self::$metodo = array_shift($url);
-            self::$argumentos = $url;
+            self::$metodo      = array_shift($url);
+            self::$argumentos  = $url;
         }
     }
 

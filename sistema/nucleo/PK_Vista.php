@@ -22,6 +22,7 @@ class PK_Vista {
     private $variables = array();
     public $sis = FALSE;
     private $arch_js = array();
+    private $arch_css = array();
 
     use PK_Singleton;
 
@@ -102,9 +103,40 @@ class PK_Vista {
         }
     }
 
+    public function env_arc_css($css='',$pub=false) {
+        $aux = 'nohay.css';
+        if (is_array($css)) {
+            if (count($css) > 0) {
+                foreach ($css as $value) {
+                    $archivo = agr_ext($value, '.css');
+                    $url = vista_css($archivo,$pub);
+                    $this->arch_css[] = '<link href="' . $url . '">';
+                }
+            } else {
+                $this->arch_css = $aux;
+            }
+        } else {
+            if (!empty($css)) {
+                $archivo = agr_ext($css, '.css');
+                $url = vista_css($archivo,$pub);
+                $this->arch_css[] = '<link href="' . $url . '">';
+            } else {
+                $this->arch_css[] = $aux;
+            }
+        }
+    }
+
     public function obt_arc_js() {
         if (count($this->arch_js) > 0) {
             return implode("\n", $this->arch_js)."\t\n";
+        } else {
+            return '';
+        }
+    }
+
+    public function obt_arc_css() {
+        if (count($this->arch_css) > 0) {
+            return implode("\n", $this->arch_css)."\t\n";
         } else {
             return '';
         }

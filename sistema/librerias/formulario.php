@@ -2,12 +2,21 @@
 
 namespace sistema\librerias;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 use sistema\nucleo\PK_Controlador;
+/*
+ Formas de utilización:
 
+ $this->formulario->regla('nombres','Nombre/s','requerido|texto');
+ $this->formulario->regla('apellidos','Apellido/s','requerido|texto');
+ $this->formulario->regla('documento','Cedula o RUC','requerido|texto');
+ $this->formulario->regla('celular','Celular','requerido');
+ $this->formulario->regla('email','Email','requerido|validar_email|email');
+ $this->formulario->regla('direccion','Dirección','requerido|texto');
+ $this->formulario->regla('contrasena','Password','requerido|texto');
+ $this->formulario->regla('recontrasena','Repetir Password','requerido|espejo[contrasena]|texto');
+ */
 class formulario {
 
     private $pasa;
@@ -16,9 +25,9 @@ class formulario {
     public $error;
 
     function __construct() {
-        $this->pasa = true;
-        $this->error = array();
-        $this->alias = array();
+        $this->pasa     = true;
+        $this->error    = array();
+        $this->alias    = array();
         $this->entradas = $_POST;
         $this->comprobar_token();
         if (!defined('obt_error'))
@@ -26,25 +35,21 @@ class formulario {
     }
 
     public function __get($propiedad) {
-        if (array_key_exists($propiedad, $this->entradas)) {
-            return $this->entradas[$propiedad];
-        } else {
-            return '';
-        }
+
+        return (array_key_exists($propiedad, $this->entradas)) ? $this->entradas[$propiedad] : '';
+
     }
 
-    public function comprobar_token() {
-        $pk = obt_config('aplicacion');
+    private function comprobar_token() {
+        $pk       = obt_config('aplicacion');
         $csrf_nom = $pk->csrf_nom;
         if ($pk->csrf) {
             if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 if (count($_POST) > 0) {
                     if (!isset($_POST[$csrf_nom])) {
-                        $this->pasa = false;
                         $this->agr_error($csrf_nom, 'Petición corrupta, no existe el campo token ');
                     }
                     if ($_POST[$csrf_nom] !== $_SESSION[$csrf_nom]) {
-                        $this->pasa = false;
                         $this->agr_error($csrf_nom, 'Petición corrupta, los token de sesion y campo no cohinciden');
                     }
                 }
@@ -57,11 +62,7 @@ class formulario {
     }
 
     public function pasa() {
-        if (count($_POST) == 0) {
-            return false;
-        } else {
-            return $this->pasa;
-        }
+        return (count($_POST) == 0) ? false : $this->pasa;
     }
 
     public function error($clave = '') {
@@ -112,7 +113,6 @@ class formulario {
             if ($funcion) {
                 $error = call_user_func($funcion);
                 if (!empty($error)) {
-                    $this->pasa = false;
                     $this->agr_error($campo, $error);
                 }
             }
@@ -124,7 +124,6 @@ class formulario {
         $this->alias[$campo] = $alias;
         if (array_key_exists($campo, $this->entradas)) {
             if (empty($_POST[$campo])) {
-                $this->pasa = false;
                 $this->agr_error($campo, "El campo $alias es requerido");
             }
         } else {
@@ -137,7 +136,6 @@ class formulario {
         if (array_key_exists($campo, $this->entradas)) {
             $email = $_POST[$campo];
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $this->pasa = false;
                 $this->agr_error($campo, "La dirección de correo $email no es válida");
             }
         } else {
@@ -150,7 +148,6 @@ class formulario {
         if (array_key_exists($campo, $this->entradas)) {
             $valor = $_POST[$campo];
             if (!filter_var($valor, FILTER_VALIDATE_INT)) {
-                $this->pasa = false;
                 $this->agr_error($campo, "El campo $alias debe ser de tipo entero (numérico)");
             }
         } else {
@@ -163,7 +160,6 @@ class formulario {
         if (array_key_exists($campo, $this->entradas)) {
             $ip = $_POST[$campo];
             if (!filter_var($ip, FILTER_VALIDATE_IP)) {
-                $this->pasa = false;
                 $this->agr_error($campo, "La dirección de ip $ip no es válida");
             }
         } else {
@@ -176,7 +172,6 @@ class formulario {
         if (array_key_exists($campo, $this->entradas)) {
             $texto = $_POST[$campo];
             if (strlen($texto) < $cant) {
-                $this->pasa = false;
                 $this->agr_error($campo, "El campo $alias debe tener por lo menos $cant caracteres");
             }
         } else {
@@ -189,7 +184,6 @@ class formulario {
         if (array_key_exists($campo, $this->entradas)) {
             $texto = $_POST[$campo];
             if (strlen($texto) > $max) {
-                $this->pasa = false;
                 $this->agr_error($campo, "El campo $alias no debe exceder $max caracteres");
             }
         } else {
@@ -203,7 +197,6 @@ class formulario {
             $texto = $_POST[$campo];
             $espej = $_POST[$esp];
             if ($texto !== $espej) {
-                $this->pasa = false;
                 $this->agr_error($campo, "El campo $alias debe ser igual al campo " . $this->obt_alias($esp));
             }
         } else {
@@ -211,11 +204,14 @@ class formulario {
         }
     }
 
-    private function agr_error($clave = '', $error = '') {
+    public function agr_error($clave = '', $error = '') {
+        $this->pasa = false;
         if (array_key_exists($clave, $this->error)) {
+
             if (empty($this->error[$clave])) {
                 $this->error[$clave] = $error;
             }
+
         } else {
             $this->error[$clave] = $error;
         }
