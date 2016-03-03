@@ -41,45 +41,37 @@ abstract class PK_Servicios extends PK_Controlador {
 
     switch (es_metodo()) {
       case 'POST':
-        if (count($_POST)>0) {
-          $entradas = array_merge($entradas,$_POST);
-        }else{
+          if (count($_POST)>0) {
+            $entradas = array_merge($entradas,$_POST);
+          }else{
+            $otros = (array) json_decode(@file_get_contents('php://input'));
+            if (count($otros) > 0) {
+              $entradas = array_merge($entradas,$otros);;
+            }
+          }
+          break;
+
+      case 'GET':
+          $entradas = array_merge($entradas,$_GET);
+          break;
+
+      case 'PUT':
+          $otros = (array) json_decode(@file_get_contents('php://input'));
+          if (count($otros)<=0) {
+            parse_str(@file_get_contents("php://input"),$entradas);
+          }
+          $entradas = array_merge($entradas,$otros);
+          break;
+
+      default:
           $otros = (array) json_decode(@file_get_contents('php://input'));
           if (count($otros) > 0) {
             $entradas = array_merge($entradas,$otros);;
           }
-        }
-        break;
-
-      case 'GET':
-        $entradas = array_merge($entradas,$_GET);
-        break;
-
-      case 'PUT':
-        parse_str(@file_get_contents("php://input"),$entradas);
-        $entradas = array_merge($entradas,$_GET);
-        break;
-
-      default:
-        $otros = (array) json_decode(@file_get_contents('php://input'));
-        if (count($otros) > 0) {
-          $entradas = array_merge($entradas,$otros);;
-        }
-        break;
+          break;
     }
-    /*
-    if (count($_POST) > 0) {
-    $entradas = array_merge($entradas,$_POST);
-  }
-  if (count($_GET) > 0) {
-  $entradas = array_merge($entradas,$_GET);
-}
-*/
-
-
-
-$this->ayudas('limpiador');
-$this->entradas = sanear($entradas);
+    $this->ayudas('limpiador');
+    $this->entradas = sanear($entradas);
 }
 public function hab_cors(){
   if (isset($_SERVER['HTTP_ORIGIN'])) {
