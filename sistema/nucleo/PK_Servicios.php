@@ -41,47 +41,47 @@ abstract class PK_Servicios extends PK_Controlador {
 
     switch (es_metodo()) {
       case 'POST':
+          if (count($_POST)>0) {
+            $entradas = array_merge($entradas,$_POST);
+          }else{
+            $otros = (array) json_decode(@file_get_contents('php://input'));
+            if (count($otros) > 0) {
+              $entradas = array_merge($entradas,$otros);;
+            }
+          }
+          break;
 
-        if (count($_POST)>0) {
-          # code...
-          $entradas = array_merge($entradas,$_POST);
-        }else{
+      case 'GET':
+          $entradas = array_merge($entradas,$_GET);
+          break;
+
+      case 'PUT':
+
+          parse_str(@file_get_contents("php://input"),$entradas);
+          if (count($entradas) <=0) {
+            $entradas = (array) json_decode(@file_get_contents('php://input'));
+          }
+
+          if (count($entradas)<=0) {
+            $entradas = array_merge($entradas,$_GET);
+          }
+
+          if (count($entradas)<=0) {
+            $entradas = array_merge($entradas,$_POST);
+          }
+
+          $entradas = array_merge($entradas,$entradas);
+          break;
+
+      default:
           $otros = (array) json_decode(@file_get_contents('php://input'));
           if (count($otros) > 0) {
             $entradas = array_merge($entradas,$otros);;
           }
-        }
-        break;
-
-      case 'GET':
-        $entradas = array_merge($entradas,$_GET);
-        break;
-
-      case 'PUT':
-        parse_str(@file_get_contents("php://input"),$entradas);
-        $entradas = array_merge($entradas,$_GET);
-        break;
-
-      default:
-        $otros = (array) json_decode(@file_get_contents('php://input'));
-        if (count($otros) > 0) {
-          $entradas = array_merge($entradas,$otros);;
-        }
-        break;
+          break;
     }
-    /*
-    if (count($_POST) > 0) {
-    $entradas = array_merge($entradas,$_POST);
-  }
-  if (count($_GET) > 0) {
-  $entradas = array_merge($entradas,$_GET);
-}
-*/
-
-
-
-$this->ayudas('limpiador');
-$this->entradas = sanear($entradas);
+    $this->ayudas('limpiador');
+    $this->entradas = sanear($entradas);
 }
 public function hab_cors(){
   if (isset($_SERVER['HTTP_ORIGIN'])) {
@@ -101,27 +101,27 @@ public function hab_cors(){
 public function principal($param='') {
   switch (es_metodo()) {
     case 'GET':
-      $this->_get($param);
-      break;
+    $this->_get($param);
+    break;
 
     case 'POST':
-      // METODO SAVE (ALTA)
-      $this->_post();
-      break;
+    // METODO SAVE (ALTA)
+    $this->_post();
+    break;
 
     case 'PUT':
-      // METODO PUT (MODIFICACION)
-      $this->_put($param);
-      break;
+    // METODO PUT (MODIFICACION)
+    $this->_put($param);
+    break;
 
     case 'DELETE':
-      // METODO DESTROY (BAJA)
-      $this->_delete($param);
-      break;
+    // METODO DESTROY (BAJA)
+    $this->_delete($param);
+    break;
 
     default:
-      return $this->_get($param);
-      break;
+    return $this->_get($param);
+    break;
   }
 }
 
