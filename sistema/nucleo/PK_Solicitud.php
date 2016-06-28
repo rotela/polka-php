@@ -26,17 +26,25 @@ class PK_Solicitud {
             // Si No hay, procesar normalmente la url solicitada
             $url = filter_input(INPUT_GET, 'url', FILTER_SANITIZE_URL);
         }
-         // Si hay uno de los anteriores casos, sustraer sus componentes
+
+        // Si hay uno de los anteriores casos, sustraer sus componentes
+
         if (!empty($url)) {
-            $url = explode('/', $url);
-            $url = array_filter($url);
-            if (is_dir(CONTROLADORES . $url[0])) {
-                self::$sub_carpeta = $url[0] . SD;
-                unset($url[0]);
+            // Se sustraen las subcarpetas si es que exite/n
+            $url = array_filter(explode('/', $url));
+            $cadena = '';
+            for ($i=0; $i < count($url); $i++) {
+              $cadena .= $url[$i] . SD;
+              if (is_dir(CONTROLADORES . $cadena)) {
+                self::$sub_carpeta = $cadena ;
+                unset($url[$i]);
+              }
             }
+
             self::$controlador = array_shift($url);
             self::$metodo      = array_shift($url);
             self::$argumentos  = $url;
+
         }
     }
 
