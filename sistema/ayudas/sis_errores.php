@@ -21,15 +21,20 @@ if (!function_exists('mostrar_error')) {
             'titulo' => $titulo,
             'mensaje' => $mensaje
         );
-        $url = url_base('sistema/vistas/');
-        $css = $url . 'css/';
-        $js = $url . 'js/';
-        $error = array(
-            'css' => $css,
-            'js' => $js,
-            'contenido' => ver_error($capa, $datos, FALSE)
-        );
-        ver_error('index', $error);
+
+        if (es_ajax()) {
+          echo json_encode($datos);
+        }else{
+          $url = url_base('sistema/vistas/');
+          $css = $url . 'css/';
+          $js = $url . 'js/';
+          $error = array(
+              'css' => $css,
+              'js' => $js,
+              'contenido' => ver_error($capa, $datos, FALSE)
+          );
+          ver_error('index', $error);
+        }
     }
 
 }

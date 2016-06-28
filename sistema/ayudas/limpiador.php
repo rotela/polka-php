@@ -26,7 +26,7 @@ if (!function_exists('sanear')) {
             // eliminados etiquetas html y php
             $datos = strip_tags($datos);
             // convertimos todos los caracteres aplicables a entidades html
-            $datos = htmlentities($datos);
+            // $datos = htmlentities($datos);
             $entrada = trim($datos);
         }
         return $entrada;

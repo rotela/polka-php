@@ -20,7 +20,7 @@ class candado {
         $clave      = empty($clave) ? $this->clave : $clave;
         $iv_size    = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
         $encriptado = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $clave, $valor, MCRYPT_MODE_ECB, $iv_size);
-        return base64_encode($encriptado);
+        return (empty($valor)) ? '' : base64_encode($encriptado);
     }
 
     public function abrir($valor = '', $clave = '') {
@@ -28,7 +28,7 @@ class candado {
         $iv_size    = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
         $decriptado = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $clave, base64_decode($valor), MCRYPT_MODE_ECB, $iv_size);
         $decriptado = preg_replace("/[^A-z ÁÉÍÓÚÑáéíóúñ0-9]/i", "", $decriptado);
-        return $decriptado;
+        return (empty($valor)) ? '' : $decriptado;
     }
 
 }

@@ -24,14 +24,19 @@ function url_seg($seg = 0) {
     $segmentos = str_replace($cfg->url_base, '', $url);
     $segmentos = explode('/', $segmentos);
     if (empty($seg)) {
+
         return $segmentos;
+
     } else {
+
         foreach ($segmentos as $key => $value) {
             if (empty($value)) {
                 unset($segmentos[$key]);
             }
         }
+
         $vacio = '';
+
         if (count($segmentos) >= $seg) {
             if (isset($segmentos[$seg])) {
                 return $segmentos[$seg];
@@ -99,8 +104,6 @@ if(!function_exists('url_ctrl_solo')){
         if (empty($value)) {
             return empty($sub_carpeta) ? $ctrl : $sub_carpeta . $ctrl;
         } else {
-            //$suburl = (url_seg(2)) ? url_seg(2) . '/' : '';
-            //return empty($sub_carpeta) ? $ctrl.'/v/'.$value : url_base($sub_carpeta . $ctrl . '/n/' . $value);
             return empty($sub_carpeta) ? $ctrl.'/'.$value : $sub_carpeta . $ctrl . $value;
         }
     }
