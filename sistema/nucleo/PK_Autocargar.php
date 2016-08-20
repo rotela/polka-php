@@ -30,6 +30,9 @@ include NUCLEO . 'PK_Globales.php';
  * Cargando el seguidor de ejecución
  */
 include SIS_AYUDAS . 'sis_seguimiento.php';
+
+include SIS_AYUDAS . 'recursos.php';
+
 /**
  * Carga las funciones de manejo de archivo
  */

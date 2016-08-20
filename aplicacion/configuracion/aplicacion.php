@@ -10,8 +10,6 @@ $config['url_base'] = 'http://localhost/polka-php/';
 $config['ctr_princ'] = 'bienvenido';
 // Método principal que se dispará al invocar el controlador
 // anterior indicado
-// La configuración mencionada es lo mismo que ingresar en el
-// navegador la url: http://localhost/paypar/bienvenido/principal
 $config['mth_princ'] = 'principal';
 // Duración de sesion en segundos (1800/30m, 3600/1h, 7200/2h)
 $config['ses_tiempo'] = 7200;

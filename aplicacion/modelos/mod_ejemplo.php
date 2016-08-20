@@ -22,5 +22,5 @@ class Mod_ejemplo extends PK_Modelo {
 
 }
 
-/* Final de archivo mod_autorizaciones.php */
-/* Ubicación: ./aplicacion/modelos/mod_autorizaciones.php */
+/* Final de archivo mod_ejemplo.php */
+/* Ubicación: ./aplicacion/modelos/mod_ejemplo.php */

@@ -67,7 +67,6 @@ class PK_Rutas {
     public function obt_controlador() {
         $cadena = $this->url_destino;
         $buscar = "/";
-
         $resultado = strpos($cadena, $buscar);
         if ($resultado !== FALSE) {
             $url_array = explode('/', $cadena);
