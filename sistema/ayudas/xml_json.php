@@ -1,17 +1,21 @@
 <?php
 
+obt_ayuda('arreglos');
+
 function obt_xml($result,$codigo=200) {
+    $result = convertir_utf8($result);
     mostrarxmljson($result,$tipo='xml',$codigo);
 }
 
 function obt_json($result,$codigo=200) {
+    $result = convertir_utf8($result);
     mostrarxmljson($result,$tipo='json',$codigo);
 }
 
 function mostrarxmljson($result,$tipo='xml',$codigo=200) {
     env_cabecera($codigo, $tipo);
     if (strtolower($tipo) == "json") {
-        echo json_encode($result);
+        echo json_encode($result,JSON_NUMERIC_CHECK);
     } else if (strtolower($tipo) == "xml") {
         echo '<?xml version="1.0"?>';
         echo "<resultados>";
@@ -19,12 +23,12 @@ function mostrarxmljson($result,$tipo='xml',$codigo=200) {
         xmlExplorador($xml_array, "registroo");
         echo "</resultados>";
     } else {
-        echo json_encode($result);
+        echo json_encode($result,JSON_NUMERIC_CHECK);
     }
 }
 
 function xmlExplorador($xml_array, $parent) {
-     foreach($xml_array as $tag => $value) {
+    foreach($xml_array as $tag => $value) {
         if ((int)$tag === $tag) {
             $tag = mb_substr($parent, 0, -1);
         }

@@ -34,3 +34,7 @@ function eco_ln($texto='')
 {
 	echo "$texto<br>\n";
 }
+function println($texto='')
+{
+	echo "$texto<br>\n";
+}

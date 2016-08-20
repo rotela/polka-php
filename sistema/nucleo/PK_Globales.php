@@ -11,6 +11,7 @@ define('SIS_VISTAS', SISTEMA . 'vistas' . SD);
 define('APLICACION', 'aplicacion' . SD);
 define('AYUDAS', APLICACION . 'ayudas' . SD);
 define('CONTROLADORES', APLICACION . 'controladores' . SD);
+define('VISTAS', APLICACION . 'www' . SD);
 define('LIBRERIAS', APLICACION . 'librerias' . SD);
 define('MODELOS', APLICACION . 'modelos' . SD);
 define('CONFIGURACION', APLICACION . 'configuracion' . SD);

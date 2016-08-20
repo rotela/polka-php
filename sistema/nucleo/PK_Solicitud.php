@@ -46,6 +46,7 @@ class PK_Solicitud {
             self::$argumentos  = $url;
 
         }
+
     }
 
     public static function obt_seccion() {

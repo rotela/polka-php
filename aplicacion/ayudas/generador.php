@@ -1,5 +1,6 @@
 <?php
 /**
+ * Este es un ejemplo de archivo de ayuda propio del usuario
  * text_generador(par 1, par 2)
  * Parámetro 1: $can
  * int = Entero que representa la cantidad de caracteres

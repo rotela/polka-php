@@ -18,6 +18,7 @@ if (!function_exists('filtrar_arreglo')) {
     }
 
 }
+
 if (!function_exists('filtrar_arreglo_con')) {
 
     function filtrar_arreglo_con($filtros = array(), $arreglo) {
@@ -25,10 +26,12 @@ if (!function_exists('filtrar_arreglo_con')) {
     }
 
 }
+
 if (!function_exists('obt_arreglo')) {
 
     function obt_arreglo($filtros = array(), $arreglo) {
         $nuevo = array();
+
         if (count($filtros) > 0) {
             foreach ($filtros as $value) {
                 if (array_key_exists($value, $arreglo)) {
@@ -41,4 +44,37 @@ if (!function_exists('obt_arreglo')) {
         }
     }
 
+}
+if (!function_exists('convertir_utf8')) {
+    function convertir_utf8($array)
+    {
+        array_walk_recursive($array, function(&$item, $key){
+            if(!mb_detect_encoding($item, 'utf-8', true)){
+                $item = (is_numeric($item)) ? $item : utf8_encode($item);
+            }
+        });
+
+        return $array;
+    }
+}
+if (!function_exists('objeto_array')){
+    function objeto_array($d) {
+        if (is_object($d)) {
+            $d = get_object_vars($d);
+        }
+        if (is_array($d)) {
+            return array_map(__FUNCTION__, $d);
+        } else {
+            return $d;
+        }
+    }
+}
+if (!function_exists('array_objeto')) {
+    function array_objeto($d) {
+        if (is_array($d)) {
+            return (object) array_map(__FUNCTION__, $d);
+        } else {
+            return $d;
+        }
+    }
 }
