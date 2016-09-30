@@ -6,8 +6,8 @@ if (!defined('SISTEMA')) {
     exit('No se permite el acceso directo al script.');
 }
 
-class formux {
-
+class formux
+{
     public $formulario;
     public $etiquetas;
     public $campos;
@@ -15,78 +15,92 @@ class formux {
     public $lineas = array();
     public $codigo = '';
     public $saltoString = '<br>';
-    public $sinAperturaForm = FALSE; //establecer TRUE si NO desea abrir el form (<form>)
-    public $sinCierreForm = TRUE; //establecer TRUE si NO desea cerrar el form (</form>)
-    public $saltoEntrada = FALSE; //estables TRUE si deseas que los inputs tenga salto de linea tipo <br />
-    public $hayEtiqueta = FALSE;
-    public $hayCampo = FALSE;
+    public $sinAperturaForm = false; //establecer TRUE si NO desea abrir el form (<form>)
+    public $sinCierreForm = true; //establecer TRUE si NO desea cerrar el form (</form>)
+    public $saltoEntrada = false; //estables TRUE si deseas que los inputs tenga salto de linea tipo <br />
+    public $hayEtiqueta = false;
+    public $hayCampo = false;
 
-    function __construct($frNombre = 'MiFormulario', $frcAcion = '#', $frMetodo = 'POST', $apertura = FALSE) {
-        if ($apertura)
+    public function __construct($frNombre = 'MiFormulario', $frcAcion = '#', $frMetodo = 'POST', $apertura = false)
+    {
+        if ($apertura) {
             $this->formulario($frNombre = 'MiFormulario', $frAccion = '#', $frMetodo = 'POST');
+        }
     }
 
-    function formulario($frNombre = 'MiFormulario', $frAccion = '#', $frMetodo = 'POST') {
-        $this->lineas[] = '<form name="' . $frNombre . '" action="' . $frAccion . '" method="' . $frMetodo . '">' . "\n";
+    public function formulario($frNombre = 'MiFormulario', $frAccion = '#', $frMetodo = 'POST')
+    {
+        $this->lineas[] = '<form name="'.$frNombre.'" action="'.$frAccion.'" method="'.$frMetodo.'">'."\n";
     }
 
-    function agr_string($param) {
+    public function agr_string($param)
+    {
         $this->lineas[] = $param;
     }
 
-    function agr_enviar($nombre = 'enviar', $valor = 'Enviar') {
-        $this->lineas[] = '<input type="submit" value="' . $valor . '" name="' . $nombre . '" />' . "\n";
+    public function agr_enviar($nombre = 'enviar', $valor = 'Enviar')
+    {
+        $this->lineas[] = '<input type="submit" value="'.$valor.'" name="'.$nombre.'" />'."\n";
     }
 
-    function agr_etiqueta($etiEtiqueta = 'Etiqueta', $etiPara = '', $atributos = array()) {
+    public function agr_etiqueta($etiEtiqueta = 'Etiqueta', $etiPara = '', $atributos = array())
+    {
         $etiqueta = '<label ';
         if (count($atributos) > 0) {
             foreach ($atributos as $key => $value) {
-                $etiqueta .= $key . '="' . $value . '" ';
+                $etiqueta .= $key.'="'.$value.'" ';
             }
         }
         if (empty($etiPara)) {
-            $etiqueta .= 'for="' . $etiEtiqueta . '" >' . $etiEtiqueta . '</label>' . "\n";
+            $etiqueta .= 'for="'.$etiEtiqueta.'" >'.$etiEtiqueta.'</label>'."\n";
         } else {
-            $etiqueta .= 'for="' . $etiPara . '" >' . $etiEtiqueta . '</label>' . "\n";
+            $etiqueta .= 'for="'.$etiPara.'" >'.$etiEtiqueta.'</label>'."\n";
         }
         $this->etiquetas[] = $etiqueta;
         $this->lineas[] = $etiqueta;
-        $this->hayEtiqueta = TRUE;
+        $this->hayEtiqueta = true;
     }
 
-    function agr_campo($camNombre = 'MiCampo', $camId = '', $valor = '', $tipo = 'text', $size = 50) {
+    public function agr_campo($camNombre = 'MiCampo', $camId = '', $valor = '', $tipo = 'text', $size = 50)
+    {
         $campo = '';
         $salto = '';
-        if (empty($tipo))
+        if (empty($tipo)) {
             $tipo = 'text';
-        if ($this->saltoEntrada)
+        }
+        if ($this->saltoEntrada) {
             $salto = $this->saltoString;
+        }
         if (empty($camId)) {
-            $campo = '<input type="' . $tipo . '" id="' . $camNombre . '" name="' . $camNombre . '" value="' . $valor . '" size="' . $size . '" />' . $salto . "\n";
+            $campo = '<input type="'.$tipo.'" id="'.$camNombre.'" name="'.$camNombre.'" value="'.$valor.'" size="'.$size.'" />'.$salto."\n";
         } else {
-            $campo = '<input type="' . $tipo . '" id="' . $camId . '" name="' . $camNombre . '" value="' . $valor . '" size="' . $size . '" />' . $salto . "\n";
+            $campo = '<input type="'.$tipo.'" id="'.$camId.'" name="'.$camNombre.'" value="'.$valor.'" size="'.$size.'" />'.$salto."\n";
         }
         $this->campos[] = $campo;
         $this->lineas[] = $campo;
-        $this->hayCampo = TRUE;
+        $this->hayCampo = true;
     }
 
-    function agr_area($areaNombre = 'MiArea', $valor = '', $rows = 4, $cols = 20) {
+    public function agr_area($areaNombre = 'MiArea', $valor = '', $rows = 4, $cols = 20)
+    {
         $salto = '';
-        if ($this->saltoEntrada)
+        if ($this->saltoEntrada) {
             $salto = $this->saltoString;
-        $area = '<textarea id="' . $areaNombre . '" name="' . $areaNombre . '" rows="' . $rows . '" cols="' . $cols . '">' . $valor . '</textarea>' . $salto . "\n";
+        }
+        $area = '<textarea id="'.$areaNombre.'" name="'.$areaNombre.'" rows="'.$rows.'" cols="'.$cols.'">'.$valor.'</textarea>'.$salto."\n";
         $this->areas[] = $area;
         $this->lineas[] = $area;
     }
 
-    function agr_selector($nombre, $opciones, $id = '', $seleccion = '', $atributos = array()) {
+    public function agr_selector($nombre, $opciones, $id = '', $seleccion = '', $atributos = array())
+    {
         $salto = '';
-        if ($this->saltoEntrada)
+        if ($this->saltoEntrada) {
             $salto = $this->saltoString;
-        if (empty($id))
+        }
+        if (empty($id)) {
             $id = $nombre;
+        }
         if (!empty($nombre)) {
             if (!empty($opciones)) {
                 foreach ($opciones as $valor) {
@@ -95,28 +109,28 @@ class formux {
                     }
                     $filas[] = array(
                         'valor' => $x[0],
-                        'etiqueta' => $x[1]);
+                        'etiqueta' => $x[1], );
                     unset($x);
                 }
                 $conca = '';
                 $select = array();
-                $txt = '<select name="' . $nombre . '" id="' . $id . '" ';
+                $txt = '<select name="'.$nombre.'" id="'.$id.'" ';
                 if (count($atributos) > 0) {
                     foreach ($atributos as $key => $value) {
-                        $txt .= $key . '="' . $value . '" ';
+                        $txt .= $key.'="'.$value.'" ';
                     }
                 }
-                $txt .= '>' . "\n";
+                $txt .= '>'."\n";
                 $select[] = $txt;
 
                 foreach ($filas as $value) {
                     if ($seleccion == $value['valor']) {
-                        $select[] = '<option value="' . $value['valor'] . '" selected="selected">' . $value['etiqueta'] . '</option>' . "\n";
+                        $select[] = '<option value="'.$value['valor'].'" selected="selected">'.$value['etiqueta'].'</option>'."\n";
                     } else {
-                        $select[] = '<option value="' . $value['valor'] . '">' . $value['etiqueta'] . '</option>' . "\n";
+                        $select[] = '<option value="'.$value['valor'].'">'.$value['etiqueta'].'</option>'."\n";
                     }
                 }
-                $select[] = '</select>' . $salto . "\n";
+                $select[] = '</select>'.$salto."\n";
                 foreach ($select as $value) {
                     $conca .= $value;
                 }
@@ -125,9 +139,11 @@ class formux {
         }
     }
 
-    function generar($imprimir = FALSE) {
-        if (!$this->sinCierreForm)
-            $this->lineas[] = '</form>' . "\n"; //última linea de codigo del form
+    public function generar($imprimir = false)
+    {
+        if (!$this->sinCierreForm) {
+            $this->lineas[] = '</form>'."\n";
+        } //última linea de codigo del form
 
         foreach ($this->lineas as $lineas) {
             $this->codigo .= $lineas;
@@ -139,11 +155,11 @@ class formux {
         }
     }
 
-    function limpiar_cache() {
+    public function limpiar_cache()
+    {
         $this->codigo = '';
         $this->lineas = array();
     }
-
 }
 
 // FIN formux Class

@@ -1,18 +1,17 @@
 <?php
 /**
- * Mysqldump File Doc Comment
+ * Mysqldump File Doc Comment.
  *
  * PHP version 5
  *
  * @category Library
- * @package  Ifsnop\Mysqldump
+ *
  * @author   Michael J. Calkins <clouddueling@github.com>
  * @author   Diego Torres <ifsnop@github.com>
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link     https://github.com/ifsnop/mysqldump-php
  *
+ * @link     https://github.com/ifsnop/mysqldump-php
  */
-
 namespace sistema\librerias;
 
 if (!defined('SISTEMA')) {
@@ -24,19 +23,18 @@ use PDO;
 use PDOException;
 
 /**
- * Mysqldump Class Doc Comment
+ * Mysqldump Class Doc Comment.
  *
  * @category Library
- * @package  Ifsnop\Mysqldump
+ *
  * @author   Michael J. Calkins <clouddueling@github.com>
  * @author   Diego Torres <ifsnop@github.com>
  * @license  http://www.gnu.org/copyleft/gpl.html GNU General Public License
- * @link     https://github.com/ifsnop/mysqldump-php
  *
+ * @link     https://github.com/ifsnop/mysqldump-php
  */
 class mysqldump
 {
-
     // Same as mysqldump
     const MAXLINESIZE = 1000000;
 
@@ -69,18 +67,16 @@ class mysqldump
      * Constructor of Mysqldump. Note that in the case of an SQLite database
      * connection, the filename must be in the $db parameter.
      *
-     * @param string $db         Database name
-     * @param string $user       SQL account username
-     * @param string $pass       SQL account password
-     * @param string $host       SQL server to connect to
-     * @param string $type       SQL database type
+     * @param string $db           Database name
+     * @param string $user         SQL account username
+     * @param string $pass         SQL account password
+     * @param string $host         SQL server to connect to
+     * @param string $type         SQL database type
      * @param array  $dumpSettings SQL database settings
      * @param array  $pdoSettings  PDO configured attributes
-     *
-     * @return null
      */
-    public function __construct(){
-
+    public function __construct()
+    {
     }
     public function config(
         $db = '',
@@ -112,13 +108,13 @@ class mysqldump
             'skip-tz-utz' => false,
             'no-autocommit' => true,
             /* deprecated */
-            'disable-foreign-keys-check' => true
+            'disable-foreign-keys-check' => true,
         );
 
         $pdoSettingsDefault = array(PDO::ATTR_PERSISTENT => true,
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8",
-            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false
+            PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8',
+            PDO::MYSQL_ATTR_USE_BUFFERED_QUERY => false,
         );
 
         /// linea agregada
@@ -139,22 +135,19 @@ class mysqldump
         }
 
         // fin linea agreagda
-        //
-        //
+
         //$this->dbType = strtolower($type);
         $this->dbType = strtolower($this->type);
         $this->pdoSettings = self::array_replace_recursive($pdoSettingsDefault, $pdoSettings);
         $this->dumpSettings = self::array_replace_recursive($dumpSettingsDefault, $dumpSettings);
 
         $diff = array_diff(array_keys($this->dumpSettings), array_keys($dumpSettingsDefault));
-        if (count($diff)>0) {
-            throw new Exception("Unexpected value in dumpSettings: (" . implode(",", $diff) . ")");
+        if (count($diff) > 0) {
+            throw new Exception('Unexpected value in dumpSettings: ('.implode(',', $diff).')');
         }
 
         // Create a new compressManager to manage compressed output
         $this->compressManager = CompressManagerFactory::create($this->dumpSettings['compress']);
-
-
     }
     public function iniciar()
     {
@@ -167,16 +160,15 @@ class mysqldump
     public function getFileName()
     {
         return $this->fileName;
-
     }
     /**
      * Custom array_replace_recursive to be used if PHP < 5.3
-     * Replaces elements from passed arrays into the first array recursively
+     * Replaces elements from passed arrays into the first array recursively.
      *
      * @param array $array1 The array in which elements are replaced
      * @param array $array2 The array from which elements will be extracted
      *
-     * @return array Returns an array, or NULL if an error occurs.
+     * @return array Returns an array, or NULL if an error occurs
      */
     public static function array_replace_recursive($array1, $array2)
     {
@@ -191,13 +183,12 @@ class mysqldump
                 $array1[$key] = $value;
             }
         }
+
         return $array1;
     }
 
     /**
-     * Connect with PDO
-     *
-     * @return null
+     * Connect with PDO.
      */
     private function connect()
     {
@@ -205,29 +196,29 @@ class mysqldump
         try {
             switch ($this->dbType) {
                 case 'sqlite':
-                    $this->dbHandler = new PDO("sqlite:" . $this->db, null, null, $this->pdoSettings);
+                    $this->dbHandler = new PDO('sqlite:'.$this->db, null, null, $this->pdoSettings);
                     break;
                 case 'mysql':
                 case 'pgsql':
                 case 'dblib':
                     $this->dbHandler = new PDO(
-                        $this->dbType . ":host=" .
-                        $this->host . ";dbname=" . $this->db,
+                        $this->dbType.':host='.
+                        $this->host.';dbname='.$this->db,
                         $this->user,
                         $this->pass,
                         $this->pdoSettings
                     );
                     // Fix for always-unicode output
-                    $this->dbHandler->exec("SET NAMES utf8");
+                    $this->dbHandler->exec('SET NAMES utf8');
                     // Store server version
                     $this->version = $this->dbHandler->getAttribute(PDO::ATTR_SERVER_VERSION);
                     break;
                 default:
-                    throw new Exception("Unsupported database type (" . $this->dbType . ")");
+                    throw new Exception('Unsupported database type ('.$this->dbType.')');
             }
         } catch (PDOException $e) {
             throw new Exception(
-                "Connection to " . $this->dbType . " failed with message: " .
+                'Connection to '.$this->dbType.' failed with message: '.
                 $e->getMessage()
             );
         }
@@ -237,10 +228,9 @@ class mysqldump
     }
 
     /**
-     * Main call
+     * Main call.
      *
-     * @param string $filename  Name of file to write sql dump to
-     * @return null
+     * @param string $filename Name of file to write sql dump to
      */
     public function start($filename = '')
     {
@@ -250,7 +240,7 @@ class mysqldump
         }
         // We must set a name to continue
         if (empty($this->fileName)) {
-            throw new Exception("Output file name is not set");
+            throw new Exception('Output file name is not set');
         }
 
         // Connect to database
@@ -291,8 +281,8 @@ class mysqldump
         // that means that some tables or views weren't found.
         // Give proper error and exit.
         if (0 < count($this->dumpSettings['include-tables'])) {
-            $name = implode(",", $this->dumpSettings['include-tables']);
-            throw new Exception("Table or View (" . $name . ") not found in database");
+            $name = implode(',', $this->dumpSettings['include-tables']);
+            throw new Exception('Table or View ('.$name.') not found in database');
         }
 
         $this->exportTables();
@@ -310,35 +300,35 @@ class mysqldump
     }
 
     /**
-     * Returns header for dump file
+     * Returns header for dump file.
      *
      * @return string
      */
     private function getDumpFileHeader()
     {
         // Some info about software, source and time
-        $header = "-- mysqldump-php https://github.com/ifsnop/mysqldump-php" . PHP_EOL .
-                "--" . PHP_EOL .
-                "-- Host: {$this->host}\tDatabase: {$this->db}" . PHP_EOL .
-                "-- ------------------------------------------------------" . PHP_EOL;
+        $header = '-- mysqldump-php https://github.com/ifsnop/mysqldump-php'.PHP_EOL.
+                '--'.PHP_EOL.
+                "-- Host: {$this->host}\tDatabase: {$this->db}".PHP_EOL.
+                '-- ------------------------------------------------------'.PHP_EOL;
 
         if (!empty($this->version)) {
-            $header .= "-- Server version \t" . $this->version . PHP_EOL;
+            $header .= "-- Server version \t".$this->version.PHP_EOL;
         }
 
-        $header .= "-- Date: " . date('r') . PHP_EOL . PHP_EOL;
+        $header .= '-- Date: '.date('r').PHP_EOL.PHP_EOL;
 
         return $header;
     }
 
     /**
-     * Returns footer for dump file
+     * Returns footer for dump file.
      *
      * @return string
      */
     private function getDumpFileFooter()
     {
-        $footer = "-- Dump completed on: " . date('r') . PHP_EOL;
+        $footer = '-- Dump completed on: '.date('r').PHP_EOL;
 
         return $footer;
     }
@@ -346,8 +336,6 @@ class mysqldump
     /**
      * Reads table and views names from database.
      * Fills $this->tables array so they will be dumped later.
-     *
-     * @return null
      */
     private function getDatabaseStructure()
     {
@@ -400,9 +388,7 @@ class mysqldump
     }
 
     /**
-     * Exports all the tables selected from database
-     *
-     * @return null
+     * Exports all the tables selected from database.
      */
     private function exportTables()
     {
@@ -419,9 +405,7 @@ class mysqldump
     }
 
     /**
-     * Exports all the views found in database
-     *
-     * @return null
+     * Exports all the views found in database.
      */
     private function exportViews()
     {
@@ -437,9 +421,7 @@ class mysqldump
     }
 
     /**
-     * Exports all the triggers found in database
-     *
-     * @return null
+     * Exports all the triggers found in database.
      */
     private function exportTriggers()
     {
@@ -450,18 +432,18 @@ class mysqldump
     }
 
     /**
-     * Table structure extractor
+     * Table structure extractor.
      *
      * @todo move specific mysql code to typeAdapter
-     * @param string $tableName  Name of table to export
-     * @return null
+     *
+     * @param string $tableName Name of table to export
      */
     private function getTableStructure($tableName)
     {
         if (!$this->dumpSettings['no-create-info']) {
-            $ret = "--" . PHP_EOL .
-                "-- Table structure for table `$tableName`" . PHP_EOL .
-                "--" . PHP_EOL . PHP_EOL;
+            $ret = '--'.PHP_EOL.
+                "-- Table structure for table `$tableName`".PHP_EOL.
+                '--'.PHP_EOL.PHP_EOL;
             $stmt = $this->typeAdapter->show_create_table($tableName);
             foreach ($this->dbHandler->query($stmt) as $r) {
                 $this->compressManager->write($ret);
@@ -483,30 +465,31 @@ class mysqldump
         );
         $columns->setFetchMode(PDO::FETCH_ASSOC);
 
-        foreach($columns as $key => $col) {
+        foreach ($columns as $key => $col) {
             $types = $this->typeAdapter->parseColumnType($col);
             $columnTypes[$col['Field']] = array(
-                'is_numeric'=> $types['is_numeric'],
+                'is_numeric' => $types['is_numeric'],
                 'is_blob' => $types['is_blob'],
-                'type' => $types['type']
+                'type' => $types['type'],
             );
         }
         $this->tableColumnTypes[$tableName] = $columnTypes;
+
         return;
     }
 
     /**
-     * View structure extractor
+     * View structure extractor.
      *
      * @todo move mysql specific code to typeAdapter
-     * @param string $viewName  Name of view to export
-     * @return null
+     *
+     * @param string $viewName Name of view to export
      */
     private function getViewStructure($viewName)
     {
-        $ret = "--" . PHP_EOL .
-            "-- Table structure for view `${viewName}`" . PHP_EOL .
-            "--" . PHP_EOL . PHP_EOL;
+        $ret = '--'.PHP_EOL.
+            "-- Table structure for view `${viewName}`".PHP_EOL.
+            '--'.PHP_EOL.PHP_EOL;
         $this->compressManager->write($ret);
         $stmt = $this->typeAdapter->show_create_view($viewName);
         foreach ($this->dbHandler->query($stmt) as $r) {
@@ -523,10 +506,9 @@ class mysqldump
     }
 
     /**
-     * Trigger structure extractor
+     * Trigger structure extractor.
      *
-     * @param string $triggerName  Name of trigger to export
-     * @return null
+     * @param string $triggerName Name of trigger to export
      */
     private function getTriggerStructure($triggerName)
     {
@@ -540,17 +522,16 @@ class mysqldump
             $this->compressManager->write(
                 $this->typeAdapter->create_trigger($r)
             );
+
             return;
         }
-
     }
 
-
     /**
-     * Escape values with quotes when needed
+     * Escape values with quotes when needed.
      *
      * @param string $tableName Name of table which contains rows
-     * @param array $row Associative array of column names and values to be quoted
+     * @param array  $row       Associative array of column names and values to be quoted
      *
      * @return string
      */
@@ -560,7 +541,7 @@ class mysqldump
         $columnTypes = $this->tableColumnTypes[$tableName];
         foreach ($row as $colName => $colValue) {
             if (is_null($colValue)) {
-                $ret[] = "NULL";
+                $ret[] = 'NULL';
             } elseif ($this->dumpSettings['hex-blob'] && $columnTypes[$colName]['is_blob']) {
                 if ($columnTypes[$colName]['type'] == 'bit' || !empty($colValue)) {
                     $ret[] = "0x${colValue}";
@@ -573,15 +554,14 @@ class mysqldump
                 $ret[] = $this->dbHandler->quote($colValue);
             }
         }
+
         return $ret;
     }
 
     /**
-     * Table rows extractor
+     * Table rows extractor.
      *
-     * @param string $tableName  Name of table to export
-     *
-     * @return null
+     * @param string $tableName Name of table to export
      */
     private function listValues($tableName)
     {
@@ -603,40 +583,38 @@ class mysqldump
             $vals = $this->escape($tableName, $row);
             if ($onlyOnce || !$this->dumpSettings['extended-insert']) {
                 $lineSize += $this->compressManager->write(
-                    "INSERT INTO `$tableName` VALUES (" . implode(",", $vals) . ")"
+                    "INSERT INTO `$tableName` VALUES (".implode(',', $vals).')'
                 );
                 $onlyOnce = false;
             } else {
-                $lineSize += $this->compressManager->write(",(" . implode(",", $vals) . ")");
+                $lineSize += $this->compressManager->write(',('.implode(',', $vals).')');
             }
             if (($lineSize > self::MAXLINESIZE) ||
                     !$this->dumpSettings['extended-insert']) {
                 $onlyOnce = true;
-                $lineSize = $this->compressManager->write(";" . PHP_EOL);
+                $lineSize = $this->compressManager->write(';'.PHP_EOL);
             }
         }
         $resultSet->closeCursor();
 
         if (!$onlyOnce) {
-            $this->compressManager->write(";" . PHP_EOL);
+            $this->compressManager->write(';'.PHP_EOL);
         }
 
         $this->endListValues($tableName);
     }
 
     /**
-     * Table rows extractor, append information prior to dump
+     * Table rows extractor, append information prior to dump.
      *
-     * @param string $tableName  Name of table to export
-     *
-     * @return null
+     * @param string $tableName Name of table to export
      */
-    function prepareListValues($tableName)
+    public function prepareListValues($tableName)
     {
         $this->compressManager->write(
-            "--" . PHP_EOL .
-            "-- Dumping data for table `$tableName`" .  PHP_EOL .
-            "--" . PHP_EOL . PHP_EOL
+            '--'.PHP_EOL.
+            "-- Dumping data for table `$tableName`".PHP_EOL.
+            '--'.PHP_EOL.PHP_EOL
         );
 
         if ($this->dumpSettings['single-transaction']) {
@@ -670,13 +648,11 @@ class mysqldump
     }
 
     /**
-     * Table rows extractor, close locks and commits after dump
+     * Table rows extractor, close locks and commits after dump.
      *
-     * @param string $tableName  Name of table to export
-     *
-     * @return null
+     * @param string $tableName Name of table to export
      */
-    function endListValues($tableName)
+    public function endListValues($tableName)
     {
         if ($this->dumpSettings['disable-keys']) {
             $this->compressManager->write(
@@ -711,45 +687,45 @@ class mysqldump
     }
 
     /**
-     * Build SQL List of all columns on current table
+     * Build SQL List of all columns on current table.
      *
-     * @param string $tableName  Name of table to get columns
+     * @param string $tableName Name of table to get columns
      *
      * @return string SQL sentence with columns
      */
-    function getColumnStmt($tableName)
+    public function getColumnStmt($tableName)
     {
         $colStmt = array();
-        foreach($this->tableColumnTypes[$tableName] as $colName => $colType) {
+        foreach ($this->tableColumnTypes[$tableName] as $colName => $colType) {
             if ($colType['type'] == 'bit' && $this->dumpSettings['hex-blob']) {
                 $colStmt[] = "LPAD(HEX(`${colName}`),2,'0') AS `${colName}`";
-            } else if ($colType['is_blob'] && $this->dumpSettings['hex-blob']) {
+            } elseif ($colType['is_blob'] && $this->dumpSettings['hex-blob']) {
                 $colStmt[] = "HEX(`${colName}`) AS `${colName}`";
             } else {
                 $colStmt[] = "`${colName}`";
             }
         }
-        $colStmt = implode($colStmt, ",");
+        $colStmt = implode($colStmt, ',');
 
         return $colStmt;
     }
 }
 
 /**
- * Enum with all available compression methods
- *
+ * Enum with all available compression methods.
  */
 abstract class CompressMethod
 {
     public static $enums = array(
-        "None",
-        "Gzip",
-        "Bzip2"
+        'None',
+        'Gzip',
+        'Bzip2',
     );
 
     /**
      * @param string $c
-     * @return boolean
+     *
+     * @return bool
      */
     public static function isValid($c)
     {
@@ -761,18 +737,19 @@ abstract class CompressManagerFactory
 {
     /**
      * @param string $c
+     *
      * @return CompressBzip2|CompressGzip|CompressNone
      */
     public static function create($c)
     {
         $c = ucfirst(strtolower($c));
-        if (! CompressMethod::isValid($c)) {
+        if (!CompressMethod::isValid($c)) {
             throw new Exception("Compression method ($c) is not defined yet");
         }
 
-        $method =  __NAMESPACE__ . "\\" . "Compress" . $c;
+        $method = __NAMESPACE__.'\\'.'Compress'.$c;
 
-        return new $method;
+        return new $method();
     }
 }
 
@@ -782,16 +759,16 @@ class CompressBzip2 extends CompressManagerFactory
 
     public function __construct()
     {
-        if (! function_exists("bzopen")) {
-            throw new Exception("Compression is enabled, but bzip2 lib is not installed or configured properly");
+        if (!function_exists('bzopen')) {
+            throw new Exception('Compression is enabled, but bzip2 lib is not installed or configured properly');
         }
     }
 
     public function open($filename)
     {
-        $this->fileHandler = bzopen($filename . ".bz2", "w");
+        $this->fileHandler = bzopen($filename.'.bz2', 'w');
         if (false === $this->fileHandler) {
-            throw new Exception("Output file is not writable");
+            throw new Exception('Output file is not writable');
         }
 
         return true;
@@ -800,8 +777,9 @@ class CompressBzip2 extends CompressManagerFactory
     public function write($str)
     {
         if (false === ($bytesWritten = bzwrite($this->fileHandler, $str))) {
-            throw new Exception("Writting to file failed! Probably, there is no more free space left?");
+            throw new Exception('Writting to file failed! Probably, there is no more free space left?');
         }
+
         return $bytesWritten;
     }
 
@@ -817,16 +795,16 @@ class CompressGzip extends CompressManagerFactory
 
     public function __construct()
     {
-        if (! function_exists("gzopen")) {
-            throw new Exception("Compression is enabled, but gzip lib is not installed or configured properly");
+        if (!function_exists('gzopen')) {
+            throw new Exception('Compression is enabled, but gzip lib is not installed or configured properly');
         }
     }
 
     public function open($filename)
     {
-        $this->fileHandler = gzopen($filename . ".gz", "wb");
+        $this->fileHandler = gzopen($filename.'.gz', 'wb');
         if (false === $this->fileHandler) {
-            throw new Exception("Output file is not writable");
+            throw new Exception('Output file is not writable');
         }
 
         return true;
@@ -835,8 +813,9 @@ class CompressGzip extends CompressManagerFactory
     public function write($str)
     {
         if (false === ($bytesWritten = gzwrite($this->fileHandler, $str))) {
-            throw new Exception("Writting to file failed! Probably, there is no more free space left?");
+            throw new Exception('Writting to file failed! Probably, there is no more free space left?');
         }
+
         return $bytesWritten;
     }
 
@@ -852,9 +831,9 @@ class CompressNone extends CompressManagerFactory
 
     public function open($filename)
     {
-        $this->fileHandler = fopen($filename, "wb");
+        $this->fileHandler = fopen($filename, 'wb');
         if (false === $this->fileHandler) {
-            throw new Exception("Output file is not writable");
+            throw new Exception('Output file is not writable');
         }
 
         return true;
@@ -863,8 +842,9 @@ class CompressNone extends CompressManagerFactory
     public function write($str)
     {
         if (false === ($bytesWritten = fwrite($this->fileHandler, $str))) {
-            throw new Exception("Writting to file failed! Probably, there is no more free space left?");
+            throw new Exception('Writting to file failed! Probably, there is no more free space left?');
         }
+
         return $bytesWritten;
     }
 
@@ -875,19 +855,19 @@ class CompressNone extends CompressManagerFactory
 }
 
 /**
- * Enum with all available TypeAdapter implementations
- *
+ * Enum with all available TypeAdapter implementations.
  */
 abstract class TypeAdapter
 {
     public static $enums = array(
-        "Sqlite",
-        "Mysql"
+        'Sqlite',
+        'Mysql',
     );
 
     /**
      * @param string $c
-     * @return boolean
+     *
+     * @return bool
      */
     public static function isValid($c)
     {
@@ -896,82 +876,87 @@ abstract class TypeAdapter
 }
 
 /**
- * TypeAdapter Factory
- *
+ * TypeAdapter Factory.
  */
 abstract class TypeAdapterFactory
 {
     /**
-     * @param string $c Type of database factory to create (Mysql, Sqlite,...)
-     * @param PDO $dbHandler
+     * @param string $c         Type of database factory to create (Mysql, Sqlite,...)
+     * @param PDO    $dbHandler
      */
     public static function create($c, $dbHandler = null)
     {
         $c = ucfirst(strtolower($c));
-        if (! TypeAdapter::isValid($c)) {
+        if (!TypeAdapter::isValid($c)) {
             throw new Exception("Database type support for ($c) not yet available");
         }
-        $method =  __NAMESPACE__ . "\\" . "TypeAdapter" . $c;
+        $method = __NAMESPACE__.'\\'.'TypeAdapter'.$c;
+
         return new $method($dbHandler);
     }
 
     /**
-     * function databases Add sql to create and use database
+     * function databases Add sql to create and use database.
+     *
      * @todo make it do something with sqlite
      */
     public function databases()
     {
-        return "";
+        return '';
     }
 
     public function show_create_table($tableName)
     {
-        return "SELECT tbl_name as 'Table', sql as 'Create Table' " .
-            "FROM sqlite_master " .
+        return "SELECT tbl_name as 'Table', sql as 'Create Table' ".
+            'FROM sqlite_master '.
             "WHERE type='table' AND tbl_name='$tableName'";
     }
 
     /**
-     * function create_table Get table creation code from database
+     * function create_table Get table creation code from database.
+     *
      * @todo make it do something with sqlite
      */
     public function create_table($row)
     {
-        return "";
+        return '';
     }
 
     public function show_create_view($viewName)
     {
-        return "SELECT tbl_name as 'View', sql as 'Create View' " .
-            "FROM sqlite_master " .
+        return "SELECT tbl_name as 'View', sql as 'Create View' ".
+            'FROM sqlite_master '.
             "WHERE type='view' AND tbl_name='$viewName'";
     }
 
     /**
-     * function create_view Get view creation code from database
+     * function create_view Get view creation code from database.
+     *
      * @todo make it do something with sqlite
      */
     public function create_view($row)
     {
-        return "";
+        return '';
     }
 
     /**
-     * function show_create_trigger Get trigger creation code from database
+     * function show_create_trigger Get trigger creation code from database.
+     *
      * @todo make it do something with sqlite
      */
     public function show_create_trigger($triggerName)
     {
-        return "";
+        return '';
     }
 
     /**
-     * function create_trigger Modify trigger code, add delimiters, etc
+     * function create_trigger Modify trigger code, add delimiters, etc.
+     *
      * @todo make it do something with sqlite
      */
     public function create_trigger($triggerName)
     {
-        return "";
+        return '';
     }
 
     public function show_tables()
@@ -992,7 +977,7 @@ abstract class TypeAdapterFactory
     public function show_columns()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
@@ -1002,22 +987,22 @@ abstract class TypeAdapterFactory
 
     public function start_transaction()
     {
-        return "BEGIN EXCLUSIVE";
+        return 'BEGIN EXCLUSIVE';
     }
 
     public function commit_transaction()
     {
-        return "COMMIT";
+        return 'COMMIT';
     }
 
     public function lock_table()
     {
-        return "";
+        return '';
     }
 
     public function unlock_table()
     {
-        return "";
+        return '';
     }
 
     public function start_add_lock_table()
@@ -1075,6 +1060,7 @@ abstract class TypeAdapterFactory
      * type, is_numeric and is_blob will always be available.
      *
      * @param array $colType Array returned from "SHOW COLUMNS FROM tableName"
+     *
      * @return array
      */
     public function parseColumnType($colType)
@@ -1107,7 +1093,6 @@ class TypeAdapterSqlite extends TypeAdapterFactory
 
 class TypeAdapterMysql extends TypeAdapterFactory
 {
-
     private $dbHandler = null;
 
     // Numerical Mysql types
@@ -1124,7 +1109,7 @@ class TypeAdapterMysql extends TypeAdapterFactory
             'double',
             'float',
             'decimal',
-            'numeric'
+            'numeric',
         ),
         'blob' => array(
             'tinyblob',
@@ -1133,11 +1118,11 @@ class TypeAdapterMysql extends TypeAdapterFactory
             'longblob',
             'binary',
             'varbinary',
-            'bit'
-        )
+            'bit',
+        ),
     );
 
-    public function __construct ($dbHandler)
+    public function __construct($dbHandler)
     {
         $this->dbHandler = $dbHandler;
     }
@@ -1145,7 +1130,7 @@ class TypeAdapterMysql extends TypeAdapterFactory
     public function databases()
     {
         if (func_num_args() != 1) {
-            throw new Exception("Unexpected parameter passed to " . __METHOD__);
+            throw new Exception('Unexpected parameter passed to '.__METHOD__);
         }
 
         $args = func_get_args();
@@ -1158,12 +1143,12 @@ class TypeAdapterMysql extends TypeAdapterFactory
         $resultSet = $this->dbHandler->query("SHOW VARIABLES LIKE 'collation_database';");
         $collationDb = $resultSet->fetchColumn(1);
         $resultSet->closeCursor();
-        $ret = "";
+        $ret = '';
 
         $ret .= "CREATE DATABASE /*!32312 IF NOT EXISTS*/ `${databaseName}`".
-            " /*!40100 DEFAULT CHARACTER SET ${characterSet} " .
-            " COLLATE ${collationDb} */;" . PHP_EOL . PHP_EOL .
-            "USE `${databaseName}`;" . PHP_EOL . PHP_EOL;
+            " /*!40100 DEFAULT CHARACTER SET ${characterSet} ".
+            " COLLATE ${collationDb} */;".PHP_EOL.PHP_EOL.
+            "USE `${databaseName}`;".PHP_EOL.PHP_EOL;
 
         return $ret;
     }
@@ -1186,38 +1171,39 @@ class TypeAdapterMysql extends TypeAdapterFactory
     public function create_table($row)
     {
         if (!isset($row['Create Table'])) {
-            throw new Exception("Error getting table code, unknown output");
+            throw new Exception('Error getting table code, unknown output');
         }
 
-        $ret = "/*!40101 SET @saved_cs_client     = @@character_set_client */;" . PHP_EOL .
-            "/*!40101 SET character_set_client = utf8 */;" . PHP_EOL .
-            $row['Create Table'] . ";" . PHP_EOL .
-            "/*!40101 SET character_set_client = @saved_cs_client */;" . PHP_EOL .
+        $ret = '/*!40101 SET @saved_cs_client     = @@character_set_client */;'.PHP_EOL.
+            '/*!40101 SET character_set_client = utf8 */;'.PHP_EOL.
+            $row['Create Table'].';'.PHP_EOL.
+            '/*!40101 SET character_set_client = @saved_cs_client */;'.PHP_EOL.
             PHP_EOL;
+
         return $ret;
     }
 
     public function create_view($row)
     {
-        $ret = "";
+        $ret = '';
         if (!isset($row['Create View'])) {
-                throw new Exception("Error getting view structure, unknown output");
+            throw new Exception('Error getting view structure, unknown output');
         }
 
         $triggerStmt = $row['Create View'];
         $triggerStmtReplaced1 = str_replace(
-            "CREATE ALGORITHM",
-            "/*!50001 CREATE ALGORITHM",
+            'CREATE ALGORITHM',
+            '/*!50001 CREATE ALGORITHM',
             $triggerStmt
         );
         $triggerStmtReplaced2 = str_replace(
-            " DEFINER=",
-            " */" . PHP_EOL . "/*!50013 DEFINER=",
+            ' DEFINER=',
+            ' */'.PHP_EOL.'/*!50013 DEFINER=',
             $triggerStmtReplaced1
         );
         $triggerStmtReplaced3 = str_replace(
-            " VIEW ",
-            " */" . PHP_EOL . "/*!50001 VIEW ",
+            ' VIEW ',
+            ' */'.PHP_EOL.'/*!50001 VIEW ',
             $triggerStmtReplaced2
         );
         if (false === $triggerStmtReplaced1 ||
@@ -1225,71 +1211,73 @@ class TypeAdapterMysql extends TypeAdapterFactory
             false === $triggerStmtReplaced3) {
             $triggerStmtReplaced = $triggerStmt;
         } else {
-            $triggerStmtReplaced = $triggerStmtReplaced3 . " */;";
+            $triggerStmtReplaced = $triggerStmtReplaced3.' */;';
         }
 
-        $ret .= $triggerStmtReplaced . PHP_EOL . PHP_EOL;
+        $ret .= $triggerStmtReplaced.PHP_EOL.PHP_EOL;
+
         return $ret;
     }
 
     public function create_trigger($row)
     {
-        $ret = "";
+        $ret = '';
         if (!isset($row['SQL Original Statement'])) {
-            throw new Exception("Error getting trigger code, unknown output");
+            throw new Exception('Error getting trigger code, unknown output');
         }
 
         $triggerStmt = $row['SQL Original Statement'];
         $triggerStmtReplaced = str_replace(
-            "CREATE DEFINER",
-            "/*!50003 CREATE*/ /*!50017 DEFINER",
+            'CREATE DEFINER',
+            '/*!50003 CREATE*/ /*!50017 DEFINER',
             $triggerStmt
         );
         $triggerStmtReplaced = str_replace(
-            " TRIGGER",
-            "*/ /*!50003 TRIGGER",
+            ' TRIGGER',
+            '*/ /*!50003 TRIGGER',
             $triggerStmtReplaced
         );
-        if ( false === $triggerStmtReplaced ) {
+        if (false === $triggerStmtReplaced) {
             $triggerStmtReplaced = $triggerStmt;
         }
 
-        $ret .= "DELIMITER ;;" . PHP_EOL .
-            $triggerStmtReplaced . "*/;;" . PHP_EOL .
-            "DELIMITER ;" . PHP_EOL . PHP_EOL;
+        $ret .= 'DELIMITER ;;'.PHP_EOL.
+            $triggerStmtReplaced.'*/;;'.PHP_EOL.
+            'DELIMITER ;'.PHP_EOL.PHP_EOL;
+
         return $ret;
     }
 
     public function show_tables()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
 
-        return "SELECT TABLE_NAME AS tbl_name " .
-            "FROM INFORMATION_SCHEMA.TABLES " .
+        return 'SELECT TABLE_NAME AS tbl_name '.
+            'FROM INFORMATION_SCHEMA.TABLES '.
             "WHERE TABLE_TYPE='BASE TABLE' AND TABLE_SCHEMA='${args[0]}'";
     }
 
     public function show_views()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
 
-        return "SELECT TABLE_NAME AS tbl_name " .
-            "FROM INFORMATION_SCHEMA.TABLES " .
+        return 'SELECT TABLE_NAME AS tbl_name '.
+            'FROM INFORMATION_SCHEMA.TABLES '.
             "WHERE TABLE_TYPE='VIEW' AND TABLE_SCHEMA='${args[0]}'";
     }
 
     public function show_triggers()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
@@ -1297,11 +1285,10 @@ class TypeAdapterMysql extends TypeAdapterFactory
         return "SHOW TRIGGERS FROM `${args[0]}`;";
     }
 
-
     public function show_columns()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
@@ -1311,136 +1298,137 @@ class TypeAdapterMysql extends TypeAdapterFactory
 
     public function start_transaction()
     {
-        return "SET GLOBAL TRANSACTION ISOLATION LEVEL REPEATABLE READ; " .
-            "START TRANSACTION";
+        return 'SET GLOBAL TRANSACTION ISOLATION LEVEL REPEATABLE READ; '.
+            'START TRANSACTION';
     }
 
     public function commit_transaction()
     {
-        return "COMMIT";
+        return 'COMMIT';
     }
 
     public function lock_table()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
         //$tableName = $args[0];
         //return "LOCK TABLES `$tableName` READ LOCAL";
         return $this->dbHandler->exec("LOCK TABLES `${args[0]}` READ LOCAL");
-
     }
 
     public function unlock_table()
     {
-        return $this->dbHandler->exec("UNLOCK TABLES");
+        return $this->dbHandler->exec('UNLOCK TABLES');
     }
 
     public function start_add_lock_table()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
 
-        return "LOCK TABLES `${args[0]}` WRITE;" . PHP_EOL;
+        return "LOCK TABLES `${args[0]}` WRITE;".PHP_EOL;
     }
 
     public function end_add_lock_table()
     {
-        return "UNLOCK TABLES;" . PHP_EOL;
+        return 'UNLOCK TABLES;'.PHP_EOL;
     }
 
     public function start_add_disable_keys()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
         $args = func_get_args();
-        return "/*!40000 ALTER TABLE `${args[0]}` DISABLE KEYS */;" .
+
+        return "/*!40000 ALTER TABLE `${args[0]}` DISABLE KEYS */;".
             PHP_EOL;
     }
 
     public function end_add_disable_keys()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
         $args = func_get_args();
-        return "/*!40000 ALTER TABLE `${args[0]}` ENABLE KEYS */;" .
+
+        return "/*!40000 ALTER TABLE `${args[0]}` ENABLE KEYS */;".
             PHP_EOL;
     }
 
     public function start_disable_autocommit()
     {
-        return "SET autocommit=0;" . PHP_EOL;
+        return 'SET autocommit=0;'.PHP_EOL;
     }
 
     public function end_disable_autocommit()
     {
-        return "COMMIT;" . PHP_EOL;
+        return 'COMMIT;'.PHP_EOL;
     }
 
     public function add_drop_database()
     {
         if (func_num_args() != 1) {
-             return "";
+            return '';
         }
 
         $args = func_get_args();
 
-        return "/*!40000 DROP DATABASE IF EXISTS `${args[0]}`*/;" .
-            PHP_EOL . PHP_EOL;
+        return "/*!40000 DROP DATABASE IF EXISTS `${args[0]}`*/;".
+            PHP_EOL.PHP_EOL;
     }
 
     public function add_drop_trigger()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
 
-        return "DROP TRIGGER IF EXISTS `${args[0]}`;" . PHP_EOL;
+        return "DROP TRIGGER IF EXISTS `${args[0]}`;".PHP_EOL;
     }
 
     public function drop_table()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
 
-        return "DROP TABLE IF EXISTS `${args[0]}`;" . PHP_EOL;
+        return "DROP TABLE IF EXISTS `${args[0]}`;".PHP_EOL;
     }
 
     public function drop_view()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
 
-        return "DROP TABLE IF EXISTS `${args[0]}`;" . PHP_EOL .
-                "/*!50001 DROP VIEW IF EXISTS `${args[0]}`*/;" . PHP_EOL;
+        return "DROP TABLE IF EXISTS `${args[0]}`;".PHP_EOL.
+                "/*!50001 DROP VIEW IF EXISTS `${args[0]}`*/;".PHP_EOL;
     }
 
     public function getDatabaseHeader()
     {
         if (func_num_args() != 1) {
-            return "";
+            return '';
         }
 
         $args = func_get_args();
 
-        return "--" . PHP_EOL .
-            "-- Current Database: `${args[0]}`" . PHP_EOL .
-            "--" . PHP_EOL . PHP_EOL;
+        return '--'.PHP_EOL.
+            "-- Current Database: `${args[0]}`".PHP_EOL.
+            '--'.PHP_EOL.PHP_EOL;
     }
 
     /**
@@ -1448,21 +1436,19 @@ class TypeAdapterMysql extends TypeAdapterFactory
      * type, is_numeric and is_blob will always be available.
      *
      * @param array $colType Array returned from "SHOW COLUMNS FROM tableName"
+     *
      * @return array
      */
     public function parseColumnType($colType)
     {
         $colInfo = array();
-        $colParts = explode(" ", $colType['Type']);
+        $colParts = explode(' ', $colType['Type']);
 
-        if($fparen = strpos($colParts[0], "("))
-        {
+        if ($fparen = strpos($colParts[0], '(')) {
             $colInfo['type'] = substr($colParts[0], 0, $fparen);
-            $colInfo['length']  = str_replace(")", "", substr($colParts[0], $fparen+1));
-            $colInfo['attributes'] = isset($colParts[1]) ? $colParts[1] : NULL;
-        }
-        else
-        {
+            $colInfo['length'] = str_replace(')', '', substr($colParts[0], $fparen + 1));
+            $colInfo['attributes'] = isset($colParts[1]) ? $colParts[1] : null;
+        } else {
             $colInfo['type'] = $colParts[0];
         }
         $colInfo['is_numeric'] = in_array($colInfo['type'], $this->mysqlTypes['numerical']);
@@ -1474,25 +1460,25 @@ class TypeAdapterMysql extends TypeAdapterFactory
     public function backup_parameters()
     {
         if (func_num_args() != 1) {
-            throw new Exception("Unexpected parameter passed to " . __METHOD__);
+            throw new Exception('Unexpected parameter passed to '.__METHOD__);
         }
 
         $args = func_get_args();
         $dumpSettings = $args[0];
-        $ret = "/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;" . PHP_EOL .
-            "/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;" . PHP_EOL .
-            "/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;" . PHP_EOL .
-            "/*!40101 SET NAMES utf8 */;" . PHP_EOL;
+        $ret = '/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;'.PHP_EOL.
+            '/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;'.PHP_EOL.
+            '/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;'.PHP_EOL.
+            '/*!40101 SET NAMES utf8 */;'.PHP_EOL;
 
         if (false === $dumpSettings['skip-tz-utz']) {
-            $ret .= "/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;" . PHP_EOL .
-                "/*!40103 SET TIME_ZONE='+00:00' */;" . PHP_EOL;
+            $ret .= '/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;'.PHP_EOL.
+                "/*!40103 SET TIME_ZONE='+00:00' */;".PHP_EOL;
         }
 
-        $ret .= "/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;" . PHP_EOL .
-            "/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;" . PHP_EOL .
-            "/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;" . PHP_EOL .
-            "/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;" . PHP_EOL .PHP_EOL;
+        $ret .= '/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;'.PHP_EOL.
+            '/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;'.PHP_EOL.
+            "/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;".PHP_EOL.
+            '/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;'.PHP_EOL.PHP_EOL;
 
         return $ret;
     }
@@ -1500,24 +1486,24 @@ class TypeAdapterMysql extends TypeAdapterFactory
     public function restore_parameters()
     {
         if (func_num_args() != 1) {
-            throw new Exception("Unexpected parameter passed to " . __METHOD__);
+            throw new Exception('Unexpected parameter passed to '.__METHOD__);
         }
 
         $args = func_get_args();
         $dumpSettings = $args[0];
-        $ret = "";
+        $ret = '';
 
         if (false === $dumpSettings['skip-tz-utz']) {
-            $ret .= "/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;" . PHP_EOL;
+            $ret .= '/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;'.PHP_EOL;
         }
 
-        $ret .= "/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;" . PHP_EOL .
-            "/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;" . PHP_EOL .
-            "/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;" . PHP_EOL .
-            "/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;" . PHP_EOL .
-            "/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;" . PHP_EOL .
-            "/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;" . PHP_EOL .
-            "/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;" . PHP_EOL . PHP_EOL;
+        $ret .= '/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;'.PHP_EOL.
+            '/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;'.PHP_EOL.
+            '/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;'.PHP_EOL.
+            '/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;'.PHP_EOL.
+            '/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;'.PHP_EOL.
+            '/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;'.PHP_EOL.
+            '/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;'.PHP_EOL.PHP_EOL;
 
         return $ret;
     }

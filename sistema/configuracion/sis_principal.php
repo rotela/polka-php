@@ -1,5 +1,5 @@
 <?php
 // Versión de Polka
-$config['version']   = 'v1.0';
+$config['version']   = 'beta';
 // Nombre de Polka
-$config['titulo']    = 'Polka-php';
+$config['titulo']    = 'Polka';

@@ -1,12 +1,17 @@
 <?php
-
+/**
+* función que sanea una entrada de texto
+* es importante usarlo para entradas de formulario o datos
+* externos al sistema.
+*/
 if (!function_exists('sanear')) {
-
-    function sanear($datos = '') {
+    function sanear($datos = '')
+    {
         $entrada = array();
 
-        if (is_object($datos))
+        if (is_object($datos)) {
             $datos = (array) $datos;
+        }
 
         if (is_array($datos)) {
             if (count($datos) > 0) {
@@ -17,19 +22,12 @@ if (!function_exists('sanear')) {
                 $entrada = $datos;
             }
         } else {
-            // quitamos las barras de un string con comillas escapadas,
-            // aunque actualmente se desaconseja su uso, muchos servidores
-            // las tienen activadas. Cuando ésta extensión está activada, php
-            // añade automáticamente caracteres válidos.
-            if (get_magic_quotes_gpc())
-                $datos = trim(stripslashes($datos));
-            // eliminados etiquetas html y php
-            $datos = strip_tags($datos);
-            // convertimos todos los caracteres aplicables a entidades html
-            // $datos = htmlentities($datos);
+            $datos = str_replace("'", '', $datos);
+            $datos = trim(stripslashes($datos));
+            $datos = trim(strip_tags($datos));
             $entrada = trim($datos);
         }
+
         return $entrada;
     }
-
 }

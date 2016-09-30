@@ -4,12 +4,13 @@ namespace sistema\librerias;
 
 defined('SISTEMA') or exit('No se permite el acceso directo al script.');
 
-class sesion {
-
+class sesion
+{
     private $id = '';
     private $nom_alerta = 'nom_alerta';
 
-    public function __construct() {
+    public function __construct()
+    {
         if (!isset($_SESSION['sesion_id'])) {
             $sesion = obt_config('aplicacion');
             //session_set_cookie_params($sesion->ses_tiempo,'/',url_base(),true,true);
@@ -23,26 +24,28 @@ class sesion {
         }
     }
 
-    private function expiracion($tiempo = 0) {
+    private function expiracion($tiempo = 0)
+    {
         if (isset($_SESSION['sesion_id'])) {
             if ($tiempo) {
                 if (!isset($_SESSION['expira'])) {
                     $_SESSION['expira'] = time() + $tiempo;
                 } else {
-                    if (time() > $_SESSION['expira'])
+                    if (time() > $_SESSION['expira']) {
                         $this->destruir();
+                    }
                 }
-            }
-            else {
+            } else {
                 $_SESSION['expira'] = time() + 7200;
             }
         }
     }
 
-    public function destruir_alerta() {
+    public function destruir_alerta()
+    {
         if (isset($_SESSION['marca'])) {
             $marca = $_SESSION['marca'];
-            $marca--;
+            --$marca;
             if ($marca == 0) {
                 unset($_SESSION['marca']);
                 if (isset($_SESSION[$this->nom_alerta])) {
@@ -57,7 +60,8 @@ class sesion {
         }
     }
 
-    public function destruir($clave = array()) {
+    public function destruir($clave = array())
+    {
         if (is_array($clave)) {
             if (count($clave) > 0) {
                 foreach ($clave as $value) {
@@ -73,11 +77,13 @@ class sesion {
         }
     }
 
-    public function obt_id() {
+    public function obt_id()
+    {
         return $this->id;
     }
 
-    public function obt_datos($clave = '') {
+    public function obt_datos($clave = '')
+    {
         if (!empty($clave)) {
             return isset($_SESSION[$clave]) ? $_SESSION[$clave] : '';
         } else {
@@ -85,7 +91,8 @@ class sesion {
         }
     }
 
-    public function env_datos($datos = '', $clave = '') {
+    public function env_datos($datos = '', $clave = '')
+    {
         if (!empty($datos)) {
             if (is_array($datos)) {
                 foreach ($datos as $nombre => $valor) {
@@ -103,7 +110,8 @@ class sesion {
         }
     }
 
-    public function env_dato_temp($mensaje = '', $clave = '') {
+    public function env_dato_temp($mensaje = '', $clave = '')
+    {
         if (!empty($mensaje)) {
             $_SESSION[$clave] = $mensaje;
             $_SESSION[$this->nom_alerta] = $clave;
@@ -111,25 +119,27 @@ class sesion {
         }
     }
 
-    public function obt_dato_temp($clave = '') {
+    public function obt_dato_temp($clave = '')
+    {
         $mensaje = '';
         if (isset($_SESSION[$clave])) {
             $mensaje = $_SESSION[$clave];
             unset($_SESSION[$clave]);
         }
+
         return $mensaje;
     }
 
-    public function env_csrf() {
+    public function env_csrf($token = '')
+    {
         $csrf_nom = obt_config('aplicacion')->csrf_nom;
-        $_SESSION[$csrf_nom] = md5(uniqid(mt_rand(), true));
+        $_SESSION[$csrf_nom] = (empty($token)) ? md5(uniqid(mt_rand(), true)).md5(uniqid(mt_rand(), true)) : $token;
     }
 
-    public function borrar_csrf() {
+    public function borrar_csrf()
+    {
         $csrf_nom = obt_config('aplicacion')->csrf_nom;
-        if (isset($_SESSION[$csrf_nom])) {
-            unset($_SESSION[$csrf_nom]);
-        }
+        isset($_SESSION[$csrf_nom]);
+        unset($_SESSION[$csrf_nom]);
     }
-
 }

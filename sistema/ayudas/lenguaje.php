@@ -8,18 +8,21 @@ if (!function_exists('traducir')) {
      * $zoo    = 2;
      * $format = 'En %2$s hay mas de %1$d monos.
      * Asi mismo, %1$d monos hay en %2$s monkeys y %3$d zoologicos.';
-     * echo traducir($format, $num, $loc, $zoo);
+     * echo traducir($format, $num, $loc, $zoo);.
+     *
      * @return string Texto formateado
      */
-    function traducir() {
+    function traducir()
+    {
         $args = func_get_args();
-        if (count($args) < 2)
+        if (count($args) < 2) {
             return false;
+        }
         $query = array_shift($args);
         $args = array_map('mysql_real_escape_string', $args);
         array_unshift($args, $query);
         $query = call_user_func_array('sprintf', $args);
+
         return $query;
     }
-
 }
