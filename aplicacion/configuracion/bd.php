@@ -4,7 +4,6 @@ if (!defined('SISTEMA')) {
     exit('No se permite el acceso directo al script.');
 }
 // Servidor de la base datos
-// Si es lento con localhost, probar con la ip
 $config['host_bd'] = '127.0.0.1';
 // Puerto de la base datos
 $config['port_bd'] = 3306;

@@ -1,5 +1,7 @@
 <?php
+
 namespace sistema\librerias\phpqrcode;
+
 /*
  * PHP QR Code encoder
  *

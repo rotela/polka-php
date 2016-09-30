@@ -2,44 +2,48 @@
 
 namespace sistema\librerias;
 
-class Genxml {
-
-    public function mostrar($result,$tipo='xml',$codigo=200) {
+class genxml
+{
+    public function mostrar($result, $tipo = 'xml', $codigo = 200)
+    {
         $this->env_cabecera($codigo, $tipo);
-        if (strtolower($tipo) == "json") {
+        if (strtolower($tipo) == 'json') {
             echo json_encode($result);
-        } else if (strtolower($tipo) == "xml") {
+        } elseif (strtolower($tipo) == 'xml') {
             echo '<?xml version="1.0"?>';
-            echo "<resultados>";
+            echo '<resultados>';
             $xml_array = json_decode(json_encode($result), true);
-            $this->xmlExplorador($xml_array, "registroo");
-            echo "</resultados>";
+            $this->xmlExplorador($xml_array, 'registroo');
+            echo '</resultados>';
         } else {
             echo json_encode($result);
         }
     }
 
-    private function xmlExplorador($xml_array, $parent) {
-         foreach($xml_array as $tag => $value) {
-            if ((int)$tag === $tag) {
+    private function xmlExplorador($xml_array, $parent)
+    {
+        foreach ($xml_array as $tag => $value) {
+            if ((int) $tag === $tag) {
                 $tag = mb_substr($parent, 0, -1);
             }
-            echo "<" .$tag. ">";
+            echo '<'.$tag.'>';
             if (is_array($value)) {
                 $this->xmlExplorador($value, $tag);
             } else {
                 echo $value;
             }
-            echo "</" .$tag. ">";
+            echo '</'.$tag.'>';
         }
     }
 
-    private function env_cabecera($codigo = 200, $tipo = 'json') {
-        header("HTTP/1.1 " . $codigo . " " . $this->obt_estado($codigo));
-        header('Content-type:application/' . $tipo . ';charset=utf-8');
+    private function env_cabecera($codigo = 200, $tipo = 'json')
+    {
+        header('HTTP/1.1 '.$codigo.' '.$this->obt_estado($codigo));
+        header('Content-type:application/'.$tipo.';charset=utf-8');
     }
 
-    private function obt_estado($codigo) {
+    private function obt_estado($codigo)
+    {
         $estado = array(
             200 => 'OK',
             201 => 'Created',
@@ -54,8 +58,9 @@ class Genxml {
             403 => 'Forbidden',
             404 => 'Not Found',
             405 => 'Method Not Allowed',
-            500 => 'Internal Server Error'
+            500 => 'Internal Server Error',
         );
+
         return $estado[$codigo];
     }
 }

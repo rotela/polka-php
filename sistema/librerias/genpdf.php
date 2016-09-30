@@ -6,14 +6,15 @@ if (!defined('NUCLEO')) {
     exit('No se permite el acceso directo al script.');
 }
 
-class genpdf extends fpdf {
-
+class genpdf extends fpdf
+{
     private $tit_col = array();
     private $tam_col = array();
     private $mar_izq = 0;
     private $orientacion = 'P';
 
-    public function __construct($param = '') {
+    public function __construct($param = '')
+    {
         if (empty($param)) {
             parent::__construct();
         } else {
@@ -21,26 +22,31 @@ class genpdf extends fpdf {
         }
     }
 
-    public function orientacion($orie = 'P', $hoja = 'A4') {
+    public function orientacion($orie = 'P', $hoja = 'A4')
+    {
         $this->orientacion = $orie;
         $this->SetAutoPageBreak(true, 3);
         $this->AliasNbPages();
         $this->AddPage($orie, $hoja);
     }
 
-    public function env_tit_col($titulos = array()) {
+    public function env_tit_col($titulos = array())
+    {
         $this->tit_col = $titulos;
     }
 
-    public function env_tam_col($tamanos = array()) {
+    public function env_tam_col($tamanos = array())
+    {
         $this->tam_col = $tamanos;
     }
 
-    public function env_mar_izq($mar = 0) {
+    public function env_mar_izq($mar = 0)
+    {
         $this->mar_izq = $mar;
     }
 
-    public function env_titulo($value = '') {
+    public function env_titulo($value = '')
+    {
         // Arial bold 15
         $this->SetFont('Arial', 'B', 15);
         // Movernos a la derecha
@@ -51,7 +57,8 @@ class genpdf extends fpdf {
         $this->Ln(12);
     }
 
-    public function detalles($datos = array()) {
+    public function detalles($datos = array())
+    {
         $this->SetFont('times', 'B', 10);
         //recorro los titulos
         if (!empty($this->mar_izq)) {
@@ -70,7 +77,7 @@ class genpdf extends fpdf {
             $this->Cell($ancho, 8, $tit_col, 1, 0, 'C');
         }
         $this->Ln(8);
-        //
+
         $this->SetFont('Times', '', 12);
         foreach ($datos as $fila) {
             if (!empty($this->mar_izq)) {
@@ -91,7 +98,8 @@ class genpdf extends fpdf {
         }
     }
 
-    public function cabecera($datos = array(), $ancho = 50) {
+    public function cabecera($datos = array(), $ancho = 50)
+    {
         $this->SetFont('helvetica', 'B', 10);
         //recorro los titulos
         foreach ($datos as $key => $fila) {
@@ -109,7 +117,8 @@ class genpdf extends fpdf {
         $this->Ln(8);
     }
 
-    public function pie($value = '') {
+    public function pie($value = '')
+    {
         // Posición: a 1,5 cm del final
         if ($this->orientacion == 'P') {
             $this->SetY(280);
@@ -119,7 +128,6 @@ class genpdf extends fpdf {
         // Arial italic 8
         $this->SetFont('Arial', 'I', 8);
         // Número de página
-        $this->Cell(0, 10, 'Pág ' . $this->PageNo() . ' de {nb}', 1, 0, 'C');
+        $this->Cell(0, 10, 'Pág '.$this->PageNo().' de {nb}', 1, 0, 'C');
     }
-
 }

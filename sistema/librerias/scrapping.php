@@ -6,8 +6,8 @@ if (!defined('SISTEMA')) {
     exit('No se permite el acceso directo al script.');
 }
 
-class scrapping {
-
+class scrapping
+{
     protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
     protected $_url;
     protected $_followlocation;
@@ -16,7 +16,7 @@ class scrapping {
     protected $_cookieFileLocation = './cookie.txt';
     protected $_post;
     protected $_postFields;
-    protected $_referer = "http://www.google.com";
+    protected $_referer = 'http://www.google.com';
     protected $_session;
     protected $_webpage;
     protected $_includeHeader;
@@ -27,21 +27,26 @@ class scrapping {
     public $auth_name = '';
     public $auth_pass = '';
 
-    public function useAuth($use) {
+    public function useAuth($use)
+    {
         $this->authentication = 0;
-        if ($use == true)
+        if ($use == true) {
             $this->authentication = 1;
+        }
     }
 
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->auth_name = $name;
     }
 
-    public function setPass($pass) {
+    public function setPass($pass)
+    {
         $this->auth_pass = $pass;
     }
 
-    public function iniciar($url, $followlocation = true, $timeOut = 30, $maxRedirecs = 4, $binaryTransfer = false, $includeHeader = false, $noBody = false) {
+    public function iniciar($url, $followlocation = true, $timeOut = 30, $maxRedirecs = 4, $binaryTransfer = false, $includeHeader = false, $noBody = false)
+    {
         $this->_url = $url;
         $this->_followlocation = $followlocation;
         $this->_timeout = $timeOut;
@@ -50,27 +55,32 @@ class scrapping {
         $this->_includeHeader = $includeHeader;
         $this->_binaryTransfer = $binaryTransfer;
 
-        $this->_cookieFileLocation = dirname(__FILE__) . '/cookie.txt';
+        $this->_cookieFileLocation = dirname(__FILE__).'/cookie.txt';
     }
 
-    public function setReferer($referer) {
+    public function setReferer($referer)
+    {
         $this->_referer = $referer;
     }
 
-    public function setCookiFileLocation($path) {
+    public function setCookiFileLocation($path)
+    {
         $this->_cookieFileLocation = $path;
     }
 
-    public function setPost($postFields) {
+    public function setPost($postFields)
+    {
         $this->_post = true;
         $this->_postFields = $postFields;
     }
 
-    public function setUserAgent($userAgent) {
+    public function setUserAgent($userAgent)
+    {
         $this->_useragent = $userAgent;
     }
 
-    public function createCurl($url = 'nul') {
+    public function createCurl($url = 'nul')
+    {
         if ($url != 'nul') {
             $this->_url = $url;
         }
@@ -87,7 +97,7 @@ class scrapping {
         curl_setopt($s, CURLOPT_COOKIEFILE, $this->_cookieFileLocation);
 
         if ($this->authentication == 1) {
-            curl_setopt($s, CURLOPT_USERPWD, $this->auth_name . ':' . $this->auth_pass);
+            curl_setopt($s, CURLOPT_USERPWD, $this->auth_name.':'.$this->auth_pass);
         }
         if ($this->_post) {
             curl_setopt($s, CURLOPT_POST, true);
@@ -115,12 +125,13 @@ class scrapping {
         curl_close($s);
     }
 
-    public function getHttpStatus() {
+    public function getHttpStatus()
+    {
         return $this->_status;
     }
 
-    public function __tostring() {
+    public function __tostring()
+    {
         return $this->_webpage;
     }
-
 }

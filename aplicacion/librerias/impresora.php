@@ -6,16 +6,17 @@ if (!defined('SISTEMA')) {
     exit('No se permite acceso directo al script');
 }
 
-class Impresora {
-
-    function __construct() {
-        echo "hola soy impresora en constructor<br>";
+class impresora
+{
+    public function __construct()
+    {
+        echo 'hola soy impresora en constructor<br>';
     }
 
-    public function imprimir() {
-        echo 'holaaa soy ' . __CLASS__ . ' el metodo ' . __METHOD__;
+    public function imprimir()
+    {
+        echo 'holaaa soy '.__CLASS__.' el metodo '.__METHOD__;
     }
-
 }
 
 /* Final de archivo impresora.php */

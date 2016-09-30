@@ -33,22 +33,22 @@ if (!defined('SISTEMA')) {
  *
  *
  * @author Ricardo Rotela González :: ricksystems->gmail.com ;-)
- * @package sistema
- * @subpackage nucleo
  * @copyright Ricksystems (c)2014
  */
-class PK_Auxiliar {
-
-    public function librerias($nombre_libreria = '', $alias = '', $param = '') {
+class PK_Auxiliar
+{
+    public function librerias($nombre_libreria = '', $alias = '', $param = '')
+    {
         obt_instancia()->agregar_componente('librerias', $nombre_libreria, $alias, $param);
     }
 
-    public function modelos($nombre_modelos = '', $alias = '', $param = '') {
+    public function modelos($nombre_modelos = '', $alias = '', $param = '')
+    {
         obt_instancia()->agregar_componente('modelos', $nombre_modelos, $alias, $param);
     }
 
-    public function ayudas($nombre_ayudas = '') {
+    public function ayudas($nombre_ayudas = '')
+    {
         obt_instancia()->agregar_componente('ayudas', $nombre_ayudas);
     }
-
 }
