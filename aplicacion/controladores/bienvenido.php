@@ -7,7 +7,7 @@ if (!defined('SISTEMA')) {
 }
 use sistema\nucleo\PK_Controlador as PK_Controlador;
 
-class Bienvenido extends PK_Controlador
+class bienvenido extends PK_Controlador
 {
     public function __construct()
     {

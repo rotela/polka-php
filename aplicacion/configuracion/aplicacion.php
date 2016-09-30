@@ -16,13 +16,13 @@ $config['ses_tiempo'] = 7200;
 // Nombre de la aplicación
 $config['ap_titulo'] = 'Polka-php';
 // Derechos Reservados de la aplicación
-$config['ap_derechos'] = 'Polka Copyright ' . date('Y') . '©';
+$config['ap_derechos'] = 'Polka Copyright '.date('Y').'©';
 // Versión la aplicación
 $config['ap_version'] = '1.0';
 // Clave del candado (es muy recomendable cambiarlo)
 $config['clave_can'] = 'polka';
 // Proteccion CSRF
-$config['csrf'] = FALSE;
+$config['csrf'] = false;
 // Nombre interno y de campo para los token (aplicable sólo si lo anterior está en TRUE);
 $config['csrf_nom'] = 'token';
 // Seguimiento (si se activa puede sobrecargar un poco el tiempo de ejecución)

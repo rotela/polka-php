@@ -6,12 +6,12 @@ if (!defined('NUCLEO')) {
     exit('No se permite acceso directo al script');
 }
 
-class Comprobar {
-
-    public function principal() {
+class comprobar
+{
+    public function principal()
+    {
         // tu magia aquí
     }
-
 }
 
 /* Final de archivo tema.php */

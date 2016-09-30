@@ -8,18 +8,19 @@ if (!defined('SISTEMA')) {
 
 use sistema\nucleo\PK_Modelo as PK_Modelo;
 
-class Mod_ejemplo extends PK_Modelo {
-
+class mod_ejemplo extends PK_Modelo
+{
     private static $tabla = 'nombreTuTabla';
 
-    public function __construct() {
+    public function __construct()
+    {
         parent::__construct(self::$tabla);
     }
 
-    public function tufuncion() {
+    public function tufuncion()
+    {
         // tu magia aquí
     }
-
 }
 
 /* Final de archivo mod_ejemplo.php */
