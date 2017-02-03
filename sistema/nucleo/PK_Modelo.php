@@ -213,7 +213,6 @@ class PK_Modelo extends PDO
     try {
         switch ($this->tipo_bd) {
         case 'mysql':
-        //parent::__construct('mysql:host=ligadeclubes.com;dbname=bodegapp', 'ligadecl_bgapp', 'g3747237472', array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
         parent::__construct('mysql:host='.$this->host_bd.';dbname='.$this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$this->cote_bd));
         break;
 
