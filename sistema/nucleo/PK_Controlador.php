@@ -7,7 +7,7 @@ if (!defined('SISTEMA')) {
 }
 
 /**
- * Controlador principal para los controladores del usuario,
+ * Controlador principal para los controladores del usuario/programadores,
  * este último debe extederse de ésta clase.
  *
  * @author Ricardo Rotela González :: ricksystems->gmail.com ;-)

@@ -78,38 +78,39 @@ if (!function_exists('obt_entradas_peticion')) {
         $texto = html_entity_decode(@file_get_contents('php://input'), ENT_QUOTES, 'UTF-8');
 
         switch (es_metodo()) {
-          case 'POST':
-              if (count($_POST) > 0) {
-                  $entradas = array_merge($entradas, $_POST);
-              } else {
-                  $otros = (array) json_decode($texto);
-                  if (count($otros) > 0) {
-                      $entradas = array_merge($entradas, $otros);
-                  }
-              }
-              break;
+            case 'POST':
+                if (count($_POST) > 0) {
+                    $entradas = array_merge($entradas, $_POST);
+                } else {
+                    $otros = (array) json_decode($texto);
+                  
+                    if (count($otros) > 0) {
+                        $entradas = array_merge($entradas, $otros);
+                    }
+                }
+                break;
 
-          case 'GET':
-              $entradas = array_merge($entradas, $_GET);
-              break;
+            case 'GET':
+                $entradas = array_merge($entradas, $_GET);
+                break;
 
-          case 'PUT':
-              $otros = (array) json_decode($texto);
+            case 'PUT':
+                $otros = (array) json_decode($texto);
 
-              if (count($otros) > 0) {
-                  $entradas = array_merge($entradas, $otros);
-              } else {
-                  parse_str($texto, $entradas);
-              }
-              $entradas = array_merge($entradas, $_GET);
-              break;
+                if (count($otros) > 0) {
+                    $entradas = array_merge($entradas, $otros);
+                } else {
+                    parse_str($texto, $entradas);
+                }
+                  $entradas = array_merge($entradas, $_GET);
+                break;
 
-          default:
-              $otros = (array) $texto;
-              if (count($otros) > 0) {
-                  $entradas = array_merge($entradas, $otros);
-              }
-              break;
+            default:
+                $otros = (array) $texto;
+                if (count($otros) > 0) {
+                    $entradas = array_merge($entradas, $otros);
+                }
+                break;
         }
         if (isset($entradas['url'])) {
             unset($entradas['url']);
