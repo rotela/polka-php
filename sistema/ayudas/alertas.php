@@ -7,10 +7,12 @@ if (!defined('SISTEMA')) {
 if (!function_exists('alerta_suceso')) {
     function alerta_suceso($mensaje = '')
     {
-        $ale = '<div class="alert alert-success">'."\n";
-        $ale .= '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'."\n";
-        $ale .= $mensaje."\n";
-        $ale .= '</div>'."\n";
+        $ale = '<div class="alert alert-success alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  '.$mensaje.'
+</div>';
 
         return $ale;
     }
@@ -18,10 +20,12 @@ if (!function_exists('alerta_suceso')) {
 if (!function_exists('alerta_atencion')) {
     function alerta_atencion($mensaje = '')
     {
-        $ale = '<div class="alert alert-warning alert-dismissable">'."\n";
-        $ale .= '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'."\n";
-        $ale .= $mensaje."\n";
-        $ale .= '</div>'."\n";
+        $ale = '<div class="alert alert-warning alert-dismissible fade show" role="alert">
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  '.$mensaje.'
+</div>';
 
         return $ale;
     }
