@@ -23,38 +23,18 @@ class firebird_bd implements bd_interface
     {
         $ult_id = 0;
         if (empty($generador)) {
-            $id_primario = $this->con->obt_id_primario();
-
-            if (empty($id_primario)) {
-                $sql = "select first 1 * from ".$this->con->obt_tabla();
-
-                $result = $this->con->ejecutar($sql, false);
-                if ($result) {
-                    $f = $result[0];
-                    foreach ($f as $key => $value) {
-                        $id_primario = $key;
-                        break;
-                    }
-                }
-            }
-
-            $sql = "select first 1 * from ".$this->con->obt_tabla()." order by $id_primario desc";
-            
-            $result = $this->con->ejecutar($sql, false);
-            
+            $tabla = $this->con->obt_tabla();
+            $campo_primario = $this->con->obt_cam_primario();
+            $result = $this->con->ejecutar("select MAX($campo_primario) as ULT_ID from $tabla");
             if ($result) {
                 $f = $result[0];
-                foreach ($f as $key => $value) {
-                    $ult_id = $value;
-                    break;
-                }
+                $ult_id = $f->ULT_ID;
             }
         } else {
-            $sql = "select gen_id($generador, 0) from rdb\$database";
-            $result = $this->con->ejecutar($sql, false);
+            $result = $this->con->ejecutar("select gen_id($generador, 0) AS GEN_ID from rdb\$database");
             if ($result) {
                 $f = $result[0];
-                $ult_id = $f['GEN_ID'];
+                $ult_id = $f->GEN_ID;
             }
         }
         return $ult_id;

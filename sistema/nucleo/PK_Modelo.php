@@ -3,8 +3,10 @@
 namespace sistema\nucleo;
 
 use PDO;
+
 use sistema\modelos\firebird_bd;
 use sistema\modelos\mysql_bd;
+use sistema\modelos\pgsql_bd;
 
 if (!defined('SISTEMA')) {
     exit('No se permite acceso directo al script');
@@ -92,7 +94,7 @@ class PK_Modelo extends PDO
    *
    * @var string
    */
-    private $id_primario = '';
+    private $cam_primario = '';
 
   /**
    * Contenedor de Nombres de las Tablas contenidas en la bd.
@@ -195,13 +197,13 @@ class PK_Modelo extends PDO
    *
    * @param string $tabla [description]
    */
-    public function __construct($tabla = '', $id_primario = '')
+    public function __construct($tabla = '', $cam_primario = '')
     {
         if (empty($tabla)) {
             throw new \Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
         } else {
             $this->tabla = trim($tabla);
-            $this->id_primario = trim($id_primario);
+            $this->cam_primario = trim($cam_primario);
             $this->conectar();
         }
     }
@@ -235,6 +237,7 @@ class PK_Modelo extends PDO
 
                 case 'pgsql':
                     parent::__construct('pgsql:dbname='.$this->base_bd.';host='.$this->host_bd, $this->user_bd, $this->pass_bd);
+                    $this->bd_interface = new pgsql_bd($this);
                     break;
 
                 case 'firebird':
@@ -626,18 +629,18 @@ class PK_Modelo extends PDO
 
     public function guardar()
     {
-        $campo_primario = $this->obt_cam_pri();
+        $campo_primario = $this->obt_cam_primario();
         $clave = array($campo_primario => $this->obt_ult_id());
         $estado = false;
         // si existe un campo primario
         if (array_key_exists($campo_primario, $this->datos)) {
             $id = $this->datos[$campo_primario];
+            unset($this->datos[$campo_primario]);
             // preguntamos si es cero (nuevo), será insertado un nuevo registro
             if ($id == 0) {
                 $estado = $this->insertar($this->datos);
             } else {
                 // o será editado
-                unset($this->datos[$campo_primario]);
                 $estado = $this->editar($this->datos, $clave);
             }
         } else {
@@ -812,9 +815,10 @@ class PK_Modelo extends PDO
         return $this->campos;
     }
 
-    public function obt_cam_pri()
+    public function obt_cam_primario()
     {
-        return (empty($this->id_primario)) ? $this->campos[0] : $this->id_primario;
+        $campos = $this->obt_campos();
+        return (empty($this->cam_primario)) ? $campos[0] : $this->cam_primario;
     }
   /**
    * Devuelve la cantidad de registristros de forma general
@@ -897,10 +901,7 @@ class PK_Modelo extends PDO
         return $this->tabla;
     }
     
-    public function obt_id_primario()
-    {
-        return $this->id_primario;
-    }
+    
 
     public function obt_error()
     {
