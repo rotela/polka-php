@@ -23,30 +23,14 @@ class mysql_bd implements bd_interface
     {
         $ult_id = $this->con->lastInsertId();
         if ($ult_id == 0) {
-            $id_primario = $this->con->obt_id_primario();
+            $campo_primario = $this->con->obt_cam_primario();
             $tabla = $this->con->obt_tabla();
-            if (empty($id_primario)) {
-                $sql = "select * from $tabla limit 1";
-                $result = $this->con->ejecutar($sql, false);
-                if ($result) {
-                    $f = $result[0];
-                    foreach ($f as $key => $value) {
-                        $id_primario = $key;
-                        break;
-                    }
-                }
-            }
-
-            $sql = "select * from $tabla order by $id_primario desc limit 1";
-            
-            $result = $this->con->ejecutar($sql, false);
-            
+            $sql = "select max($campo_primario) as ult_id from $tabla";
+            $result = $this->con->ejecutar($sql);
+           
             if ($result) {
                 $f = $result[0];
-                foreach ($f as $key => $value) {
-                    $ult_id = $value;
-                    break;
-                }
+                $ult_id = $f->ult_id;
             }
         }
         return $ult_id;
@@ -57,10 +41,8 @@ class mysql_bd implements bd_interface
     public function obt_tablas($obt = true)
     {
     }
-    //
     public function describir_tabla($tabla = '')
     {
-        //$tabla = strtoupper($tabla);
         $sql = "DESCRIBE $tabla";
         return $this->con->ejecutar($sql);
     }
