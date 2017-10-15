@@ -16,7 +16,7 @@ $config['ses_tiempo'] = 7200;
 // Nombre de la aplicación
 $config['ap_titulo'] = 'Polka-php';
 // Derechos Reservados de la aplicación
-$config['ap_derechos'] = 'Polka Copyright '.date('Y').'©';
+$config['ap_derechos'] = 'Apache License '.date('Y');
 // Versión la aplicación
 $config['ap_version'] = '1.0';
 // Clave del candado (es muy recomendable cambiarlo)

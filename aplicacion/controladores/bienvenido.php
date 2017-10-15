@@ -18,4 +18,8 @@ class bienvenido extends PK_Controlador
         /* envío una vista al navegador */
         $this->vista->ver('index');
     }
+    public function otro()
+    {
+        /* envío una vista al navegador */
+    }
 }
