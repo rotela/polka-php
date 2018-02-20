@@ -27,13 +27,11 @@ if (!function_exists('mostrar_error')) {
             echo json_encode($datos);
         } else {
             $url = url_base('sistema/vistas/');
-            $css = $url.'css/';
-            $js = $url.'js/';
+            
             $error = array(
-              'css' => $css,
-              'js' => $js,
+              'url' => $url,
               'contenido' => ver_error($capa, $datos, false),
-          );
+            );
             ver_error('index', $error);
         }
     }

@@ -23,18 +23,21 @@ if (!function_exists('es_ajax')) {
         }
     }
 }
+
 if (!function_exists('es_post')) {
     function es_post()
     {
         return ($_SERVER['REQUEST_METHOD'] == 'POST') ? true : false;
     }
 }
+
 if (!function_exists('es_get')) {
     function es_get()
     {
         return ($_SERVER['REQUEST_METHOD'] == 'GET') ? true : false;
     }
 }
+
 if (!function_exists('es_metodo')) {
     function es_metodo()
     {
@@ -86,6 +89,7 @@ if (!function_exists('tipo_var')) {
         return 'unknown type';
     }
 }
+
 if (!function_exists('array_normalizar')) {
     function array_normalizar($result = array())
     {
@@ -131,5 +135,17 @@ if (!function_exists('array_normalizar')) {
         }
 
         return $elemento;
+    }
+}
+if (!function_exists('bytes_a')) {
+    function bytes_a($bytes = 0)
+    {
+        $tipo = array("", "Kilo", "Mega", "Giga", "Tera", "Peta", "Exa", "Zetta", "Yotta");
+        $index = 0;
+        while ($bytes >= 1024) {
+            $bytes /= 1024;
+            $index++;
+        }
+        return("".round($bytes, 2)." ".$tipo[$index]."Bytes");
     }
 }

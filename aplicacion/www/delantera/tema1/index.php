@@ -5,34 +5,35 @@
     <meta charset="utf-8">
     <title><?= ap_titulo(); ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="<?= url_base('sistema/vistas/css/').'bootstrap.min.css'; ?>" rel="stylesheet" >
-    <link href="<?= url_base('sistema/vistas/css/').'index.css'; ?>" rel="stylesheet" >
+    <link rel="stylesheet" href="<?= vista_css('w3.css'); ?>">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <div id="wrap">
-        <nav class="navbar navbar-default navbar-inverse navbar-static-top" role="navigation">
-            <div class="container">
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<?= url_base(); ?>"><?= ap_titulo(); ?></a>
-                </div>
-                <div class="collapse navbar-collapse navbar-ex1-collapse">
-                    <ul class="nav navbar-nav">
-                    </ul>
-                </div>
-            </div>
-        </nav>
 
-        <div class="container">
-            <h1>Polka-php</h1>
-            <h2>Marco de Desarrollo</h2>
-            <h3>es fácil, rápido, seguro, gratis y en tú Idioma!!!</h3>
-            <hr>
+    
+    <header class="w3-row">
+        <div class="w3-col w3-container" style="width:20%"></div>
+        <div class="w3-col w3-container w3-blue-grey" style="width:60%">
+            <h2>Polka-php</h2>
+        </div>
+        <div class="w3-col w3-container" style="width:20%"></div>
+    </header>
+
+    <div class="w3-row">
+        <div class="w3-col w3-container" style="width:20%"></div>
+        <div class="w3-col w3-container" style="width:60%">
+        
+            <div class="w3-panel w3-light-grey">
+                <h1>Marco de Desarrollo</h1>
+                <h3>es fácil, rápido, seguro, gratis y en tú Idioma!!!</h3>
+                <a class="w3-btn w3-green" href="https://github.com/rotela/polka-php">
+                <span class="fa fa-github"></span>Github</a>
+                <a class="w3-btn w3-blue" href="https://github.com/rotela/polka-php/wiki">
+                <span class="fa fa-wikipedia-w"></span>Wiki</a>
+                <br>
+                <p></p>
+            </div> 
+           
             <p>
                 Polka-php es un marco de desarrollo echo en y para php. Permite desarrollar
                 aplicaciones mucho más rápido ya que no es necesario empezar desde cero.
@@ -43,84 +44,61 @@
                 pero poderosa sobre la cual se puede desarrollar aplicaciones simple como complejas.
             </p>
 
-            <a class="btn btn-success" href="https://github.com/rotela/polka-php">
-                <span class="glyphicon glyphicon-ok"></span>
-                Github
-            </a>
-            <a class="btn btn-primary" href="https://github.com/rotela/polka-php/wiki">
-                <span class="glyphicon glyphicon-ok"></span>
-                Wiki
-            </a>
-            <br><br>
-            <!-- secciones -->
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Características</h3>
-                        </div>
-                        <div class="panel-body">
-                            <ul class="list-unstyled">
-                                <li>Modelo de Abstracción de datos</li>
-                                <li>Manejador de plantillas</li>
-                                <li>Manejos de sesiones</li>
-                                <li>Url limpias (amigables)</li>
-                                <li>Manejos de formularios</li>
-                                <li>Manejos de seguridad</li>
-                                <li>Disparadores, hack's...</li>
-                                <li>Librerías, Ayudantes</li>
-                                <li>y muchas otras...</li>
-                            </ul>
-                        </div>
-                    </div>
+            <div class="w3-row">
+                <div class="w3-col s4">                
+                    <h4>Características:</h4>
+                    <ul class="w3-ul">
+                        <li>Modelo de Abstracción de datos</li>
+                        <li>Manejador de plantillas</li>
+                        <li>Manejos de sesiones</li>
+                        <li>Url limpias (amigables)</li>
+                        <li>Manejos de formularios</li>
+                        <li>Manejos de seguridad</li>
+                        <li>Disparadores, hack's...</li>
+                        <li>Librerías, Ayudantes</li>
+                        <li>y muchas otras...</li>
+                    </ul>
                 </div>
-                <div class="col-md-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Soporte para bases de datos</h3>
-                        </div>
-                        <div class="panel-body">
-                            <ul class="list-unstyled">
-                                <li>Mysql 3, 4 y 5</li>
-                                <li>PostgreSQL</li>
-                                <li>Oracle CAll Interface</li>
-                                <li>SQLite 2 y 3</li>
-                                <li>ODBC v3</li>
-                                <li>Microsoft SQL Server / SQL Azure</li>
-                                <li><a href="http://php.net/manual/es/pdo.drivers.php">otros</a></li>
-                            </ul>
-                        </div>
-                    </div>
+
+                <div class="w3-col s4">
+                    <h4>Soporte para bases de datos:</h4>
+                    <ul class="w3-ul">
+                        <li>Mysql 3, 4 y 5</li>
+                        <li>PostgreSQL</li>
+                        <li>Oracle CAll Interface</li>
+                        <li>SQLite 2 y 3</li>
+                        <li>ODBC v3</li>
+                        <li>Microsoft SQL Server / SQL Azure</li>
+                        <li><a href="http://php.net/manual/es/pdo.drivers.php">otros</a></li>
+                    </ul>
                 </div>
-                <div class="col-md-4">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-                            <h3 class="panel-title">Es para ti si quieres</h3>
-                        </div>
-                        <div class="panel-body">
-                            <ul class="list-unstyled">
-                                <li>Pequeña curva de aprendizaje</li>
-                                <li>Un marco de desarrollo pequeño y poderoso</li>
-                                <li>Excelente rendimiento</li>
-                                <li>Amplia compatibilidad con los alojamientos estándar</li>
-                                <li>Libertad, no requiere reglas de codificación restrictivas</li>
-                                <li>Cero código/s intrusivo/s</li>
-                                <li>Soluciones simples a sistemas grandes y/o complejos</li>
-                                <li>Pasar más tiempo lejos de la computadora</li>
-                            </ul>
-                        </div>
-                    </div>
+                
+                <div class="w3-col s4">
+                    <h4>Es para ti si quieres:</h4>
+                    <ul class="w3-ul">
+                        <li>Pequeña curva de aprendizaje</li>
+                        <li>Un marco de desarrollo pequeño y poderoso</li>
+                        <li>Excelente rendimiento</li>
+                        <li>Amplia compatibilidad con los alojamientos estándar</li>
+                        <li>Libertad, no requiere reglas de codificación restrictivas</li>
+                        <li>Cero código/s intrusivo/s</li>
+                        <li>Soluciones simples a sistemas grandes y/o complejos</li>
+                        <li>Pasar más tiempo lejos de la computadora</li>
+                    </ul>
                 </div>
-            </div>
+            </div>                      
+        
         </div>
+        <div class="w3-col w3-container" style="width:20%"></div>
     </div>
 
-    <div id="footer">
-        <div class="container">
-            <p class="muted credit pie">Marco de desarrollo | página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada(); ?> MB<br><?= ap_titulo().' '.ap_version(); ?> | <?= ap_derechos(); ?></p>
+    <footer class="w3-row">
+        <div class="w3-col w3-container" style="width:20%"></div>
+        <div class="w3-col w3-container w3-blue-grey" style="width:60%">
+            <p>Estructura de desarrollo, página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada(); ?><br><?= ap_titulo().' '.ap_version(); ?> | <?= ap_derechos(); ?></p>
         </div>
-    </div>
-    <script src="<?= url_base('sistema/vistas/js/').'jquery.js'; ?>"></script>
-    <script src="<?= url_base('sistema/vistas/js/').'bootstrap.min.js'; ?>"></script>
+        <div class="w3-col w3-container" style="width:20%"></div>
+    </footer>
+    
 </body>
 </html>

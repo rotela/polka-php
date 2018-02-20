@@ -33,7 +33,7 @@
     </div>
     <div id="footer">
 	  <div class="container">
-	    <p class="muted credit pie">Marco de desarrollo | página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada(); ?> MB<br>
+	    <p class="muted credit pie">Marco de desarrollo | página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada_libre(); ?> MB<br>
 	    	<?= pk_titulo().' '.pk_version(); ?> | Copyright 2014©</p>
 	  </div>
 	</div>

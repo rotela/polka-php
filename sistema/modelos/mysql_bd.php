@@ -43,7 +43,60 @@ class mysql_bd implements bd_interface
     }
     public function describir_tabla($tabla = '')
     {
+        $tabla = (empty($tabla)) ? $this->con->obt_tabla() : $tabla;
         $sql = "DESCRIBE $tabla";
         return $this->con->ejecutar($sql);
+    }
+    public function obt_modelo_vacio($tabla = '')
+    {
+        $tabla = (empty($tabla)) ? $this->con->obt_tabla() : $tabla;
+        $result = $this->con->ejecutar("DESCRIBE $tabla", false);
+        $array = array();
+
+        foreach ($result as $key => $value) {
+            $valor = '';
+
+            $tipo = trim($value['Type']);
+
+            if (strpos($tipo, 'int') !== false) {
+                $valor = 0;
+            }
+
+            if (strpos($tipo, 'double') !== false) {
+                $valor = 0.0;
+            }
+
+            if (strpos($tipo, 'decimal') !== false) {
+                $valor = 0.0;
+            }
+            
+            if (strpos($tipo, 'float') !== false) {
+                $valor = 0.0;
+            }
+
+            if (strpos($tipo, 'numeric') !== false) {
+                $valor = 0;
+            }
+
+            if (strpos($tipo, 'smallint') !== false) {
+                $valor = 0;
+            }
+
+            if (strpos($tipo, 'varchar') !== false) {
+                $valor = '';
+            }
+
+            if (strpos($tipo, 'date') !== false) {
+                $valor = '';
+            }
+
+            if (strpos($tipo, 'datetime') !== false) {
+                $valor = '';
+            }
+
+            $array[$value['Field']] = $valor;
+        }
+
+        return $array;
     }
 }

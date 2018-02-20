@@ -60,4 +60,7 @@ class pgsql_bd implements bd_interface
         
         return $result;
     }
+    public function obt_modelo_vacio()
+    {
+    }
 }

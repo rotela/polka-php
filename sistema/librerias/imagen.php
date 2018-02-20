@@ -15,23 +15,26 @@ class imagen
     {
         if (!array_key_exists('destino', $config)) {
             $this->errores[] = 'No se ha definido el destino del fichero';
-
             return false;
         } else {
             if (!is_dir($config['destino'])) {
-                $this->errores['mensaje'] = 'El destino no es válido';
-
+                $this->errores[] = 'El destino no es válido';
                 return false;
             }
         }
+ 
         if (!array_key_exists('campo', $config)) {
             $this->errores[] = 'No se ha definido el nombre del campo';
-
             return false;
         }
-        $uploaddir = str_replace(SD, '\\', $config['destino']);
+
+       
+        
         $campo = $config['campo'];
-        $uploadfile = $uploaddir.basename($_FILES[$campo]['name']);
+        $uploadfile = $config['destino'] . SD . $_FILES[$campo]['name'];
+        // $uploaddir = str_replace(SD, '\\', $config['destino']);
+        // $campo = $config['campo'];
+        // $uploadfile = $uploaddir.basename($_FILES[$campo]['name']);
 
         foreach ($_FILES as $key => $value) {
             if (is_array($value)) {
@@ -44,13 +47,13 @@ class imagen
         }
 
         if (move_uploaded_file($_FILES[$campo]['tmp_name'], $uploadfile)) {
-            $this->reporte['destino'] = $uploaddir;
+            $this->reporte['destino'] = $config['destino'];
             $this->reporte['mensaje'] = 'El archivo fue cargado exitosamente';
             $this->reporte['url'] = str_replace('\\', '/', $config['destino']).$this->reporte['nombre'];
 
             return true;
         } else {
-            $this->errores['mensaje'] = 'El archivo sobre pasa lo máximo permitido';
+            $this->errores[] = 'El archivo sobre pasa lo máximo permitido';
 
             return false;
         }

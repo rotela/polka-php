@@ -25,13 +25,13 @@ class candado
         return (empty($valor)) ? '' : base64_encode($encriptado);
     }
 
-    public function abrir($valor = '', $clave = '')
+    public function abrir($valor = '', $clave = '', $limpiar = false)
     {
         $clave = empty($clave) ? $this->clave : $clave;
         $clave = $this->pad_key($clave);
         $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
         $decriptado = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $clave, base64_decode($valor), MCRYPT_MODE_ECB, $iv_size);
-        //$decriptado = preg_replace("/[^A-z ÁÉÍÓÚÑáéíóúñ0-9]/i", "", $decriptado);
+        $decriptado = ($limpiar) ? preg_replace("/[^A-z ÁÉÍÓÚÑáéíóúñ0-9]/i", "", $decriptado) : $decriptado;
         return (empty($valor)) ? '' : $decriptado;
     }
 
