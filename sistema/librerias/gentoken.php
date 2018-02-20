@@ -25,10 +25,13 @@ class gentoken
         $datos['id'] = 'TemetNosce';
         $datos['inicio'] = time();
         $datos['expira'] = time() + $s;
+        $datos['ip'] = cliente_ip();
         $texto = '';
+
         foreach ($datos as $key => $value) {
             $texto .= $key.':'.$value.';';
         }
+
         $token = $this->candado->cerrar($texto, $c);
 
         return $token;
@@ -37,6 +40,7 @@ class gentoken
     {
         $c = (!empty($clave)) ? $clave : $this->clave;
         $d = $this->candado->abrir($token, $c);
+
         $r = array();
         if (strpos($d, ';') !== false) {
             $a = explode(';', $d);

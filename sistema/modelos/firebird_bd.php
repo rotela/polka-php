@@ -103,4 +103,65 @@ ORDER BY RF.RDB\$FIELD_POSITION";
         
         return $this->con->ejecutar($sql);
     }
+    public function obt_modelo_vacio()
+    {
+        $tabla = $this->con->obt_tabla();
+         $sql = 'SELECT TRIM(R.RDB$FIELD_NAME) AS field_name,
+        CASE F.RDB$FIELD_TYPE
+         WHEN 7 THEN \'SMALLINT\'
+         WHEN 8 THEN \'INTEGER\'
+         WHEN 9 THEN \'QUAD\'
+         WHEN 10 THEN \'FLOAT\'
+         WHEN 11 THEN \'D_FLOAT\'
+         WHEN 12 THEN \'DATE\'
+         WHEN 13 THEN \'TIME\'
+         WHEN 14 THEN \'CHAR\'
+         WHEN 16 THEN \'INT64\'
+         WHEN 27 THEN \'DOUBLE\'
+         WHEN 35 THEN \'TIMESTAMP\'
+         WHEN 37 THEN \'VARCHAR\'
+         WHEN 40 THEN \'CSTRING\'
+         WHEN 261 THEN \'BLOB\'
+         ELSE \'UNKNOWN\'
+        END AS field_type,
+        F.RDB$FIELD_LENGTH AS field_length,
+        CSET.RDB$CHARACTER_SET_NAME AS field_charset
+        FROM RDB$RELATION_FIELDS R
+        LEFT JOIN RDB$FIELDS F ON R.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME
+        LEFT JOIN RDB$CHARACTER_SETS CSET ON F.RDB$CHARACTER_SET_ID = CSET.RDB$CHARACTER_SET_ID
+    WHERE R.RDB$RELATION_NAME = \''.$tabla.'\'';
+        $result = $this->con->ejecutar($sql, false);
+        $array = array();
+        foreach ($result as $key => $value) {
+            $valor = '';
+            switch (trim($value['FIELD_TYPE'])) {
+                case 'INTEGER':
+                    $valor = 0;
+                    break;
+                case 'SMALLINT':
+                    $valor = 0;
+                    break;
+                case 'VARCHAR':
+                    $valor = '';
+                    break;
+                case 'CHAR':
+                    $valor = '';
+                    break;
+                case 'DATE':
+                    $valor = '';
+                    break;
+                case 'INTEGER':
+                    $valor = 0;
+                    break;
+                case 'DECIMAL':
+                    $valor = 0.0;
+                    break;
+                default:
+                    $valor = '';
+                    break;
+            }
+            $array[$value['FIELD_NAME']] = $valor;
+        }
+        return $array;
+    }
 }

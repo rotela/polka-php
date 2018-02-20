@@ -317,10 +317,19 @@ class PK_Modelo extends PDO
         $primer = 0;
         foreach ($datos as $key => $value) {
             switch (tipo_var($value)) {
-                case 'string':
+               case 'string':
                     $valor = "'$value'";
                     break;
                 case 'numeric':
+                    $valor = $value;
+                    break;
+                case 'decimal':
+                    $valor = $value;
+                    break;
+                case 'integer':
+                    $valor = $value;
+                    break;
+                case 'float':
                     $valor = $value;
                     break;
                 case 'boolean':
@@ -365,6 +374,9 @@ class PK_Modelo extends PDO
                     $valor = "'$value'";
                     break;
                 case 'numeric':
+                    $valor = $value;
+                    break;
+                case 'decimal':
                     $valor = $value;
                     break;
                 case 'integer':
@@ -663,19 +675,19 @@ class PK_Modelo extends PDO
                 case 'string':
                     $mientras .= (empty($mientras)) ? "$campo = '$valor'" : "$campo = '$valor' AND ";
                     break;
-                
+
                 case 'integer':
                     $mientras .= (empty($mientras)) ? "$campo = $valor" : "$campo = $valor AND ";
                     break;
-                
+
                 case 'numeric':
                     $mientras .= (empty($mientras)) ? "$campo = $valor" : "$campo = $valor AND ";
                     break;
-                
+
                 case 'float':
                     $mientras .= (empty($mientras)) ? "$campo = $valor" : "$campo = $valor AND ";
                     break;
-                
+
                 default:
                     $mientras .= (empty($mientras)) ? "$campo = '$valor'" : "$campo = '$valor' AND ";
                     break;
@@ -700,6 +712,16 @@ class PK_Modelo extends PDO
 
     public function insertar($datos = array(), $simular = false)
     {
+        // se filtran los datos propios de la tabla
+        $campos = $this->obt_campos();
+        $datos = obt_arreglo($campos, $datos);
+        $sql = $this->armar_sql_insert($datos);
+        // informe($sql);
+        //
+        $campo_primario = $this->obt_cam_primario();
+        if (isset($datos[$campo_primario])) {
+            unset($datos[$campo_primario]);
+        }
         // se arma la plantilla
         $orden = 'INSERT INTO '.$this->tabla.' (';
         foreach ($datos as $campo => $valor) {
@@ -724,10 +746,7 @@ class PK_Modelo extends PDO
         }
         // se ejecuta
         $estado = $sentencia->execute($fila);
-        if ($simular) {
-            echo $this->orden;
-            exit();
-        } else {
+        if (!$simular) {
             if ($this->comprobar($estado)) {
                 $this->ultimo_id = $this->obt_ult_id();
                 return $estado;
@@ -737,6 +756,9 @@ class PK_Modelo extends PDO
 
     public function editar($datos = array(), $clave = array())
     {
+        // se filtran los datos propios de la tabla
+        $campos = $this->obt_campos();
+        $datos = obt_arreglo($campos, $datos);
         // se arma la plantilla
         $orden = 'UPDATE '.$this->tabla.' SET ';
         foreach ($datos as $campo => $valor) {
@@ -820,6 +842,11 @@ class PK_Modelo extends PDO
         $campos = $this->obt_campos();
         return (empty($this->cam_primario)) ? $campos[0] : $this->cam_primario;
     }
+    public function obt_modelo_vacio()
+    {
+        $this->campos = $this->bd_interface->obt_modelo_vacio();
+        return $this->campos;
+    }
   /**
    * Devuelve la cantidad de registristros de forma general
    * o según las candiciones pasada como parámetro.
@@ -830,15 +857,16 @@ class PK_Modelo extends PDO
    *
    * @return int           Cantidad de registros
    */
-    public function obt_cant_gral($mientras = '')
+    public function obt_cant_gral($mientras = '', $con = 'and')
     {
         if (is_array($mientras)) {
             if (count($mientras) > 0) {
                 $orden = 'SELECT COUNT(*) as cant FROM '.$this->tabla.' WHERE ';
+                $m = '';
                 foreach ($mientras as $campo => $valor) {
-                    $orden .= $campo.'=:'.$campo.', ';
+                    $m .= (empty($m)) ? $campo.'=:'.$campo : " $con ".$campo.'=:'.$campo;
                 }
-                $orden = preg_replace('/, $/', '', $orden);
+                $orden .= $m;
                 $orden .= ' LIMIT 1';
                 $this->orden = $orden;
                 // se prepara la plantilla
@@ -853,7 +881,6 @@ class PK_Modelo extends PDO
                 if ($this->comprobar($estado)) {
                     $resultados = $sentencia->fetchall(PDO::FETCH_OBJ);
                     $fila = $resultados[0];
-
                     return $fila->cant;
                 }
             }
@@ -896,12 +923,11 @@ class PK_Modelo extends PDO
 
         return $this->ultimo_id;
     }
+
     public function obt_tabla()
     {
         return $this->tabla;
     }
-    
-    
 
     public function obt_error()
     {

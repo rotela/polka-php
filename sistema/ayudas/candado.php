@@ -8,7 +8,7 @@ if (!function_exists('candado_abrir')) {
     {
         $candado = obt_coleccion('sistema\librerias\candado');
 
-        return $candado->abrir($valor);
+        return $candado->abrir($valor,'',true);
     }
 }
 if (!function_exists('candado_cerrar')) {
