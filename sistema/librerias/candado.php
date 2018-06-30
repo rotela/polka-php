@@ -14,25 +14,31 @@ class candado
     {
         $this->clave = obt_config('aplicacion')->clave_can;
     }
+    public function procesar($accion, $entrada = '', $clave = '')
+    {
+        $output = false;
+        $encrypt_metodo = "AES-256-CBC";
+        $clave_secreta = (empty($clave)) ? $this->clave : $clave;
+        $iv_secreto = $this->clave;
+        $key = hash('sha256', $clave_secreta);
+        $iv = substr(hash('sha256', $iv_secreto), 0, 16);
+        if ($accion == 'cerrar') {
+            $output = openssl_encrypt($entrada, $encrypt_metodo, $key, 0, $iv);
+            $output = base64_encode($output);
+        } elseif ($accion == 'abrir') {
+            $output = openssl_decrypt(base64_decode($entrada), $encrypt_metodo, $key, 0, $iv);
+        }
+        return $output;
+    }
+
+    public function abrir($valor = '', $clave = '')
+    {
+        return $this->procesar('abrir', $valor, $clave);
+    }
 
     public function cerrar($valor = '', $clave = '')
     {
-        $clave = empty($clave) ? $this->clave : $clave;
-        $clave = $this->pad_key($clave);
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $encriptado = mcrypt_encrypt(MCRYPT_RIJNDAEL_256, $clave, $valor, MCRYPT_MODE_ECB, $iv_size);
-
-        return (empty($valor)) ? '' : base64_encode($encriptado);
-    }
-
-    public function abrir($valor = '', $clave = '', $limpiar = false)
-    {
-        $clave = empty($clave) ? $this->clave : $clave;
-        $clave = $this->pad_key($clave);
-        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_256, MCRYPT_MODE_ECB);
-        $decriptado = mcrypt_decrypt(MCRYPT_RIJNDAEL_256, $clave, base64_decode($valor), MCRYPT_MODE_ECB, $iv_size);
-        $decriptado = ($limpiar) ? preg_replace("/[^A-z ÁÉÍÓÚÑáéíóúñ0-9]/i", "", $decriptado) : $decriptado;
-        return (empty($valor)) ? '' : $decriptado;
+        return $this->procesar('cerrar', $valor, $clave);
     }
 
     private function pad_key($key)
