@@ -1,5 +1,4 @@
 <?php
-
 namespace sistema\nucleo;
 
 if (!defined('SISTEMA')) {
@@ -10,55 +9,55 @@ use sistema\controladores\Errores as Errores;
 use Exception;
 
 /**
- * Clase que supervisa que controlador, método y argumento se está
- * recibiendo, y donde debe dirigirla.
- *
- * @author Ricardo Rotela González ricksystems->gmail.com
- * @copyright Ricksystems (c)2015
- */
+* Clase que supervisa qué controlador, método y argumento se está
+* recibiendo y donde debe dirigirla.
+*
+* @author Ricardo Rotela González ricksystems->gmail.com
+* @copyright Ricksystems (c)2015
+*/
 class PK_Disparador
 {
     /**
-     * Contenedor para el nombre del controlador.
-     *
-     * @var string
-     */
+    * Contenedor para el nombre del controlador.
+    *
+    * @var string
+    */
     private static $controlador;
 
     /**
-     * Contenedor para el nombre del método.
-     *
-     * @var string
-     */
+    * Contenedor para el nombre del método.
+    *
+    * @var string
+    */
     private static $metodo;
 
     /**
-     * Contenedor para la ruta del controlador.
-     *
-     * @var string
-     */
+    * Contenedor para la ruta del controlador.
+    *
+    * @var string
+    */
     private static $rutaControlador;
 
     /**
-     * Contenedor para el nombre de espacio.
-     *
-     * @var string
-     */
+    * Contenedor para el nombre de espacio.
+    *
+    * @var string
+    */
     private static $nombre_spacio;
 
     use PK_Singleton;
 
     /**
-     * Función principal que inicia el sistema,
-     * se solicitará los datos a PK_Solicitud para
-     * saber a que controlador y método delegar lo solicitado
-     * desde el navegador.
-     *
-     * ATENCIÓN
-     *
-     * Esta función no devuelve nada, sin embargo ejecuta
-     * el controlador o clase y/o método solicitado desde el navegador
-     */
+    * Función principal que inicia el sistema,
+    * se solicitará los datos a PK_Solicitud para
+    * saber a que controlador y método delegar lo solicitado
+    * desde el navegador.
+    *
+    * ATENCIÓN
+    *
+    * Esta función no devuelve nada, sin embargo ejecuta
+    * el controlador o clase y/o método solicitado desde el navegador
+    */
     public static function iniciar()
     {
         $config = PK_Config::obt_instancia()->obtener('aplicacion');
@@ -103,8 +102,8 @@ class PK_Disparador
     }
 
     /**
-     * Se dispara el controlador solicitado con su respectivo método y/o argumentos.
-     */
+    * Se dispara el controlador solicitado con su respectivo método y/o argumentos.
+    */
     private static function disparar()
     {
         $rutaControlador = self::$rutaControlador;
@@ -128,8 +127,12 @@ class PK_Disparador
                         call_user_func(array($controlador, self::$metodo));
                     }
                     // Obteniendo errores
-                    if (count(error_get_last()) > 0) {
-                        throw new Exception(mostrar_error('php', error_get_last(), 'php_error'));
+                    if(function_exists('error_get_last')){
+                      if (error_get_last()) {
+                        if (count(error_get_last()) > 0) {
+                             throw new Exception(mostrar_error('php', error_get_last(), 'php_error'));
+                        }
+                      }
                     }
                 } else {
                     throw new Exception(mostrar_error('Metodo', 'El Método '.self::$metodo.' no existe.'));

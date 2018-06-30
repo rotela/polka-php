@@ -10,11 +10,11 @@
 </head>
 <body>
 
-    
+
     <header class="w3-row">
         <div class="w3-col w3-container" style="width:20%"></div>
         <div class="w3-col w3-container w3-blue-grey" style="width:60%">
-            <h2>Polka-php</h2>
+            <h3>Marco de Desarrollo</h3>
         </div>
         <div class="w3-col w3-container" style="width:20%"></div>
     </header>
@@ -22,39 +22,34 @@
     <div class="w3-row">
         <div class="w3-col w3-container" style="width:20%"></div>
         <div class="w3-col w3-container" style="width:60%">
-        
+
             <div class="w3-panel w3-light-grey">
-                <h1>Marco de Desarrollo</h1>
+                <h1>Polka-php</h1>
                 <h3>es fácil, rápido, seguro, gratis y en tú Idioma!!!</h3>
                 <a class="w3-btn w3-green" href="https://github.com/rotela/polka-php">
-                <span class="fa fa-github"></span>Github</a>
+                <span class="fa fa-github"></span> github</a>
                 <a class="w3-btn w3-blue" href="https://github.com/rotela/polka-php/wiki">
-                <span class="fa fa-wikipedia-w"></span>Wiki</a>
+                <span class="fa fa-wikipedia-w"></span> wiki</a>
                 <br>
                 <p></p>
-            </div> 
-           
+            </div>
+
             <p>
-                Polka-php es un marco de desarrollo echo en y para php. Permite desarrollar
-                aplicaciones mucho más rápido ya que no es necesario empezar desde cero.
-                Polka-php brinda varias herramientas para el desarrollo de aplicaciones,
-                cuenta con poderosas librerías, ayudantes y varios componentes que hará más
-                placentero escribir código, dejando que programador se concentre en la lógica
-                de negocio y no en la estructura. Polka-php brinda una estructura básica
-                pero poderosa sobre la cual se puede desarrollar aplicaciones simple como complejas.
+              Polka-php es un marco de desarrollo hecho en y para php. Permite desarrollar aplicaciones web/api mucho más rápido ya que no es necesario empezar desde cero. Polka-php brinda varias herramientas para el desarrollo de aplicaciones web, cuenta con poderosas librerías, ayudantes y varios componentes que hará más placentero escribir código, dejando al programador concentrarse en la lógica de negocio y no en la estructura principal ya que ésta brinda una estructura básica pero poderosa sobre la cual se puede desarrollar aplicaciones simple como complejas.
             </p>
 
             <div class="w3-row">
-                <div class="w3-col s4">                
+                <div class="w3-col s4">
                     <h4>Características:</h4>
                     <ul class="w3-ul">
+                        <li>Arquitectura MVC</li>
                         <li>Modelo de Abstracción de datos</li>
                         <li>Manejador de plantillas</li>
                         <li>Manejos de sesiones</li>
                         <li>Url limpias (amigables)</li>
                         <li>Manejos de formularios</li>
                         <li>Manejos de seguridad</li>
-                        <li>Disparadores, hack's...</li>
+                        <li>Ganchos / Disparadores...</li>
                         <li>Librerías, Ayudantes</li>
                         <li>y muchas otras...</li>
                     </ul>
@@ -72,7 +67,7 @@
                         <li><a href="http://php.net/manual/es/pdo.drivers.php">otros</a></li>
                     </ul>
                 </div>
-                
+
                 <div class="w3-col s4">
                     <h4>Es para ti si quieres:</h4>
                     <ul class="w3-ul">
@@ -86,8 +81,8 @@
                         <li>Pasar más tiempo lejos de la computadora</li>
                     </ul>
                 </div>
-            </div>                      
-        
+            </div>
+
         </div>
         <div class="w3-col w3-container" style="width:20%"></div>
     </div>
@@ -99,6 +94,6 @@
         </div>
         <div class="w3-col w3-container" style="width:20%"></div>
     </footer>
-    
+
 </body>
 </html>
