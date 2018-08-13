@@ -8,17 +8,20 @@ if (!defined('SISTEMA')) {
 
 use sistema\nucleo\PK_Controlador;
 
-class Errores extends PK_Controlador {
-
-    function __construct() {
+class Errores extends PK_Controlador
+{
+    public function __construct()
+    {
         parent::__construct();
     }
 
-    public function principal() {
+    public function principal()
+    {
         mostrar_error('no encontrada :(', 'La página solicitada no existe');
     }
 
-    public function pagina($value = '') {
+    public function pagina($value = '')
+    {
         switch ($value) {
             case '404':
                 mostrar_error('404, no encontrada :(', 'La página solicitada no existe');

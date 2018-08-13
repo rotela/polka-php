@@ -92,21 +92,21 @@ class mysqldump
             'exclude-tables' => array(),
             'compress' => 'None',
             'no-data' => false,
-            'add-drop-table' => true,
-            'add-drop-database' => true,
-            'add-drop-trigger' => true,
+            'add-drop-table' => false,
             'single-transaction' => true,
-            'lock-tables' => true,
+            'lock-tables' => false,
             'add-locks' => false,
             'extended-insert' => true,
             'disable-keys' => true,
             'where' => '',
             'no-create-info' => false,
             'skip-triggers' => false,
+            'add-drop-trigger' => true,
             'hex-blob' => true,
             'databases' => false,
+            'add-drop-database' => false,
             'skip-tz-utz' => false,
-            'no-autocommit' => false,
+            'no-autocommit' => true,
             /* deprecated */
             'disable-foreign-keys-check' => true,
         );
@@ -119,26 +119,25 @@ class mysqldump
 
         /// linea agregada
 
-        // if (empty($db)) {
-        //     $config = PK_Config::obt_instancia()->obtener('bd');
+        if (empty($db)) {
+            $config = PK_Config::obt_instancia()->obtener('bd');
 
-        //     $this->db = $config->base_bd;
+            $this->db = $config->base_bd;
 
-        //     if (empty($user)) {
-        //         $this->user = $config->user_bd;
-        //     }
-        //     if (empty($pass)) {
-        //         $this->pass = $config->pass_bd;
-        //     }
-        //     $this->host = $config->host_bd;
-        //     $this->type = $config->tipo_bd;
-        //     $this->dbType = strtolower($this->type);
-        // } else {
-        // }
-        $this->dbType = strtolower($type);
+            if (empty($user)) {
+                $this->user = $config->user_bd;
+            }
+            if (empty($pass)) {
+                $this->pass = $config->pass_bd;
+            }
+            $this->host = $config->host_bd;
+            $this->type = $config->tipo_bd;
+        }
 
         // fin linea agreagda
 
+        //$this->dbType = strtolower($type);
+        $this->dbType = strtolower($this->type);
         $this->pdoSettings = self::array_replace_recursive($pdoSettingsDefault, $pdoSettings);
         $this->dumpSettings = self::array_replace_recursive($dumpSettingsDefault, $dumpSettings);
 
@@ -983,7 +982,7 @@ abstract class TypeAdapterFactory
 
         $args = func_get_args();
 
-        return "pragma table_info(${args[0]})";
+        return 'pragma table_info(${args[0]})';
     }
 
     public function start_transaction()

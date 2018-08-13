@@ -309,6 +309,17 @@ class PK_Controlador
         return $this->controlador;
     }
 
+    public static function obt_tipo()
+    {
+        return self::$tipo;
+    }
+    public function obt_entradas()
+    {
+        if (!function_exists('obt_entradas_peticion')) {
+            $this->ayudas('obt_entradas_peticion');
+        }
+        return obt_entradas_peticion();
+    }
     public function es_ajax()
     {
         if (!function_exists('es_ajax')) {
@@ -316,10 +327,6 @@ class PK_Controlador
         }
 
         return es_ajax();
-    }
-    public static function obtTipo()
-    {
-        return self::$tipo;
     }
 }
 

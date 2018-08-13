@@ -116,7 +116,7 @@ class PK_Disparador
             $obj_controlador = new $controlador();
             $controlador = &$obj_controlador;
 
-            if ($controlador::obtTipo() == 'controlador') {
+            if ($controlador::obt_tipo() == 'controlador') {
                 // SI ES CONTROLADOR
                 // si existe el método, ejecutarlo
                 if (method_exists($controlador, self::$metodo)) {

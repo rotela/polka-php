@@ -4,10 +4,10 @@ if (!defined('SISTEMA')) {
     exit('No se permite el acceso directo al script.');
 }
 /*
- * Requerimos de php 5.4+
+ * Requerimos de php 7+
  */
-if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 50400) {
-    exit('Polka requiere PHP 5.4 o superior, lo sentimos.');
+if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 70000) {
+    exit('Polka requiere PHP 7+ o superior, lo sentimos, actual: '.PHP_VERSION_ID);
 }
 
 spl_autoload_register('pk_cargar');

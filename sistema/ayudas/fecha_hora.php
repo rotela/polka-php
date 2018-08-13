@@ -6,24 +6,40 @@ if (!function_exists('fecha')) {
         return date('Y-m-d');
     }
 }
+
 if (!function_exists('hora')) {
     function hora()
     {
         return date('H-i-s');
     }
 }
+
 if (!function_exists('fecha_hora')) {
     function fecha_hora()
     {
         return date('Y-m-d H:i:s');
     }
 }
+
+if (!function_exists('dma_amd')) {
+    function dma_amd($fecha, $formato = 'Y-m-d', $formato_ori = 'd-m-Y')
+    {
+        return (empty($fecha)) ? '' : date_format(date_create_from_format($formato_ori, $fecha), $formato);
+    }
+}
+if (!function_exists('amd_dma')) {
+    function amd_dma($fecha, $formato = 'd-m-Y', $formato_ori = 'Y-m-d')
+    {
+        return (empty($fecha)) ? '' : date_format(date_create_from_format($formato_ori, $fecha), $formato);
+    }
+}
 if (!function_exists('fecha_a')) {
-    function fecha_a($fecha, $formato = 'd:m:Y')
+    function fecha_a($fecha, $formato = 'd-m-Y', $formato_ori = 'Y-m-d')
     {
         return (empty($fecha)) ? '' : date($formato, strtotime($fecha));
     }
 }
+
 if (!function_exists('faltan_dias')) {
     function faltan_dias($end = null)
     {

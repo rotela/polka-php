@@ -4,9 +4,9 @@ namespace sistema\nucleo;
 
 use PDO;
 
-use sistema\modelos\firebird_bd;
 use sistema\modelos\mysql_bd;
 use sistema\modelos\pgsql_bd;
+use sistema\modelos\firebird_bd;
 
 if (!defined('SISTEMA')) {
     exit('No se permite acceso directo al script');
@@ -26,7 +26,7 @@ if (!defined('SISTEMA')) {
  * No tocar las propiedades de ésta clase
  * Si desea configurar su Base de Datos, hacer lo indicado anteriormente
  *
- * @copyright Ricksystems (c)2014
+ * @copyright Ricksystems (c)2017
  * @author Ricardo Rotela <ricksystems->gmail.com>
  *
  * @version 2.0 2017/08/30
@@ -40,148 +40,148 @@ class PK_Modelo extends PDO
    */
     private $host_bd = '';
 
-  /**
-   * Contenedor del Puerto del Host.
-   *
-   * @var int
-   */
+    /**
+     * Contenedor del Puerto del Host.
+     *
+     * @var int
+     */
     private $port_bd = 0;
 
-  /**
-   * Contenedor del Tipo de base de datos.
-   *
-   * @var string
-   */
+    /**
+     * Contenedor del Tipo de base de datos.
+     *
+     * @var string
+     */
     private $tipo_bd = '';
 
-  /**
-   * Contenedor del Nombre de Usuario / User de la BD.
-   *
-   * @var string
-   */
+    /**
+     * Contenedor del Nombre de Usuario / User de la BD.
+     *
+     * @var string
+     */
     private $user_bd = '';
 
-  /**
-   * Contenedor del Password del Usuario / User de la bd.
-   *
-   * @var string
-   */
+    /**
+     * Contenedor del Password del Usuario / User de la bd.
+     *
+     * @var string
+     */
     private $pass_bd = '';
 
-  /**
-   * Contenedor del Nombre de La Base de Datos a utilizar.
-   *
-   * @var string
-   */
+    /**
+     * Contenedor del Nombre de La Base de Datos a utilizar.
+     *
+     * @var string
+     */
     private $base_bd = '';
 
-  /**
-   * Contenedor del Tipo de Cotejamiento que utilizará el Modelo.
-   *
-   * @var string
-   */
+    /**
+     * Contenedor del Tipo de Cotejamiento que utilizará el Modelo.
+     *
+     * @var string
+     */
     private $cote_bd = 'utf8';
 
-  /**
-   * Contenedor del Nombre de la tabla con la cual construír
-   * el Modelo.
-   *
-   * @var string
-   */
+    /**
+     * Contenedor del Nombre de la tabla con la cual construír
+     * el Modelo.
+     *
+     * @var string
+     */
     private $tabla = '';
-  /**
-   * Contenedor del Nombre id principal de la tabla
-   *
-   * @var string
-   */
+    /**
+     * Contenedor del Nombre id principal de la tabla
+     *
+     * @var string
+     */
     private $cam_primario = '';
 
-  /**
-   * Contenedor de Nombres de las Tablas contenidas en la bd.
-   *
-   * @var array
-   */
+    /**
+     * Contenedor de Nombres de las Tablas contenidas en la bd.
+     *
+     * @var array
+     */
     private $tablas = array();
 
-  /**
-   * Contenedor de los Nombre de Columnas.
-   *
-   * @var array
-   */
+    /**
+     * Contenedor de los Nombre de Columnas.
+     *
+     * @var array
+     */
     private $campos = array();
 
-  /**
-   * Cantidad de filas dovolvidas por alguna consulta.
-   *
-   * @var int
-   */
+    /**
+     * Cantidad de filas dovolvidas por alguna consulta.
+     *
+     * @var int
+     */
     private $cant_filas = 0;
 
-  /**
-   * Ultimo id del registro que se haya insertado (sólo mysql).
-   *
-   * @var int
-   */
+    /**
+     * Ultimo id del registro que se haya insertado (sólo mysql).
+     *
+     * @var int
+     */
     private $ultimo_id = 0;
 
-  /**
-   * Contenedor de datos de registro generados por alguna consulta
-   * dependiendo si es un arreglo tipo array u objeto.
-   *
-   * @var array
-   */
+    /**
+     * Contenedor de datos de registro generados por alguna consulta
+     * dependiendo si es un arreglo tipo array u objeto.
+     *
+     * @var array
+     */
     public $datos = array();
 
-  /**
-   * Contenedor de la última sentencia SQL ejecutada.
-   *
-   * @var string
-   */
+    /**
+     * Contenedor de la última sentencia SQL ejecutada.
+     *
+     * @var string
+     */
     private $orden = '';
 
-  /**
-   * Contenedor de sentencias SQL de forma de array, segmentadas.
-   *
-   * @var array
-   */
+    /**
+     * Contenedor de sentencias SQL de forma de array, segmentadas.
+     *
+     * @var array
+     */
     private $orden_l = array();
 
-  /**
-   * Contenedor de todas las órdenes SQL ejecutadas en una instancia.
-   *
-   * @var array
-   */
+    /**
+     * Contenedor de todas las órdenes SQL ejecutadas en una instancia.
+     *
+     * @var array
+     */
     private $orden_hist = array();
 
-  /**
-   * Contenedor del error/es.
-   *
-   * @var string
-   */
+    /**
+     * Contenedor del error/es.
+     *
+     * @var string
+     */
     private $error = '';
 
-  /**
-   * Contiene todas las columnas de una fila.
-   *
-   * @var array
-   */
+    /**
+     * Contiene todas las columnas de una fila.
+     *
+     * @var array
+     */
     public $fila = array();
 
-  /**
-   * Propiedad protegida para las instanciaciones.
-   *
-   * @var [type]
-   */
+    /**
+     * Propiedad protegida para las instanciaciones.
+     *
+     * @var [type]
+     */
     protected $tg;
 
-  /*
-  * Se utiliza Singleton para instanciar fuera del controlador
-  */
+    /*
+    * Se utiliza Singleton para instanciar fuera del controlador
+    */
     use PK_Singleton;
 
-  /**
-   * Marcador para saber si está conectado.
-   */
+    /**
+     * Marcador para saber si está conectado.
+     */
     private $conectado = false;
 
     /**
@@ -190,28 +190,28 @@ class PK_Modelo extends PDO
 
     private $bd_interface;
 
-  /**
-   * El contructor requiere o espera el nombre de la tabla a utilizar
-   * por el modelo, se debe indicar el nombre de la tabla
-   * en el constructor del modelo hijo o clase hija.
-   *
-   * @param string $tabla [description]
-   */
-    public function __construct($tabla = '', $cam_primario = '')
+    /**
+     * El contructor requiere o espera el nombre de la tabla a utilizar
+     * por el modelo, se debe indicar el nombre de la tabla
+     * en el constructor del modelo hijo o clase hija.
+     *
+     * @param string $tabla [description]
+     */
+    public function __construct($tabla = '', $campo_primario = '')
     {
         if (empty($tabla)) {
             throw new \Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
         } else {
             $this->tabla = trim($tabla);
-            $this->cam_primario = trim($cam_primario);
+            $this->cam_primario = trim($campo_primario);
             $this->conectar();
         }
     }
 
-  /**
-   * Configura y conecta el modelo con la BD, según
-   * los datos suministrados en aplicacion/configuracion/bd.php.
-   */
+    /**
+     * Configura y conecta el modelo con la BD, según
+     * los datos suministrados en aplicacion/configuracion/bd.php.
+     */
     private function conectar()
     {
         // obtengo la configuración desde la configuración de bd
@@ -248,23 +248,23 @@ class PK_Modelo extends PDO
 
                 default:
                     parent::__construct('mysql:host='.$this->host_bd.';dbname='.$this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$this->cote_bd));
+                    $this->bd_interface = new mysql_bd($this);
                     break;
             }
-            $this->conectado = true;
         } catch (\PDOException $e) {
             exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
         }
     }
 
-  /**
-   * Se utiliza para asignar a un valor a un campo
-   * como si fuera una funcion, ej.
-   * $this->edad(30)
-   * Esta función es utilizada con la función guardar().
-   *
-   * @param  string $nombre    Nombre de la función (nombre del campo o columna)
-   * @param  mixed $parametro Parámetro de la función
-   */
+    /**
+     * Se utiliza para asignar a un valor a un campo
+     * como si fuera una funcion, ej.
+     * $this->edad(30)
+     * Esta función es utilizada con la función guardar().
+     *
+     * @param  string $nombre    Nombre de la función (nombre del campo o columna)
+     * @param  mixed $parametro Parámetro de la función
+     */
     public function __call($nombre, $parametro)
     {
         if (empty($this->campos)) {
@@ -277,18 +277,18 @@ class PK_Modelo extends PDO
         }
     }
 
-  /**
-   * Función para obtener datos de una columna específica
-   * Ej.
-   * echo $this->edad
-   * Esta función es utilizada despues de ejecutar una búsqueda
-   * o consulta que devuelva un sólo registro.
-   *
-   * @param  [type] $propiedad Nombre de la propiedad a acceder
-   *                           Nombre de la columna a acceder
-   *
-   * @return mixed            Según lo que contiene ésa propiedad o columna
-   */
+    /**
+     * Función para obtener datos de una columna específica
+     * Ej.
+     * echo $this->edad
+     * Esta función es utilizada despues de ejecutar una búsqueda
+     * o consulta que devuelva un sólo registro.
+     *
+     * @param  [type] $propiedad Nombre de la propiedad a acceder
+     *                           Nombre de la columna a acceder
+     *
+     * @return mixed            Según lo que contiene ésa propiedad o columna
+     */
     public function __get($propiedad)
     {
         if (array_key_exists($propiedad, $this->fila)) {
@@ -298,13 +298,13 @@ class PK_Modelo extends PDO
         }
     }
 
-  /**
-   * Devuelve la fila del registro encontrado, y sus columnas como propiedades
-   * Esta función es utilizada después de una búsqueda o consulta
-   * anterior.
-   *
-   * @return object Objecto de la fila encontrada
-   */
+    /**
+     * Devuelve la fila del registro encontrado, y sus columnas como propiedades
+     * Esta función es utilizada después de una búsqueda o consulta
+     * anterior.
+     *
+     * @return object Objecto de la fila encontrada
+     */
     public function obt_fila()
     {
         return $this->fila;
@@ -317,7 +317,7 @@ class PK_Modelo extends PDO
         $primer = 0;
         foreach ($datos as $key => $value) {
             switch (tipo_var($value)) {
-               case 'string':
+                case 'string':
                     $valor = "'$value'";
                     break;
                 case 'numeric':
@@ -363,16 +363,20 @@ class PK_Modelo extends PDO
         $campos = '';
         $valores = '';
         $primer = 0;
+
         foreach ($mientras as $key => $value) {
             if (array_key_exists($key, $datos)) {
                 unset($datos[$key]);
             }
         }
+        
         foreach ($datos as $key => $value) {
             switch (tipo_var($value)) {
+
                 case 'string':
                     $valor = "'$value'";
                     break;
+
                 case 'numeric':
                     $valor = $value;
                     break;
@@ -382,12 +386,15 @@ class PK_Modelo extends PDO
                 case 'integer':
                     $valor = $value;
                     break;
+
                 case 'float':
                     $valor = $value;
                     break;
+
                 case 'boolean':
                     $valor = ($value == true) ? 1 : 0;
                     break;
+
                 default:
                     $valor = $value;
                     break;
@@ -409,20 +416,20 @@ class PK_Modelo extends PDO
 
         return $sql;
     }
-  /**
-   * Busca un registro con los datos pasados como parámetros,
-   * Esta función es ideal para encontrar registros únicos o específicos
-   * No se recomienda utilizar si se espera varios registros.
-   *
-   * @param  array   $datos  Parámetro de búsqueda ej.
-   *                         $this->buscar_por(array('id'=>8));
-   *                         Lo anterior buscará el registro con la columna
-   *                         id = 8
-   * @param bool          Se indica false si desea el resultado como array
-   *                         asociativo o true en caso de objeto
-   *
-   * @return  mixed $objeto  Devuelve el resultado o false si no encontró
-   */
+    /**
+     * Busca un registro con los datos pasados como parámetros,
+     * Esta función es ideal para encontrar registros únicos o específicos
+     * No se recomienda utilizar si se espera varios registros.
+     *
+     * @param  array   $datos  Parámetro de búsqueda ej.
+     *                         $this->buscar_por(array('id'=>8));
+     *                         Lo anterior buscará el registro con la columna
+     *                         id = 8
+     * @param bool          Se indica false si desea el resultado como array
+     *                         asociativo o true en caso de objeto
+     *
+     * @return  mixed $objeto  Devuelve el resultado o false si no encontró
+     */
     public function buscar_por($datos = array(), $objeto = true, $columnas = array())
     {
         // preparo la orden
@@ -431,28 +438,31 @@ class PK_Modelo extends PDO
         } else {
             $orden = 'SELECT '.implode(', ', $columnas).' FROM '.$this->tabla.' WHERE ';
         }
+        $m = '';
         foreach ($datos as $campos => $valor) {
-            $orden .= $campos.' = :'.$campos.' AND ';
+            $m .= empty($m) ? $campos.'=:'.$campos : ' AND '.$campos.'=:'.$campos;
         }
-        $this->orden = preg_replace('/AND $/', '', $orden);
+        $orden .= $m;
+        $this->orden = $orden;
+
         $query = $this->prepare($this->orden);
         // paso los parámetros
         foreach ($datos as $campo => $valor) {
-            $query->bindValue(':'.$campo, $valor);
+            $query->bindValue(":$campo", $valor);
         }
         // ejecuto
         $resultados = $query->execute();
         // compruebo los resultados
         if ($this->comprobar($resultados)) {
-            $cant = $query->rowCount();
-            $this->cant_filas = empty($cant) ? 0 : $cant;
+            $fila = $query->fetchAll(PDO::FETCH_ASSOC);
+            $this->cant_filas = count($fila);
+
             if ($this->cant_filas > 0) {
-                $fila = $query->fetchAll(PDO::FETCH_ASSOC);
                 $this->fila = $fila[0];
                 if ($objeto) {
-                    return (object) $fila[0];
+                    return (object) $this->fila;
                 } else {
-                    return $fila[0];
+                    return $this->fila;
                 }
             } else {
                 return false;
@@ -471,24 +481,24 @@ class PK_Modelo extends PDO
         }
     }
 
-  /**
-   * Función segmentada de selección de campos,
-   * esta función debe ser precedida de otras funciones
-   * como ser: $this->desde() y $this->obtener() para recibir los registros
-   * seleccionados.
-   *
-   * Ej:
-   * $tabla = $this->seleccionar(array('usuario','password'))->desde('usuarios')->obtener();
-   * Esta devolveria todos los registros con los campos usuario y password desde
-   * la tabla usuarios
-   *
-   * Obs:
-   * Esta función permite anidamientos con otras funciones
-   *
-   * @param  mixed  $campos String o array de los nombres de campos
-   *
-   * @return object         Se devuelve asi mismo
-   */
+    /**
+     * Función segmentada de selección de campos,
+     * esta función debe ser precedida de otras funciones
+     * como ser: $this->desde() y $this->obtener() para recibir los registros
+     * seleccionados.
+     *
+     * Ej:
+     * $tabla = $this->seleccionar(array('usuario','password'))->desde('usuarios')->obtener();
+     * Esta devolveria todos los registros con los campos usuario y password desde
+     * la tabla usuarios
+     *
+     * Obs:
+     * Esta función permite anidamientos con otras funciones
+     *
+     * @param  mixed  $campos String o array de los nombres de campos
+     *
+     * @return object         Se devuelve asi mismo
+     */
     public function seleccionar($campos = array())
     {
         $this->orden_l = array();
@@ -506,7 +516,7 @@ class PK_Modelo extends PDO
             }
         }
 
-          return $this;
+        return $this;
     }
 
     public function desde($tabla = '')
@@ -596,26 +606,25 @@ class PK_Modelo extends PDO
         return $this;
     }
 
-  /**
-   * Función segmentada, se ejecuta depués de preparar
-   * las consultas o ejecutar directo para recuperar todos los registros
-   * Uso
-   * $this->seleccionar()->desde()->obtener.
-   *
-   * @param  bool $objeto True para obtener objeto, false
-   *                         para obtener array
-   * @param  bool $lista  True para obtener en forma de lista
-   *                         false para obener en caso de un registro
-   *                         un solo arreglo asociativo
-   *                         Colocar True si se espera los resultados
-   *                         como para recorrerlo
-   *
-   * @return mixed           Objeto u array asociativo, según el parámetro
-   *                         anterior
-   */
+    /**
+     * Función segmentada, se ejecuta depués de preparar
+     * las consultas o ejecutar directo para recuperar todos los registros
+     * Uso
+     * $this->seleccionar()->desde()->obtener.
+     *
+     * @param  bool $objeto True para obtener objeto, false
+     *                         para obtener array
+     * @param  bool $lista  True para obtener en forma de lista
+     *                         false para obener en caso de un registro
+     *                         un solo arreglo asociativo
+     *                         Colocar True si se espera los resultados
+     *                         como para recorrerlo
+     *
+     * @return mixed           Objeto u array asociativo, según el parámetro
+     *                         anterior
+     */
     public function obtener($objeto = true, $lista = true)
     {
-
         if (count($this->orden_l) <= 0) {
             $this->seleccionar()->desde();
         }
@@ -630,8 +639,8 @@ class PK_Modelo extends PDO
 
     public function obtener_mientras($condicion = '', $objeto = true)
     {
-        $this->orden_l = array();
-        if (count($this->orden_l <= 0)) {
+        //$this->orden_l = array();
+        if (count($this->orden_l) <= 0) {
             $this->seleccionar()->desde();
         }
         $this->mientras($condicion);
@@ -639,32 +648,37 @@ class PK_Modelo extends PDO
         return $this->obtener($objeto);
     }
 
-    public function guardar()
+    public function guardar($devolver = true)
     {
         $campo_primario = $this->obt_cam_primario();
         $clave = array($campo_primario => $this->obt_ult_id());
-        $estado = false;
+        $result = false;
         // si existe un campo primario
         if (array_key_exists($campo_primario, $this->datos)) {
             $id = $this->datos[$campo_primario];
             unset($this->datos[$campo_primario]);
-            // preguntamos si es cero (nuevo), será insertado un nuevo registro
+            // preguntamos, si es cero (nuevo) será insertado un nuevo registro
             if ($id == 0) {
-                $estado = $this->insertar($this->datos);
+                $result = $this->insertar($this->datos, true);
             } else {
                 // o será editado
-                $estado = $this->editar($this->datos, $clave);
+                $clave = array($campo_primario => $id);
+                $result = $this->editar($this->datos, $clave);
             }
         } else {
             //será insertado un nuevo registro
-            $estado = $this->insertar($this->datos);
+            $result = $this->insertar($this->datos);
         }
         // Al guardar con éste método, se obtiene instantáneamente
         // el registro guardado (el último).
 
-        $this->buscar_por($clave);
-
-        return $estado;
+        if ($result) {
+            if ($devolver) {
+                $clave = array($campo_primario => $this->obt_ult_id());
+                $result = $this->buscar_por($clave);
+            }
+        }
+        return $result;
     }
 
     public function eliminar_por($datos = array())
@@ -709,99 +723,29 @@ class PK_Modelo extends PDO
 
         return $this->tablas;
     }
-
+    public function insertar_obtener($datos = array(), $simular = false)
+    {
+        $result = $this->insertar($datos, $simular);
+        if ($result) {
+            $result = $this->buscar_por(array($this->obt_cam_primario() => $this->obt_ult_id()));
+        }
+        return $result;
+    }
     public function insertar($datos = array(), $simular = false)
     {
-        // se filtran los datos propios de la tabla
-        $campos = $this->obt_campos();
-        $datos = obt_arreglo($campos, $datos);
-        $sql = $this->armar_sql_insert($datos);
-        // informe($sql);
-        //
-        $campo_primario = $this->obt_cam_primario();
-        if (isset($datos[$campo_primario])) {
-            unset($datos[$campo_primario]);
-        }
-        // se arma la plantilla
-        $orden = 'INSERT INTO '.$this->tabla.' (';
-        foreach ($datos as $campo => $valor) {
-            $orden .= $campo.', ';
-        }
-        $orden .= ') VALUES (';
-        foreach ($datos as $campo => $valor) {
-            $orden .= ':'.$campo.', ';
-        }
-        $orden .= ')';
-        // se limpia
-        $this->orden = str_replace(', )', ')', $orden);
-
-        $this->orden_hist[] = $this->orden;
-
-        // se prepara la plantilla
-        $sentencia = $this->prepare($this->orden);
-        // se arma la fila con los datos ingresados
-        $fila = array();
-        foreach ($datos as $campo => $valor) {
-            $fila[':'.$campo] = $valor;
-        }
-        // se ejecuta
-        $estado = $sentencia->execute($fila);
-        if (!$simular) {
-            if ($this->comprobar($estado)) {
-                $this->ultimo_id = $this->obt_ult_id();
-                return $estado;
-            }
-        }
+        return $this->bd_interface->insertar($datos, $simular);
     }
-
-    public function editar($datos = array(), $clave = array())
+    public function editar($datos = array(), $clave = array(), $simular = false)
     {
-        // se filtran los datos propios de la tabla
-        $campos = $this->obt_campos();
-        $datos = obt_arreglo($campos, $datos);
-        // se arma la plantilla
-        $orden = 'UPDATE '.$this->tabla.' SET ';
-        foreach ($datos as $campo => $valor) {
-            $orden .= $campo.'=:'.$campo.', ';
-        }
-        $orden .= 'WHERE ';
-        foreach ($clave as $key => $value) {
-            $orden .= $key.'='.$value.' AND ';
-        }
-        $orden = preg_replace('/AND $/', '', $orden);
-        $orden = str_replace(', WHERE', ' WHERE', $orden);
-        $this->orden = $orden;
-
-        // se prepara la plantilla
-        $sentencia = $this->prepare($this->orden);
-        // se arma la fila con los datos ingresados
-        $fila = array();
-        foreach ($datos as $campo => $valor) {
-            $fila[':'.$campo] = $valor;
-        }
-        // se ejecuta
-        $estado = $sentencia->execute($fila);
-        if ($this->comprobar($estado)) {
-            return $estado;
-        }
+        return $this->bd_interface->editar($datos, $clave, $simular);
     }
 
-    public function ejecutar($orden = '', $objeto = true)
+    public function ejecutar($orden = '', $objeto = false)
     {
-        $this->orden = $orden;
-        $this->orden_hist[] = $this->orden;
-        $resultado = $this->query($this->orden);
-        if ($this->comprobar($resultado)) {
-            $this->cant_filas = $resultado->rowCount();
-            if ($objeto) {
-                return $resultado->fetchall(PDO::FETCH_OBJ);
-            } else {
-                return $resultado->fetchall(PDO::FETCH_ASSOC);
-            }
-        }
+        return $this->bd_interface->ejecutar($orden, $objeto);
     }
 
-    private function comprobar($resultado)
+    public function comprobar($resultado)
     {
         if ($resultado) {
             return true;
@@ -810,20 +754,9 @@ class PK_Modelo extends PDO
         }
     }
 
-    private function obt_tipo($value = '')
+    private function obt_tipo($value)
     {
-        $arreglo = explode('(', $value);
-        switch ($arreglo[0]) {
-            case 'init':
-                return 0;
-                break;
-            case 'tinyint':
-                return 0;
-                break;
-            default:
-                return '';
-                break;
-        }
+        return tipo_var($value);
     }
 
     public function obt_sum_col($columna = '')
@@ -847,27 +780,25 @@ class PK_Modelo extends PDO
         $this->campos = $this->bd_interface->obt_modelo_vacio();
         return $this->campos;
     }
-  /**
-   * Devuelve la cantidad de registristros de forma general
-   * o según las candiciones pasada como parámetro.
-   *
-   * @param  string $mientras Condición por las que se contarán los registros
-   *                          ejemplo: "idcategoria=1452" devolverá la cantidad
-   *                          de registros con el idcategoria 1452
-   *
-   * @return int           Cantidad de registros
-   */
-    public function obt_cant_gral($mientras = '', $con = 'and')
+    /**
+     * Devuelve la cantidad de registristros de forma general
+     * o según las candiciones pasada como parámetro.
+     *
+     * @param  string $mientras Condición por las que se contarán los registros
+     *                          ejemplo: "idcategoria=1452" devolverá la cantidad
+     *                          de registros con el idcategoria 1452
+     *
+     * @return int           Cantidad de registros
+     */
+    public function obt_cant_gral($mientras = '')
     {
         if (is_array($mientras)) {
             if (count($mientras) > 0) {
-                $orden = 'SELECT COUNT(*) as cant FROM '.$this->tabla.' WHERE ';
-                $m = '';
+                $orden = 'SELECT COUNT(*) as CANT FROM '.$this->tabla.' WHERE ';
                 foreach ($mientras as $campo => $valor) {
-                    $m .= (empty($m)) ? $campo.'=:'.$campo : " $con ".$campo.'=:'.$campo;
+                    $orden .= $campo.'=:'.$campo.', ';
                 }
-                $orden .= $m;
-                $orden .= ' LIMIT 1';
+                $orden = preg_replace('/, $/', '', $orden);
                 $this->orden = $orden;
                 // se prepara la plantilla
                 $sentencia = $this->prepare($this->orden);
@@ -877,25 +808,59 @@ class PK_Modelo extends PDO
                     $fila[':'.$campo] = $valor;
                 }
                 // se ejecuta
-                $estado = $sentencia->execute($fila);
-                if ($this->comprobar($estado)) {
-                    $resultados = $sentencia->fetchall(PDO::FETCH_OBJ);
-                    $fila = $resultados[0];
-                    return $fila->cant;
+                $sentencia->execute($fila);
+                $resultados = $sentencia->fetchall(PDO::FETCH_ASSOC);
+                if (count($resultados)>0) {
+                    return $resultados[0]['CANT'];
+                } else {
+                    return 0;
                 }
             }
         } else {
             if (empty($mientras)) {
-                $this->orden = 'SELECT COUNT(*) as cant FROM '.$this->tabla.' LIMIT 1';
-                $resultados = $this->ejecutar($this->orden);
+                $this->orden = 'SELECT COUNT(*) as CANT FROM '.$this->tabla;
             } else {
-                $this->orden = 'SELECT COUNT(*) as cant FROM '.$this->tabla.' WHERE '.$mientras.' LIMIT 1';
-                $resultados = $this->ejecutar($this->orden);
+                $this->orden = 'SELECT COUNT(*) as CANT FROM '.$this->tabla.' WHERE '.$mientras;
             }
-            $fila = $resultados;
-
-            return $fila[0]->cant;
+            // se ejecuta
+            $resultados = $this->ejecutar($this->orden);
+            if (count($resultados)>0) {
+                return $resultados[0]['CANT'];
+            } else {
+                return 0;
+            }
         }
+    }
+    public function consistencia($datos=array())
+    {
+        $obt_nulo = function ($campo, $detalle) {
+            $t = '';
+            foreach ($detalle as $key => $value) {
+                if (trim($campo) == trim($value['FIELD_NAME'])) {
+                    $t = $value['FIELD_NULL'];
+                    break;
+                }
+            }
+            return $t;
+        };
+        $obt_tipo = function ($campo, $detalle) {
+            $t = '';
+            foreach ($detalle as $key => $value) {
+                if (trim($campo) == trim($value['FIELD_NAME'])) {
+                    $t = $value['FIELD_TYPE'];
+                    break;
+                }
+            }
+            return $t;
+        };
+        $s = '';
+        $detalle = $this->obt_descripcion();
+        foreach ($datos as $key => $value) {
+            $tipo = $obt_tipo($key, $detalle);
+            $nulo = $obt_nulo($key, $detalle);
+            $s .= "$key: $value tipo: $tipo nulo: $nulo, \n";
+        }
+        return $s;
     }
     public function obt_lista($offset = 0, $limite = 0)
     {
@@ -920,51 +885,35 @@ class PK_Modelo extends PDO
     public function obt_ult_id($secuencia = '')
     {
         $this->ultimo_id = $this->bd_interface->obt_ult_id($secuencia);
-
         return $this->ultimo_id;
     }
-
     public function obt_tabla()
     {
         return $this->tabla;
     }
-
+    public function obt_descripcion()
+    {
+        return $this->bd_interface->describir_tabla($this->tabla);
+    }
     public function obt_error()
     {
-        if (count($this->error) > 0) {
-            $this->error = implode(',', $this->errorInfo());
-        } else {
-            $this->error = 'Al parecer no hay errores';
-        }
-
-        return $this->error;
+        return implode(',', $this->errorInfo());
     }
-
     public function obt_orden()
     {
         return $this->orden;
     }
-
     public function obt_orden_l()
     {
         return implode(' ', $this->orden_l);
     }
-
-    public function obt_datos_combo($campos = array())
+    public function obt_datos()
     {
-        return $this->seleccionar($campos)->desde()->obtener(false);
+        return $this->datos;
     }
-
     public function obt_orden_hist()
     {
         return $this->orden_hist;
-    }
-
-    private function comprobar_conexion()
-    {
-        if (!$this->conectado) {
-            $this->conectar();
-        }
     }
 }
 

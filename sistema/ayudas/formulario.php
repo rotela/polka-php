@@ -74,6 +74,7 @@ if (!function_exists('obt_csrf')) {
 if (!function_exists('obt_entradas_peticion')) {
     function obt_entradas_peticion()
     {
+        obt_ayuda('limpiador');
         $entradas = array();
         $texto = html_entity_decode(@file_get_contents('php://input'), ENT_QUOTES, 'UTF-8');
 
@@ -83,7 +84,7 @@ if (!function_exists('obt_entradas_peticion')) {
                     $entradas = array_merge($entradas, $_POST);
                 } else {
                     $otros = (array) json_decode($texto);
-                  
+
                     if (count($otros) > 0) {
                         $entradas = array_merge($entradas, $otros);
                     }
@@ -115,7 +116,8 @@ if (!function_exists('obt_entradas_peticion')) {
         if (isset($entradas['url'])) {
             unset($entradas['url']);
         }
-        obt_ayuda('limpiador');
+        $entradas = array_normalizar($entradas);
+
         $entradas = sanear($entradas);
 
         return $entradas;

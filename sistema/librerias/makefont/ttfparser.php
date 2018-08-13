@@ -12,7 +12,10 @@ class ttfparser
     public $f;
     public $tables;
     public $unitsPerEm;
-    public $xMin, $yMin, $xMax, $yMax;
+    public $xMin;
+    public $yMin;
+    public $xMax;
+    public $yMax;
     public $numberOfHMetrics;
     public $numGlyphs;
     public $widths;
