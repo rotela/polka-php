@@ -18,11 +18,11 @@ class gentoken
         $this->segundos = $ap->ses_tiempo;
         $this->candado = obt_coleccion('sistema\librerias\candado');
     }
-    public function generar($datos = array(), $clave = '', $tiempo = 0)
+    public function generar(array $datos = array(), string $clave = '', int $tiempo = 0):string
     {
         $s = ($tiempo > 0) ? $tiempo : $this->segundos;
         $c = (!empty($clave)) ? $clave : $this->clave;
-        $datos['id'] = 'TemetNosce';
+        $datos['id'] = '1';
         $datos['inicio'] = time();
         $datos['expira'] = time() + $s;
         $datos['ip'] = cliente_ip();
@@ -31,16 +31,14 @@ class gentoken
         foreach ($datos as $key => $value) {
             $texto .= $key.':'.$value.';';
         }
-
         $token = $this->candado->cerrar($texto, $c);
 
         return $token;
     }
-    public function explorar($token = '', $clave = '')
+    public function explorar(string $token = '', string $clave = ''):array
     {
         $c = (!empty($clave)) ? $clave : $this->clave;
         $d = $this->candado->abrir($token, $c);
-
         $r = array();
         if (strpos($d, ';') !== false) {
             $a = explode(';', $d);
@@ -51,13 +49,17 @@ class gentoken
                 }
             }
         }
+
+        $tiempo = $r['expira'] - $r['inicio'];
+        $restante = ((($r['expira'] - time())/60)/60);
+        $h = date("Y-m-d H:i:s", $r['expira']);
+        // informe_limpio("restante: ".$restante . " hora fin: ".$h);
         if (count($r) > 0) {
             $r['expirado'] = ($r['expira'] < time());
         }
-
         return $r;
     }
-    public function expirado($token = '', $clave = '')
+    public function expirado(string $token = '', string $clave = ''):array
     {
         $expirado = false;
         $datos = $this->explorar($token, $clave);

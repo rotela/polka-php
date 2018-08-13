@@ -17,7 +17,7 @@ if (!function_exists('seguir')) {
             //segundos
             $ahora = date('Y-m-d H:i:s:');
             $archivo = APLICACION.'seguimiento'.SD.'reporte.txt';
-            $mensaje = ucfirst($mensaje);
+
             $contenido = "$ahora$ms > $mensaje\n";
 
             if (!$gestor = fopen($archivo, 'a')) {
@@ -36,20 +36,22 @@ if (!function_exists('seguir')) {
 
     seguir('||| Iniciando Seguimiento |||');
 }
-
-if (!function_exists('informe')) {
-    function informe($mensaje = '')
+if (!function_exists('escribrir_informe')) {
+    function escribrir_informe(string $mensaje = '', $limpio = false)
     {
         $mtime = microtime(true);
         $mtime = explode('.', $mtime);
         $ms = round($mtime[1]);
         //segundos
-        $ahora = date('Y-m-d H:i:s:');
+        $ahora = date('d-m-Y H:i:s:');
         $archivo = APLICACION.'seguimiento'.SD.'informe.txt';
-        $mensaje = ucfirst($mensaje);
+        //$mensaje = ucfirst($mensaje);
         $contenido = "$ahora$ms > $mensaje\n";
+        $tipo = 'a';
 
-        if (!$gestor = fopen($archivo, 'a')) {
+        $tipo = ($limpio) ? 'w' : 'a';
+
+        if (!$gestor = fopen($archivo, $tipo)) {
             exit(mostrar_error('Informe', "No se puede abrir el archivo ($archivo)"));
         }
         // Escribir $contenido a nuestro archivo abierto.
@@ -57,5 +59,18 @@ if (!function_exists('informe')) {
             exit(mostrar_error('Informe', "No se puede escribir en el archivo ($archivo)"));
         }
         fclose($gestor);
+    }
+}
+
+if (!function_exists('informe')) {
+    function informe($mensaje = '')
+    {
+        escribrir_informe($mensaje, false);
+    }
+}
+if (!function_exists('informe_limpio')) {
+    function informe_limpio($mensaje = '')
+    {
+        escribrir_informe($mensaje, true);
     }
 }

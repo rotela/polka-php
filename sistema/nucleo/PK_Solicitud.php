@@ -32,7 +32,8 @@ class PK_Solicitud
 
         if (!empty($url)) {
             // Se sustraen las subcarpetas si es que exite/n
-            $url = array_filter(explode('/', $url));
+            $url = explode('/', $url);
+            //$url = array_filter(explode('/', $url));
             $cadena = '';
             for ($i = 0; $i < count($url); ++$i) {
                 $cadena .= $url[$i].SD;
@@ -41,7 +42,6 @@ class PK_Solicitud
                     unset($url[$i]);
                 }
             }
-
             self::$controlador = array_shift($url);
             self::$metodo = array_shift($url);
             self::$argumentos = $url;

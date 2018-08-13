@@ -3,9 +3,8 @@ namespace sistema\modelos;
 
 use PDO;
 
-class mysql_bd implements bd_interface
+class sqlite_bd implements bd_interface
 {
-
     private $con;
 
     public function __construct($con)
@@ -38,6 +37,7 @@ class mysql_bd implements bd_interface
         $orden .= ')';
         // se limpia
         $this->con->orden = str_replace(', )', ')', $orden);
+        $this->con->orden_hist[] = $this->con->orden;
         // se prepara la plantilla
         $sentencia = $this->con->prepare($this->con->orden);
         // se arma la fila con los datos ingresados
@@ -47,11 +47,11 @@ class mysql_bd implements bd_interface
                 $fila[':'.$campo] = $valor;
             }
         }
-        
+        // se ejecuta
+        $estado = $sentencia->execute($fila);
         if ($simular) {
             return $this->con->armar_sql_insert($datos);
         } else {
-            $estado = $sentencia->execute($fila);
             if ($this->con->comprobar($estado)) {
                 $this->con->ultimo_id = $this->con->obt_ult_id();
                 return $estado;
@@ -87,11 +87,11 @@ class mysql_bd implements bd_interface
             }
         }
         // se ejecuta
+        $estado = $sentencia->execute($fila);
         if ($simular) {
             $sql = $this->con->armar_sql_insert($datos);
             return $sql;
         } else {
-            $estado = $sentencia->execute($fila);
             if ($this->con->comprobar($estado)) {
                 $this->con->ultimo_id = $this->con->obt_ult_id();
                 return $estado;
@@ -116,13 +116,14 @@ class mysql_bd implements bd_interface
         $datos = array();
         $resultado = $this->describir_tabla($this->con->obt_tabla());
         foreach ($resultado as $key => $value) {
-            $datos[] = $value['Field'];
+            $datos[] = $value->Field;
         }
         return $datos;
     }
     public function obt_ult_id($generador = '')
     {
         $ult_id = $this->con->lastInsertId();
+
         if ($ult_id == 0) {
             $campo_primario = $this->con->obt_cam_primario();
             $tabla = $this->con->obt_tabla();
@@ -131,7 +132,7 @@ class mysql_bd implements bd_interface
 
             if ($result) {
                 $f = $result[0];
-                $ult_id = $f['ult_id'];
+                $ult_id = $f->ult_id;
             }
         }
         return $ult_id;
@@ -144,49 +145,10 @@ class mysql_bd implements bd_interface
     }
     public function describir_tabla($tabla = '')
     {
-        $tabla = empty($tabla) ? $this->con->obt_tabla():$tabla;
         $sql = "DESCRIBE $tabla";
         return $this->con->ejecutar($sql);
     }
-    public function obt_modelo_vacio($tabla = '')
+    public function obt_modelo_vacio($tabla='')
     {
-        $result = $this->describir_tabla();
-
-        $array = array();
-
-        foreach ($result as $key => $value) {
-            $valor = '';
-            $tipo = explode('(', trim($value['Type']));
-            $tipo = $tipo[0];
-            switch ($tipo) {
-                case 'int':
-                    $valor = 0;
-                    break;
-                case 'smallint':
-                    $valor = 0;
-                    break;
-                case 'decimal':
-                    $valor = 0.0;
-                    break;
-                case 'var':
-                    $valor = '';
-                    break;
-                case 'varchar':
-                    $valor = '';
-                    break;
-                case 'char':
-                    $valor = '';
-                    break;
-                case 'date':
-                    $valor = '';
-                    break;
-                default:
-                    $valor = '';
-                    break;
-            }
-            $array[$value['Field']] = $valor;
-        }
-
-        return $array;
     }
 }

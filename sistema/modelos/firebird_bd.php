@@ -1,6 +1,8 @@
 <?php
 namespace sistema\modelos;
 
+use PDO;
+
 class firebird_bd implements bd_interface
 {
 
@@ -10,15 +12,112 @@ class firebird_bd implements bd_interface
     {
         $this->con = $con;
     }
+    public function insertar($datos = array(), $simular = false)
+    {
+        // se filtran los datos propios de la tabla
+        $campos = $this->con->obt_campos();
+        $datos = obt_arreglo($campos, $datos);
+        //
+        $campo_primario = $this->con->obt_cam_primario();
+        if (isset($datos[$campo_primario])) {
+            unset($datos[$campo_primario]);
+        }
+        // se arma la plantilla
+        $orden = 'INSERT INTO '.$this->con->obt_tabla().' (';
+        foreach ($datos as $campo => $valor) {
+            if ($valor != 'NULL') {
+                $orden .= $campo.', ';
+            }
+        }
+        $orden .= ') VALUES (';
+        foreach ($datos as $campo => $valor) {
+            if ($valor != 'NULL') {
+                $orden .= ':'.$campo.', ';
+            }
+        }
+        $orden .= ')';
+        // se limpia
+        $this->con->orden = str_replace(', )', ')', $orden);
+        // se prepara la plantilla
+        $sentencia = $this->con->prepare($this->con->orden);
+        // se arma la fila con los datos ingresados
+        $fila = array();
+        foreach ($datos as $campo => $valor) {
+            if ($valor != 'NULL') {
+                $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
+            }
+        }
+        // se ejecuta
+        $estado = $sentencia->execute($fila);
+        if ($simular) {
+            return $this->con->armar_sql_insert($datos);
+        } else {
+            if ($this->con->comprobar($estado)) {
+                $this->con->ultimo_id = $this->con->obt_ult_id();
+                return $estado;
+            }
+        }
+    }
+    public function editar($datos = array(), $clave = array(), $simular = false)
+    {
+        // se obtiene solo los campos correspondiente a la tabla
+        $campos = $this->con->obt_campos();
+        $datos = obt_arreglo($campos, $datos);
+        // se arma la plantilla
+        $orden = 'UPDATE '.$this->con->obt_tabla().' SET ';
+        foreach ($datos as $campo => $valor) {
+            if ($valor != 'NULL') {
+                $orden .= $campo.'=:'.$campo.', ';
+            }
+        }
+        $orden .= 'WHERE ';
+        foreach ($clave as $key => $value) {
+            $orden .= $key.'='.$value.' AND ';
+        }
+        $orden = preg_replace('/AND $/', '', $orden);
+        $orden = str_replace(', WHERE', ' WHERE', $orden);
+        $this->con->orden = $orden;
+        // se prepara la plantilla
+        $sentencia = $this->con->prepare($this->con->orden);
+        // se arma la fila con los datos ingresados
+        $fila = array();
+        foreach ($datos as $campo => $valor) {
+            if ($valor != 'NULL') {
+                $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
+            }
+        }
+        $estado = $sentencia->execute($fila);
+        if ($simular) {
+            $sql = $this->con->armar_sql_insert($datos);
+            return $sql;
+        } else {
+            if ($this->con->comprobar($estado)) {
+                $this->con->ultimo_id = $this->con->obt_ult_id();
+                return $estado;
+            }
+        }
+    }
+    public function ejecutar($orden = '', $objeto = false)
+    {
+        $this->con->orden = mb_convert_encoding($orden, "ISO-8859-1");
+        $resultado = $this->con->query($this->con->orden);
+
+        if ($resultado) {
+            $this->cant_filas = $resultado->rowCount();
+            if ($objeto) {
+                return $resultado->fetchall(PDO::FETCH_OBJ);
+            } else {
+                return $resultado->fetchall(PDO::FETCH_ASSOC);
+            }
+        } else {
+            return $resultado;
+        }
+    }
     public function obt_campos()
     {
-        $datos = array();
-        $resultado = $this->describir_tabla($this->con->obt_tabla());
-        foreach ($resultado as $key => $value) {
-            $datos[] = trim($value->FIELD_NAME);
-        }
-        return $datos;
+        return array_keys($this->obt_modelo_vacio());
     }
+
     public function obt_ult_id($generador = '')
     {
         $ult_id = 0;
@@ -28,13 +127,13 @@ class firebird_bd implements bd_interface
             $result = $this->con->ejecutar("select MAX($campo_primario) as ULT_ID from $tabla");
             if ($result) {
                 $f = $result[0];
-                $ult_id = $f->ULT_ID;
+                $ult_id = $f['ULT_ID'];
             }
         } else {
             $result = $this->con->ejecutar("select gen_id($generador, 0) AS GEN_ID from rdb\$database");
             if ($result) {
                 $f = $result[0];
-                $ult_id = $f->GEN_ID;
+                $ult_id = $f['GEN_ID'];
             }
         }
         return $ult_id;
@@ -100,13 +199,14 @@ LEFT OUTER JOIN RDB\$CHARACTER_SETS CH ON (CH.RDB\$CHARACTER_SET_ID = F.RDB\$CHA
 LEFT OUTER JOIN RDB\$COLLATIONS DCO ON ((DCO.RDB\$COLLATION_ID = F.RDB\$COLLATION_ID) AND (DCO.RDB\$CHARACTER_SET_ID = F.RDB\$CHARACTER_SET_ID))
 WHERE (COALESCE(RF.RDB\$SYSTEM_FLAG, 0) = 0) AND RDB\$RELATION_NAME = '$tabla'
 ORDER BY RF.RDB\$FIELD_POSITION";
-        
-        return $this->con->ejecutar($sql);
+
+        return $this->con->ejecutar($sql, false);
     }
-    public function obt_modelo_vacio()
+    public function obt_modelo_vacio($tabla = '')
     {
-        $tabla = $this->con->obt_tabla();
-         $sql = 'SELECT TRIM(R.RDB$FIELD_NAME) AS field_name,
+        $tabla = (empty($tabla)) ? strtoupper($this->con->obt_tabla()): $tabla;
+
+        $sql = 'SELECT TRIM(R.RDB$FIELD_NAME) AS field_name,
         CASE F.RDB$FIELD_TYPE
          WHEN 7 THEN \'SMALLINT\'
          WHEN 8 THEN \'INTEGER\'
@@ -130,8 +230,11 @@ ORDER BY RF.RDB\$FIELD_POSITION";
         LEFT JOIN RDB$FIELDS F ON R.RDB$FIELD_SOURCE = F.RDB$FIELD_NAME
         LEFT JOIN RDB$CHARACTER_SETS CSET ON F.RDB$CHARACTER_SET_ID = CSET.RDB$CHARACTER_SET_ID
     WHERE R.RDB$RELATION_NAME = \''.$tabla.'\'';
+
         $result = $this->con->ejecutar($sql, false);
+
         $array = array();
+
         foreach ($result as $key => $value) {
             $valor = '';
             switch (trim($value['FIELD_TYPE'])) {
@@ -141,6 +244,12 @@ ORDER BY RF.RDB\$FIELD_POSITION";
                 case 'SMALLINT':
                     $valor = 0;
                     break;
+                case 'FLOAT':
+                    $valor = 0.0;
+                    break;
+                case 'DOUBLE':
+                    $valor = 0.0;
+                    break;
                 case 'VARCHAR':
                     $valor = '';
                     break;
@@ -149,10 +258,7 @@ ORDER BY RF.RDB\$FIELD_POSITION";
                     break;
                 case 'DATE':
                     $valor = '';
-                    break;
-                case 'INTEGER':
-                    $valor = 0;
-                    break;
+                    break;                
                 case 'DECIMAL':
                     $valor = 0.0;
                     break;

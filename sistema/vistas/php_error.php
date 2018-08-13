@@ -1,6 +1,7 @@
 <?php
 
-function extraer_error($mensaje) {
+function extraer_error($mensaje)
+{
     $e = '';
     foreach ($mensaje as $key => $value) {
         if (is_array($value)) {
@@ -17,7 +18,8 @@ function extraer_error($mensaje) {
     echo $e;
 }
 
-function tipo_error($clave = 0) {
+function tipo_error($clave = 0)
+{
     $tipoerror[1] = 'Error';
     $tipoerror[2] = 'Warning';
     $tipoerror[4] = 'Parsing Error';

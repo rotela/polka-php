@@ -8,14 +8,16 @@ if (!defined('SISTEMA')) {
 
 use sistema\nucleo\PK_Controlador;
 
-class Pkgen extends PK_Controlador {
-
-    function __construct() {
+class Pkgen extends PK_Controlador
+{
+    public function __construct()
+    {
         parent::__construct();
-        $this->vista->sis = TRUE;
+        $this->vista->sis = true;
     }
 
-    public function principal() {
+    public function principal()
+    {
         $this->vista->contenido = __CLASS__;
         $this->vista->ver('index');
     }

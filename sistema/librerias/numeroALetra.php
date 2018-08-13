@@ -2,11 +2,6 @@
 
 namespace sistema\librerias;
 
-/**
- * Clase que implementa un conversor de números a letras.
- *
- * @author AxiaCore S.A.S
- */
 class numeroALetra
 {
     private $UNIDADES = array(
@@ -65,6 +60,7 @@ class numeroALetra
     array('country' => 'Perú', 'currency' => 'PEN', 'singular' => 'NUEVO SOL', 'plural' => 'NUEVOS SOLES', 'symbol', 'S/'),
     array('country' => 'Reino Unido', 'currency' => 'GBP', 'singular' => 'LIBRA', 'plural' => 'LIBRAS', 'symbol', '£'),
     array('country' => 'Argentina', 'currency' => 'ARS', 'singular' => 'PESO', 'plural' => 'PESOS', 'symbol', '$'),
+    array('country' => 'Paraguay', 'currency' => 'PYO', 'singular' => 'GUARANÍ', 'plural' => 'GUARANÍES', 'symbol', 'Gs.'),
   );
 
     private $separator = '.';

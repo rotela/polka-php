@@ -58,10 +58,10 @@ class PK_Rutas
 
         $this->url_origen = implode('/', $array_origen);
         $this->url_destino = implode('/', $array_destino);
-/*
-        echo $this->url_origen ."<br>". url_solicitud()."<br>";
-        exit();
-        */
+        /*
+                echo $this->url_origen ."<br>". url_solicitud()."<br>";
+                exit();
+                */
         return ($this->url_origen == url_solicitud()) ? true : false;
     }
 

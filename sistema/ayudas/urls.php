@@ -21,7 +21,7 @@ function url_protocolo()
 {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
 
-    return $protocol;
+    return strtolower($protocol);
 }
 function url_seg($seg = 0)
 {
@@ -29,7 +29,7 @@ function url_seg($seg = 0)
     $url = url_protocolo().$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
     $segmentos = str_replace($cfg->url_base, '', $url);
     $segmentos = explode('/', $segmentos);
-    if (empty($seg)) {
+    if ($seg == 0) {
         $retorno = array();
         foreach ($segmentos as $key => $value) {
             if (!empty($value)) {
@@ -130,7 +130,8 @@ if (!function_exists('url_ctrl_solo')) {
 if (!function_exists('url_peticion')) {
     function url_peticion()
     {
-        return trim(implode('/', url_seg()));
+        $url = trim(implode('/', url_seg()));
+        return str_replace(':/', '://', $url);
     }
 }
 if (!function_exists('es_local')) {
@@ -153,11 +154,11 @@ if (!function_exists('redirigir')) {
 
         switch ($method) {
             case 'refresh':
-            header('Refresh:0;url='.$url);
-            break;
+                header('Refresh:0;url='.$url);
+                break;
             default:
-            header('Location: '.$url, true, $http_response_code);
-            break;
+                header('Location: '.$url, true, $http_response_code);
+                break;
         }
         die();
     }

@@ -24,7 +24,7 @@ function eco($texto = '')
  */
 function eco_l($texto = '')
 {
-    echo "$texto<br>";
+    echo "$texto";
 }
 /**
  * Muestra el contenido indicado al navegador
@@ -36,11 +36,11 @@ function eco_l($texto = '')
  */
 function eco_ln($texto = '')
 {
-    echo "$texto<br>\n";
+    echo "$texto\n";
 }
 function println($texto = '')
 {
-    echo "$texto<br>\n";
+    echo "$texto\n";
 }
 if (!function_exists('pre_var_dump')) {
     function pre_var_dump($arreglo = array())

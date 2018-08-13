@@ -5,38 +5,38 @@ namespace sistema\nucleo;
 abstract class PK_Servicios extends PK_Controlador
 {
     private static $tipo = 'servicio';
-  /**
-   * Guarda nuevo registro.
-   *
-   * @return bool No devuelve nada
-   */
-  abstract protected function _post();
-  /**
-   * Elimina un registro por su id.
-   *
-   * @param  int $id Id del registro a eliminar
-   *
-   * @return bool No devuelve nada
-   */
-  abstract protected function _delete($id = 0);
-  /**
-   * Modifica un registro por su id.
-   *
-   * @param  int $id Id del registro a modificar
-   *
-   * @return bool No devuelve nada
-   */
-  abstract protected function _put($id = 0);
-  /**
-   * Consulta u obtiene un registro por el Id, o todos sin el id.
-   *
-   * @param  int $id Id del registro a consultar
-   *
-   * @return array      Debe devolver un array del o los registros
-   */
-  abstract protected function _get($id = 0);
-  // Propiedades
-  private $entradas = array();
+    /**
+     * Guarda nuevo registro.
+     *
+     * @return bool No devuelve nada
+     */
+    abstract protected function _post();
+    /**
+     * Elimina un registro por su id.
+     *
+     * @param  int $id Id del registro a eliminar
+     *
+     * @return bool No devuelve nada
+     */
+    abstract protected function _delete($id = 0);
+    /**
+     * Modifica un registro por su id.
+     *
+     * @param  int $id Id del registro a modificar
+     *
+     * @return bool No devuelve nada
+     */
+    abstract protected function _put($id = 0);
+    /**
+     * Consulta u obtiene un registro por el Id, o todos sin el id.
+     *
+     * @param  int $id Id del registro a consultar
+     *
+     * @return array      Debe devolver un array del o los registros
+     */
+    abstract protected function _get($id = 0);
+    // Propiedades
+    private $entradas = array();
     public function __construct()
     {
         parent::__construct();
@@ -85,20 +85,19 @@ abstract class PK_Servicios extends PK_Controlador
     }
     public function hab_cors()
     {
-        hab_cors();
-        // if (isset($_SERVER['HTTP_ORIGIN'])) {
-        //     header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
-        //     header('Access-Control-Allow-Credentials: true');
-        //     header('Access-Control-Max-Age: 86400');
-        // }
-        // if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
-        //     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
-        //         header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
-        //     }
-        //     if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
-        //         header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
-        //     }
-        // }
+        if (isset($_SERVER['HTTP_ORIGIN'])) {
+            header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
+            header('Access-Control-Allow-Credentials: true');
+            header('Access-Control-Max-Age: 86400');
+        }
+        if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_METHOD'])) {
+                header('Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS');
+            }
+            if (isset($_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS'])) {
+                header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
+            }
+        }
     }
     public function principal($param = '')
     {
@@ -128,12 +127,12 @@ abstract class PK_Servicios extends PK_Controlador
         cargar('sistema/ayudas/xml_json');
         if (is_array($datos)) {
             // si hay datos y es de tipo array, procesarlo normamente
-    if (count($datos) > 0) {
-        mostrarxmljson($datos, $tipo, $codigo);
-    }
+            if (count($datos) > 0) {
+                mostrarxmljson($datos, $tipo, $codigo);
+            }
         } else {
             // si no hay datos, enviar no encontrado
-    env_cabecera(404, $tipo);
+            env_cabecera(404, $tipo);
         }
     }
     public function entradas()

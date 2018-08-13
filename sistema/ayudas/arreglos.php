@@ -56,6 +56,18 @@ if (!function_exists('convertir_utf8')) {
         return $array;
     }
 }
+if (!function_exists('decodificar_utf8')) {
+    function decodificar_utf8($array)
+    {
+        array_walk_recursive($array, function (&$item, $key) {
+            if (!mb_detect_encoding($item, 'utf-8', true)) {
+                $item = (is_numeric($item)) ? $item : utf8_decode($item);
+            }
+        });
+
+        return $array;
+    }
+}
 if (!function_exists('objeto_array')) {
     function objeto_array($d)
     {

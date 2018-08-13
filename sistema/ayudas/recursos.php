@@ -3,9 +3,11 @@
 if (!function_exists('cliente_ip')) {
     function cliente_ip()
     {
-        return $_SERVER['REMOTE_ADDR'];
+        $local = isset($_SERVER["HTTP_X_REAL_IP"]) ? $_SERVER["HTTP_X_REAL_IP"] : '127.0.0.1';
+        return ($_SERVER['REMOTE_ADDR'] == '::1') ? $local : $_SERVER['REMOTE_ADDR'];
     }
 }
+
 if (!function_exists('cliente_nav')) {
     function cliente_nav()
     {
@@ -48,7 +50,7 @@ if (!function_exists('es_metodo')) {
 if (!function_exists('tipo_var')) {
     function is_decimal($val)
     {
-        return is_numeric( $val ) && floor( $val ) != $val;
+        return is_numeric($val) && floor($val) != $val;
     }
     function tipo_var($var)
     {
@@ -86,7 +88,7 @@ if (!function_exists('tipo_var')) {
             return 'string';
         }
 
-        return 'unknown type';
+        return 'tipo desconocido';
     }
 }
 
