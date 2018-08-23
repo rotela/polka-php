@@ -25,11 +25,9 @@ if (!function_exists('mostrarxmljson')) {
         if (strtolower($tipo) == 'json') {
             echo json_encode($result, JSON_NUMERIC_CHECK);
         } elseif (strtolower($tipo) == 'xml') {
-            echo '<?xml version="1.0"?>';
-            echo '<resultados>';
+            echo '<?xml version="1.0" encoding="UTF-8" ?>'."\n";
             $xml_array = json_decode(json_encode($result), true);
-            xmlExplorador($xml_array, 'registroo');
-            echo '</resultados>';
+            xmlExplorador($xml_array, 'registro');
         } else {
             echo json_encode($result, JSON_NUMERIC_CHECK);
         }

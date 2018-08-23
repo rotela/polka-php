@@ -1,10 +1,10 @@
 <?php
-
 namespace sistema\nucleo;
 
 use PDO;
 
 use sistema\modelos\mysql_bd;
+use sistema\modelos\sqlite_bd;
 use sistema\modelos\pgsql_bd;
 use sistema\modelos\firebird_bd;
 
@@ -230,6 +230,11 @@ class PK_Modelo extends PDO
 
         try {
             switch ($this->tipo_bd) {
+                case 'sqlite':
+                    parent::__construct('sqlite:'.$this->base_bd);
+                   $this->bd_interface = new sqlite_bd($this);
+                    break;
+
                 case 'mysql':
                     parent::__construct('mysql:host='.$this->host_bd.';dbname='.$this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$this->cote_bd));
                     $this->bd_interface = new mysql_bd($this);
@@ -363,13 +368,11 @@ class PK_Modelo extends PDO
         $campos = '';
         $valores = '';
         $primer = 0;
-
         foreach ($mientras as $key => $value) {
             if (array_key_exists($key, $datos)) {
                 unset($datos[$key]);
             }
         }
-        
         foreach ($datos as $key => $value) {
             switch (tipo_var($value)) {
 
@@ -726,8 +729,10 @@ class PK_Modelo extends PDO
     public function insertar_obtener($datos = array(), $simular = false)
     {
         $result = $this->insertar($datos, $simular);
-        if ($result) {
-            $result = $this->buscar_por(array($this->obt_cam_primario() => $this->obt_ult_id()));
+        if (!$simular) {
+            if ($result) {
+                $result = $this->buscar_por(array($this->obt_cam_primario() => $this->obt_ult_id()));
+            }
         }
         return $result;
     }

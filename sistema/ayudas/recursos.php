@@ -18,10 +18,22 @@ if (!function_exists('cliente_nav')) {
 if (!function_exists('es_ajax')) {
     function es_ajax()
     {
-        if (isset($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-            return true;
+        if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
+            if (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+              return true;
+            } else {
+              return false;
+            }
         } else {
-            return false;
+            if (isset($headers['X-Requested-With'])) {
+              if (strtolower($headers['X-Requested-With']) == 'xmlhttprequest') {
+                return true;
+              }else {
+                return false;
+              }
+            }else {
+              return false;
+            }
         }
     }
 }
@@ -50,7 +62,7 @@ if (!function_exists('es_metodo')) {
 if (!function_exists('tipo_var')) {
     function is_decimal($val)
     {
-        return is_numeric($val) && floor($val) != $val;
+        return is_numeric( $val ) && floor( $val ) != $val;
     }
     function tipo_var($var)
     {
@@ -88,7 +100,7 @@ if (!function_exists('tipo_var')) {
             return 'string';
         }
 
-        return 'tipo desconocido';
+        return 'desconocido';
     }
 }
 
@@ -137,6 +149,64 @@ if (!function_exists('array_normalizar')) {
         }
 
         return $elemento;
+    }
+}
+if (!function_exists('obt_entradas')) {
+    function obt_entradas()
+    {
+        return obt_entradas_peticion();
+    }
+}
+if (!function_exists('obt_entradas_peticion')) {
+    function obt_entradas_peticion()
+    {
+        obt_ayuda('limpiador');
+        $entradas = array();
+        $texto = html_entity_decode(@file_get_contents('php://input'), ENT_QUOTES, 'UTF-8');
+
+        switch (es_metodo()) {
+            case 'POST':
+                if (count($_POST) > 0) {
+                    $entradas = array_merge($entradas, $_POST);
+                } else {
+                    $otros = (array) json_decode($texto);
+
+                    if (count($otros) > 0) {
+                        $entradas = array_merge($entradas, $otros);
+                    }
+                }
+                break;
+
+            case 'GET':
+                $entradas = array_merge($entradas, $_GET);
+                break;
+
+            case 'PUT':
+                $otros = (array) json_decode($texto);
+
+                if (count($otros) > 0) {
+                    $entradas = array_merge($entradas, $otros);
+                } else {
+                    parse_str($texto, $entradas);
+                }
+                  $entradas = array_merge($entradas, $_GET);
+                break;
+
+            default:
+                $otros = (array) $texto;
+                if (count($otros) > 0) {
+                    $entradas = array_merge($entradas, $otros);
+                }
+                break;
+        }
+        if (isset($entradas['url'])) {
+            unset($entradas['url']);
+        }
+        $entradas = array_normalizar($entradas);
+
+        $entradas = sanear($entradas);
+
+        return $entradas;
     }
 }
 if (!function_exists('bytes_a')) {

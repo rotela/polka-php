@@ -22,6 +22,7 @@ if (!function_exists('tiempo_fin')) {
     $mtime = explode(' ', $mtime);
     $mtime = $mtime[1] + $mtime[0];
     $trans = ($mtime - $starttime);
+
     return round($trans, 4);
   }
 }
@@ -39,7 +40,8 @@ if (!function_exists('memoria_usada_libre')) {
     global $mem_inicio;
     $mem_fin = memory_get_usage(true);
     $men_total = $mem_fin - $mem_inicio;
-    return convertir($men_total);
+    $unit = array('b', 'kb', 'mb', 'gb', 'tb', 'pb');
+    return @round($men_total / pow(1024, ($i = floor(log($men_total, 1024)))), 2).' '.$unit[$i];
   }
 }
 if (!function_exists('memoria_usada')) {

@@ -37,7 +37,6 @@ class Errores extends PK_Controlador
                 break;
         }
     }
-
 }
 
 /* Final de archivo errores.php */
