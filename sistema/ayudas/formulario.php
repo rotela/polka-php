@@ -31,7 +31,6 @@ if (!function_exists('obt_error')) {
     function obt_error($clave)
     {
         $pk = obt_coleccion('sistema\librerias\formulario');
-
         return $pk->error($clave);
     }
 }
@@ -39,7 +38,6 @@ if (!function_exists('obt_errores')) {
     function obt_errores()
     {
         $pk = obt_coleccion('sistema\librerias\formulario');
-
         return $pk->errores();
     }
 }
@@ -53,7 +51,6 @@ if (!function_exists('buscar_errores')) {
                 $mx .= alerta_peligro($value);
             }
         }
-
         return $mx;
     }
 }
@@ -69,57 +66,5 @@ if (!function_exists('obt_csrf')) {
         $campo = '<input type="hidden" name="'.$csrf_nom.'" id="'.$csrf_nom.'" value="'.$token.'">'."\n";
 
         return $campo;
-    }
-}
-if (!function_exists('obt_entradas_peticion')) {
-    function obt_entradas_peticion()
-    {
-        obt_ayuda('limpiador');
-        $entradas = array();
-        $texto = html_entity_decode(@file_get_contents('php://input'), ENT_QUOTES, 'UTF-8');
-
-        switch (es_metodo()) {
-            case 'POST':
-                if (count($_POST) > 0) {
-                    $entradas = array_merge($entradas, $_POST);
-                } else {
-                    $otros = (array) json_decode($texto);
-
-                    if (count($otros) > 0) {
-                        $entradas = array_merge($entradas, $otros);
-                    }
-                }
-                break;
-
-            case 'GET':
-                $entradas = array_merge($entradas, $_GET);
-                break;
-
-            case 'PUT':
-                $otros = (array) json_decode($texto);
-
-                if (count($otros) > 0) {
-                    $entradas = array_merge($entradas, $otros);
-                } else {
-                    parse_str($texto, $entradas);
-                }
-                  $entradas = array_merge($entradas, $_GET);
-                break;
-
-            default:
-                $otros = (array) $texto;
-                if (count($otros) > 0) {
-                    $entradas = array_merge($entradas, $otros);
-                }
-                break;
-        }
-        if (isset($entradas['url'])) {
-            unset($entradas['url']);
-        }
-        $entradas = array_normalizar($entradas);
-
-        $entradas = sanear($entradas);
-
-        return $entradas;
     }
 }

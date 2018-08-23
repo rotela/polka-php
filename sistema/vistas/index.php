@@ -5,10 +5,10 @@
     <meta charset="utf-8">
     <title><?= ap_titulo(); ?></title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="<?= $url . 'w3.css'; ?>" rel="stylesheet" >    
+    <link href="<?= $url . 'w3.css'; ?>" rel="stylesheet" >
 </head>
 <body>
-   
+
     <header class="w3-row  w3-black">
         <div class="w3-col w3-container" style="width:20%"></div>
         <div class="w3-col w3-container" style="width:60%">
@@ -28,10 +28,10 @@
     <footer class="w3-row w3-bottom w3-blue-grey">
         <div class="w3-col w3-container" style="width:20%"></div>
         <div class="w3-col w3-container" style="width:60%">
-            <p><?= ap_titulo().' '.ap_version(); ?> | Página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada_libre(); ?> | <?= ap_derechos(); ?></p>
+            <p><?= ap_titulo().' '.ap_version(); ?> | Página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada(); ?> | <?= ap_derechos(); ?></p>
         </div>
         <div class="w3-col w3-container" style="width:20%"></div>
     </footer>
-    
+
 </body>
 </html>

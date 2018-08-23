@@ -5,7 +5,6 @@ use PDO;
 
 class firebird_bd implements bd_interface
 {
-
     private $con;
 
     public function __construct($con)
@@ -86,11 +85,11 @@ class firebird_bd implements bd_interface
                 $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
             }
         }
-        $estado = $sentencia->execute($fila);
         if ($simular) {
             $sql = $this->con->armar_sql_insert($datos);
             return $sql;
         } else {
+            $estado = $sentencia->execute($fila);
             if ($this->con->comprobar($estado)) {
                 $this->con->ultimo_id = $this->con->obt_ult_id();
                 return $estado;

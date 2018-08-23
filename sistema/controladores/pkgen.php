@@ -21,7 +21,6 @@ class Pkgen extends PK_Controlador
         $this->vista->contenido = __CLASS__;
         $this->vista->ver('index');
     }
-
 }
 
 /* Final de archivo pkgen.php */

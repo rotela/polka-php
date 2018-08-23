@@ -3,7 +3,6 @@ namespace sistema\modelos;
 
 class pgsql_bd implements bd_interface
 {
-
     private $con;
 
     public function __construct($con)

@@ -5,7 +5,6 @@ use PDO;
 
 class mysql_bd implements bd_interface
 {
-
     private $con;
 
     public function __construct($con)
@@ -186,7 +185,6 @@ class mysql_bd implements bd_interface
             }
             $array[$value['Field']] = $valor;
         }
-
         return $array;
     }
 }
