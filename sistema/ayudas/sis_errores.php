@@ -30,6 +30,7 @@ if (!function_exists('mostrar_error')) {
             $css = $url.'css/';
             $js = $url.'js/';
             $error = array(
+              'url' => $url,
               'css' => $css,
               'js' => $js,
               'contenido' => ver_error($capa, $datos, false),

@@ -47,10 +47,10 @@ class firebird_bd implements bd_interface
             }
         }
         // se ejecuta
-        $estado = $sentencia->execute($fila);
         if ($simular) {
             return $this->con->armar_sql_insert($datos);
         } else {
+            $estado = $sentencia->execute($fila);
             if ($this->con->comprobar($estado)) {
                 $this->con->ultimo_id = $this->con->obt_ult_id();
                 return $estado;
@@ -123,7 +123,8 @@ class firebird_bd implements bd_interface
         if (empty($generador)) {
             $tabla = $this->con->obt_tabla();
             $campo_primario = $this->con->obt_cam_primario();
-            $result = $this->con->ejecutar("select MAX($campo_primario) as ULT_ID from $tabla");
+            $sql = "select MAX($campo_primario) as ULT_ID from $tabla";
+            $result = $this->con->ejecutar($sql);
             if ($result) {
                 $f = $result[0];
                 $ult_id = $f['ULT_ID'];
@@ -257,7 +258,7 @@ ORDER BY RF.RDB\$FIELD_POSITION";
                     break;
                 case 'DATE':
                     $valor = '';
-                    break;                
+                    break;
                 case 'DECIMAL':
                     $valor = 0.0;
                     break;

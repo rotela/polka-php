@@ -321,7 +321,7 @@ class PK_Modelo extends PDO
         $valores = '';
         $primer = 0;
         foreach ($datos as $key => $value) {
-            switch (tipo_var($value)) {
+            switch (gettype($value)) {
                 case 'string':
                     $valor = "'$value'";
                     break;
@@ -329,6 +329,9 @@ class PK_Modelo extends PDO
                     $valor = $value;
                     break;
                 case 'decimal':
+                    $valor = $value;
+                    break;
+                case 'double':
                     $valor = $value;
                     break;
                 case 'integer':
@@ -662,7 +665,7 @@ class PK_Modelo extends PDO
             unset($this->datos[$campo_primario]);
             // preguntamos, si es cero (nuevo) será insertado un nuevo registro
             if ($id == 0) {
-                $result = $this->insertar($this->datos, true);
+                $result = $this->insertar($this->datos);
             } else {
                 // o será editado
                 $clave = array($campo_primario => $id);
@@ -915,6 +918,15 @@ class PK_Modelo extends PDO
     public function obt_datos()
     {
         return $this->datos;
+    }
+    public function env_datos($datos=array())
+    {
+        if (is_array($datos)) {
+            if (count($datos)>0) {
+              $campos = $this->obt_campos();
+              $this->datos = obt_arreglo($campos, $datos);
+            }
+        }
     }
     public function obt_orden_hist()
     {

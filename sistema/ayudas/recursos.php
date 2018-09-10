@@ -142,7 +142,7 @@ if (!function_exists('array_normalizar')) {
                         break;
 
                     default:
-                        $elemento[$key] = (string) $value;
+                        $elemento[$key] = $value;
                         break;
                 }
             }

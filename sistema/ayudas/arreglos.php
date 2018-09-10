@@ -29,15 +29,13 @@ if (!function_exists('filtrar_arreglo_con')) {
 if (!function_exists('obt_arreglo')) {
     function obt_arreglo($filtros, $arreglo)
     {
-        $nuevo = array();
-
         if (count($filtros) > 0) {
-            foreach ($filtros as $value) {
-                if (array_key_exists($value, $arreglo)) {
-                    $nuevo[$value] = $arreglo[$value];
+            $nuevo = array();
+            foreach ($arreglo as $clave => $v) {
+                if (in_array($clave, $filtros)) {
+                    $nuevo[$clave] = $v;
                 }
             }
-
             return $nuevo;
         } else {
             return $arreglo;
