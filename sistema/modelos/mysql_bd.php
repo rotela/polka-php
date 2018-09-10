@@ -46,7 +46,6 @@ class mysql_bd implements bd_interface
                 $fila[':'.$campo] = $valor;
             }
         }
-        
         if ($simular) {
             return $this->con->armar_sql_insert($datos);
         } else {
@@ -87,7 +86,7 @@ class mysql_bd implements bd_interface
         }
         // se ejecuta
         if ($simular) {
-            $sql = $this->con->armar_sql_insert($datos);
+            $sql = $this->con->armar_sql_editar($datos, $clave);
             return $sql;
         } else {
             $estado = $sentencia->execute($fila);
