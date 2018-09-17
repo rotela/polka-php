@@ -1,7 +1,9 @@
 <?php
 namespace sistema\modelos;
 
-use PDO;
+use \PDO;
+use \PDOException;
+use \Exception;
 
 class sqlite_bd implements bd_interface
 {

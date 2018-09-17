@@ -4,16 +4,16 @@ if (!defined('SISTEMA')) {
     exit('No se permite el acceso directo al script.');
 }
 // Servidor de la base datos
-$config['host_bd'] = '127.0.0.1';
+$config['host'] = '127.0.0.1';
 // Puerto de la base datos
-$config['port_bd'] = 3306;
+$config['port'] = 3306;
 // Tipo de datos (pgsql, mysql, sqlite)
-$config['tipo_bd'] = 'mysql';
+$config['tipo'] = 'mysql';
 // Usuario de la base de datos
-$config['user_bd'] = 'root';
+$config['user'] = 'root';
 // Password de la base de datos
-$config['pass_bd'] = '123';
+$config['pass'] = '123';
 // Base de datos a utilizar
-$config['base_bd'] = 'test';
+$config['base'] = 'test';
 // Cotejamiento de la datos a utilizar
-$config['cote_bd'] = 'utf8';
+$config['cote'] = 'utf8';

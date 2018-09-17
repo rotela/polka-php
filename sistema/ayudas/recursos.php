@@ -20,19 +20,19 @@ if (!function_exists('es_ajax')) {
     {
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
             if (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
-              return true;
+                return true;
             } else {
-              return false;
+                return false;
             }
         } else {
             if (isset($headers['X-Requested-With'])) {
-              if (strtolower($headers['X-Requested-With']) == 'xmlhttprequest') {
-                return true;
-              }else {
+                if (strtolower($headers['X-Requested-With']) == 'xmlhttprequest') {
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
                 return false;
-              }
-            }else {
-              return false;
             }
         }
     }
@@ -62,7 +62,7 @@ if (!function_exists('es_metodo')) {
 if (!function_exists('tipo_var')) {
     function is_decimal($val)
     {
-        return is_numeric( $val ) && floor( $val ) != $val;
+        return is_numeric($val) && floor($val) != $val;
     }
     function tipo_var($var)
     {
