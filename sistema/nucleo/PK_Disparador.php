@@ -127,12 +127,12 @@ class PK_Disparador
                         call_user_func(array($controlador, self::$metodo));
                     }
                     // Obteniendo errores
-                    if(function_exists('error_get_last')){
-                      if (error_get_last()) {
-                        if (count(error_get_last()) > 0) {
-                             throw new Exception(mostrar_error('php', error_get_last(), 'php_error'));
+                    if (function_exists('error_get_last')) {
+                        if (error_get_last()) {
+                            if (count(error_get_last()) > 0) {
+                                throw new Exception(mostrar_error('php', error_get_last(), 'php_error'));
+                            }
                         }
-                      }
                     }
                 } else {
                     throw new Exception(mostrar_error('Metodo', 'El Método '.self::$metodo.' no existe.'));

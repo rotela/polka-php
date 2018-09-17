@@ -1,6 +1,10 @@
 <?php
 namespace sistema\modelos;
 
+use \PDO;
+use \PDOException;
+use \Exception;
+
 class pgsql_bd implements bd_interface
 {
     private $con;
@@ -53,10 +57,10 @@ class pgsql_bd implements bd_interface
     //
     public function describir_tabla($tabla = '')
     {
-        $sql = "select column_name, data_type, character_maximum_length 
+        $sql = "select column_name, data_type, character_maximum_length
         from INFORMATION_SCHEMA.COLUMNS where table_name = '$tabla'";
         $result = $this->con->ejecutar($sql);
-        
+
         return $result;
     }
     public function obt_modelo_vacio()

@@ -1,16 +1,13 @@
 <?php
 namespace sistema\nucleo;
 
-use PDO;
-
-use sistema\modelos\mysql_bd;
-use sistema\modelos\sqlite_bd;
-use sistema\modelos\pgsql_bd;
-use sistema\modelos\firebird_bd;
-
 if (!defined('SISTEMA')) {
     exit('No se permite acceso directo al script');
 }
+use sistema\nucleo\PK_Conexion;
+use \PDO;
+use \PDOException;
+use \Exception;
 
 /**
  * Modelo Principal del Sistema
@@ -31,57 +28,8 @@ if (!defined('SISTEMA')) {
  *
  * @version 2.0 2017/08/30
  */
-class PK_Modelo extends PDO
+class PK_Modelo extends PK_Conexion
 {
-    /**
-   * Contenedor del Nombre del Host.
-   *
-   * @var string
-   */
-    private $host_bd = '';
-
-    /**
-     * Contenedor del Puerto del Host.
-     *
-     * @var int
-     */
-    private $port_bd = 0;
-
-    /**
-     * Contenedor del Tipo de base de datos.
-     *
-     * @var string
-     */
-    private $tipo_bd = '';
-
-    /**
-     * Contenedor del Nombre de Usuario / User de la BD.
-     *
-     * @var string
-     */
-    private $user_bd = '';
-
-    /**
-     * Contenedor del Password del Usuario / User de la bd.
-     *
-     * @var string
-     */
-    private $pass_bd = '';
-
-    /**
-     * Contenedor del Nombre de La Base de Datos a utilizar.
-     *
-     * @var string
-     */
-    private $base_bd = '';
-
-    /**
-     * Contenedor del Tipo de Cotejamiento que utilizará el Modelo.
-     *
-     * @var string
-     */
-    private $cote_bd = 'utf8';
-
     /**
      * Contenedor del Nombre de la tabla con la cual construír
      * el Modelo.
@@ -174,6 +122,12 @@ class PK_Modelo extends PDO
      */
     protected $tg;
 
+    /**
+     * Propiedad protegida para las configuraciones.
+     *
+     * @var [array]
+     */
+    protected $config;
     /*
     * Se utiliza Singleton para instanciar fuera del controlador
     */
@@ -199,68 +153,15 @@ class PK_Modelo extends PDO
      */
     public function __construct($tabla = '', $campo_primario = '')
     {
+        parent::__construct();
+        $this->bd_interface = $this->obt_interface();
         if (empty($tabla)) {
             throw new \Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
         } else {
             $this->tabla = trim($tabla);
             $this->cam_primario = trim($campo_primario);
-            $this->conectar();
         }
     }
-
-    /**
-     * Configura y conecta el modelo con la BD, según
-     * los datos suministrados en aplicacion/configuracion/bd.php.
-     */
-    private function conectar()
-    {
-        // obtengo la configuración desde la configuración de bd
-        $config = PK_Config::obt_instancia()->obtener('bd');
-        // configuro con los datos obtenidos
-        $this->host_bd = $config->host_bd;    //servidor de la base datos
-        $this->port_bd = $config->port_bd;    //puerto de la base de datos
-        $this->tipo_bd = $config->tipo_bd;    //tipo de base de datos
-        $this->user_bd = $config->user_bd;    //usuario de la base de datos
-        $this->pass_bd = $config->pass_bd;    //password de la base de datos
-        $this->base_bd = $config->base_bd;    //base de datos a utilizar
-        $this->cote_bd = $config->cote_bd;    //cotejamiento
-        // según el tipo de base de datos, lo conecto,
-        // por el momento se tiene preparado a mysql, pgsql, puedes extender a otros
-        // tipos de base de datos, si sabes como se conecta
-
-        try {
-            switch ($this->tipo_bd) {
-                case 'sqlite':
-                    parent::__construct('sqlite:'.$this->base_bd);
-                   $this->bd_interface = new sqlite_bd($this);
-                    break;
-
-                case 'mysql':
-                    parent::__construct('mysql:host='.$this->host_bd.';dbname='.$this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$this->cote_bd));
-                    $this->bd_interface = new mysql_bd($this);
-                    break;
-
-                case 'pgsql':
-                    parent::__construct('pgsql:dbname='.$this->base_bd.';host='.$this->host_bd, $this->user_bd, $this->pass_bd);
-                    $this->bd_interface = new pgsql_bd($this);
-                    break;
-
-                case 'firebird':
-                    $server = 'firebird:dbname='.$this->host_bd.'/'.$this->port_bd.':'.$this->base_bd;
-                    parent::__construct($server, $this->user_bd, $this->pass_bd);
-                    $this->bd_interface = new firebird_bd($this);
-                    break;
-
-                default:
-                    parent::__construct('mysql:host='.$this->host_bd.';dbname='.$this->base_bd, $this->user_bd, $this->pass_bd, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$this->cote_bd));
-                    $this->bd_interface = new mysql_bd($this);
-                    break;
-            }
-        } catch (\PDOException $e) {
-            exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
-        }
-    }
-
     /**
      * Se utiliza para asignar a un valor a un campo
      * como si fuera una funcion, ej.
@@ -377,7 +278,7 @@ class PK_Modelo extends PDO
             }
         }
         foreach ($datos as $key => $value) {
-            switch (tipo_var($value)) {
+            switch (gettype($value)) {
 
                 case 'string':
                     $valor = "'$value'";
@@ -436,7 +337,7 @@ class PK_Modelo extends PDO
      *
      * @return  mixed $objeto  Devuelve el resultado o false si no encontró
      */
-    public function buscar_por($datos = array(), $objeto = true, $columnas = array())
+    public function buscar_por($datos = array(), $objeto = false, $columnas = array())
     {
         // preparo la orden
         if (count($columnas) == 0) {
@@ -450,37 +351,45 @@ class PK_Modelo extends PDO
         }
         $orden .= $m;
         $this->orden = $orden;
-
-        $query = $this->prepare($this->orden);
-        // paso los parámetros
-        foreach ($datos as $campo => $valor) {
-            $query->bindValue(":$campo", $valor);
-        }
-        // ejecuto
-        $resultados = $query->execute();
-        // compruebo los resultados
-        if ($this->comprobar($resultados)) {
-            $fila = $query->fetchAll(PDO::FETCH_ASSOC);
-            $this->cant_filas = count($fila);
-
-            if ($this->cant_filas > 0) {
-                $this->fila = $fila[0];
-                if ($objeto) {
-                    return (object) $this->fila;
-                } else {
-                    return $this->fila;
-                }
-            } else {
-                return false;
+        try {
+            $query = $this->prepare($this->orden);
+            // paso los parámetros
+            foreach ($datos as $campo => $valor) {
+                $query->bindValue(":$campo", $valor);
             }
+            // ejecuto
+            $resultados = $query->execute();
+            // compruebo los resultados
+            if ($this->comprobar($resultados)) {
+                $fila = $query->fetchAll(PDO::FETCH_ASSOC);
+                $this->cant_filas = count($fila);
+
+                if ($this->cant_filas > 0) {
+                    $this->fila = $fila[0];
+                    if ($objeto) {
+                        return (object) $this->fila;
+                    } else {
+                        return $this->fila;
+                    }
+                } else {
+                    return false;
+                }
+            }
+        } catch (PDOException $e) {
+            $this->devolver_error($e);
+        } catch (Exception $e) {
+            $this->devolver_error($e);
         }
     }
-
-    public function sum_col($campos = '')
+    /**
+     * Función que devuleve la suma de una columna especificada como parámetro
+     * @param  string $campo que se desea sumar
+     * @return integer resultado de la suma
+     */
+    public function sum_col($campo = '')
     {
-        if (isset($campos)) {
-            $this->orden_l[] = 'SELECT sum('.$campos.') as total_col';
-
+        if (isset($campo)) {
+            $this->orden_l[] = "SELECT sum($campo) as total_col";
             return $this;
         } else {
             throw new \Exception(mostrar_error('Modelo', 'Se requiere del nombre de la columna a sumar, indíquelo.'));
@@ -591,7 +500,7 @@ class PK_Modelo extends PDO
             $limite = '';
         } else {
             $limite = '';
-            switch ($this->tipo_bd) {
+            switch ($this->tipo) {
                 case 'mysql':
                     $limite = ' LIMIT '.$segmento.', '.$limite;
                     break;
@@ -653,7 +562,30 @@ class PK_Modelo extends PDO
 
         return $this->obtener($objeto);
     }
+    public function guardar_simulado()
+    {
+        $campo_primario = $this->obt_cam_primario();
+        $clave = array($campo_primario => $this->obt_ult_id());
+        $sql = false;
+        // si existe un campo primario
+        if (array_key_exists($campo_primario, $this->datos)) {
+            $id = $this->datos[$campo_primario];
+            unset($this->datos[$campo_primario]);
+            // preguntamos, si es cero (nuevo) será insertado un nuevo registro
+            if ($id == 0) {
+                $sql = $this->armar_sql_insert($this->datos);
+            } else {
+                // o será editado
+                $clave = array($campo_primario => $id);
+                $sql = $this->armar_sql_editar($this->datos, $clave);
+            }
+        } else {
+            //será insertado un nuevo registro
+            $sql = $this->armar_sql_insert($this->datos);
+        }
 
+        return $sql;
+    }
     public function guardar($devolver = true)
     {
         $campo_primario = $this->obt_cam_primario();
@@ -758,7 +690,15 @@ class PK_Modelo extends PDO
         if ($resultado) {
             return true;
         } else {
-            exit(mostrar_error('Modelo', 'Error: '.$this->obt_error()));
+            if (isset($this->config->error)) {
+                if ($this->config->error) {
+                    exit(mostrar_error('Modelo', 'Error: '.$this->obt_error()));
+                } else {
+                    return false;
+                }
+            } else {
+                exit(mostrar_error('Modelo', 'Error: '.$this->obt_error()));
+            }
         }
     }
 
@@ -919,18 +859,39 @@ class PK_Modelo extends PDO
     {
         return $this->datos;
     }
-    public function env_datos($datos=array())
+    public function env_datos($datos=array(), $filtrado=true)
     {
         if (is_array($datos)) {
             if (count($datos)>0) {
-              $campos = $this->obt_campos();
-              $this->datos = obt_arreglo($campos, $datos);
+                $campos = $this->obt_campos();
+                $this->datos =  ($filtrado) ? obt_arreglo($campos, $datos) : $datos;
             }
         }
+    }
+    public function obt_config()
+    {
+        return $this->config;
     }
     public function obt_orden_hist()
     {
         return $this->orden_hist;
+    }
+    public function devolver_error($e)
+    {
+        if (isset($this->config)) {
+            if (isset($this->config->mostrar_error)) {
+                if ($this->config->mostrar_error) {
+                    exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
+                } else {
+                    informe(utf8_encode('Modelo: '.$e->getMessage()));
+                    return false;
+                }
+            } else {
+                exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
+            }
+        } else {
+            exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
+        }
     }
 }
 
