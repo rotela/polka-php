@@ -152,9 +152,10 @@ class PK_Conexion extends PDO
                     $this->bd_interface = new mysql_bd($this);
                     break;
             }
+            $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             $this->devolver_error($e);
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             $this->devolver_error($e);
         }
     }

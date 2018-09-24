@@ -17,9 +17,9 @@ class firebird_bd implements bd_interface
     {
         $this->con = $con;
         $this->config = $this->con->obt_config();
-        $this->campos=array();
-        $this->tablas=array();
-        $this->modelo_vacio=array();
+        $this->campos = array();
+        $this->tablas = array();
+        $this->modelo_vacio = array();
     }
     public function insertar($datos = array(), $simular = false)
     {
@@ -34,13 +34,13 @@ class firebird_bd implements bd_interface
         // se arma la plantilla
         $orden = 'INSERT INTO '.$this->con->obt_tabla().' (';
         foreach ($datos as $campo => $valor) {
-            if ($valor != 'NULL') {
+            if ($valor !== 'NULL') {
                 $orden .= $campo.', ';
             }
         }
         $orden .= ') VALUES (';
         foreach ($datos as $campo => $valor) {
-            if ($valor != 'NULL') {
+            if ($valor !== 'NULL') {
                 $orden .= ':'.$campo.', ';
             }
         }
@@ -53,9 +53,13 @@ class firebird_bd implements bd_interface
             // se arma la fila con los datos ingresados
             $fila = array();
             foreach ($datos as $campo => $valor) {
-                if ($valor != 'NULL') {
+                if ($valor !== 'NULL') {
                     $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
                 }
+            }
+            //
+            if ($this->config->mostrar_error) {
+                informe($this->con->armar_sql_insert($datos));
             }
             // se ejecuta
             if ($simular) {
@@ -69,6 +73,8 @@ class firebird_bd implements bd_interface
             }
         } catch (PDOException $e) {
             $this->devolver_error($e);
+        } catch (Exception $e) {
+            $this->devolver_error($e);
         }
     }
     public function editar($datos = array(), $clave = array(), $simular = false)
@@ -79,26 +85,33 @@ class firebird_bd implements bd_interface
         // se arma la plantilla
         $orden = 'UPDATE '.$this->con->obt_tabla().' SET ';
         foreach ($datos as $campo => $valor) {
-            if ($valor != 'NULL') {
+            if ($valor !== 'NULL') {
                 $orden .= $campo.'=:'.$campo.', ';
             }
         }
         $orden .= 'WHERE ';
         foreach ($clave as $key => $value) {
-            $orden .= $key.'='.$value.' AND ';
+            if ($valor !== 'NULL') {
+                $orden .= $key.'='.$value.' AND ';
+            }
         }
         $orden = preg_replace('/AND $/', '', $orden);
         $orden = str_replace(', WHERE', ' WHERE', $orden);
         $this->con->orden = $orden;
+
         try {
             // se prepara la plantilla
             $sentencia = $this->con->prepare($this->con->orden);
             // se arma la fila con los datos ingresados
             $fila = array();
             foreach ($datos as $campo => $valor) {
-                if ($valor != 'NULL') {
+                if ($valor !== 'NULL') {
                     $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
                 }
+            }
+            //
+            if ($this->config->mostrar_error) {
+                informe($this->con->armar_sql_editar($datos, $clave));
             }
             // se ejecuta
             if ($simular) {
@@ -110,6 +123,8 @@ class firebird_bd implements bd_interface
                 }
             }
         } catch (PDOException $e) {
+            $this->devolver_error($e);
+        } catch (Exception $e) {
             $this->devolver_error($e);
         }
     }
@@ -135,6 +150,8 @@ class firebird_bd implements bd_interface
                 }
             }
         } catch (PDOException $e) {
+            $this->devolver_error($e);
+        } catch (Exception $e) {
             $this->devolver_error($e);
         }
     }
@@ -165,6 +182,8 @@ class firebird_bd implements bd_interface
             }
             return $ult_id;
         } catch (PDOException $e) {
+            $this->devolver_error($e);
+        } catch (Exception $e) {
             $this->devolver_error($e);
         }
     }
@@ -310,5 +329,21 @@ class firebird_bd implements bd_interface
             return $this->modelo_vacio;
         }
     }
-
+    public function devolver_error($e)
+    {
+        if (isset($this->config)) {
+            if (isset($this->config->mostrar_error)) {
+                if ($this->config->mostrar_error) {
+                    exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
+                } else {
+                    informe(utf8_encode('Modelo: '.$e->getMessage()));
+                    return false;
+                }
+            } else {
+                exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
+            }
+        } else {
+            exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
+        }
+    }
 }

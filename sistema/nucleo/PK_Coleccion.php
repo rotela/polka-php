@@ -81,7 +81,6 @@ class PK_Coleccion
         $libreria = self::verificar($libreria);
         if (array_key_exists($libreria, self::$librerias)) {
             seguir('Instanciando '.$libreria);
-
             return self::$librerias[$libreria];
         } else {
             seguir('Obteniendo '.$libreria);

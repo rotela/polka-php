@@ -122,16 +122,16 @@ class mysqldump
         if (empty($db)) {
             $config = PK_Config::obt_instancia()->obtener('bd');
 
-            $this->db = $config->base_bd;
+            $this->db = $config->base;
 
             if (empty($user)) {
-                $this->user = $config->user_bd;
+                $this->user = $config->user;
             }
             if (empty($pass)) {
-                $this->pass = $config->pass_bd;
+                $this->pass = $config->pass;
             }
-            $this->host = $config->host_bd;
-            $this->type = $config->tipo_bd;
+            $this->host = $config->host;
+            $this->type = $config->tipo;
         }
 
         // fin linea agreagda

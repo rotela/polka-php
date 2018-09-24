@@ -141,7 +141,6 @@ class PK_Modelo extends PK_Conexion
     /**
     * instancia de referencia de las interfaces
     */
-
     private $bd_interface;
 
     /**
@@ -156,7 +155,7 @@ class PK_Modelo extends PK_Conexion
         parent::__construct();
         $this->bd_interface = $this->obt_interface();
         if (empty($tabla)) {
-            throw new \Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
+            throw new Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
         } else {
             $this->tabla = trim($tabla);
             $this->cam_primario = trim($campo_primario);
@@ -179,7 +178,7 @@ class PK_Modelo extends PK_Conexion
         if (in_array($nombre, $this->campos)) {
             $this->datos[$nombre] = $parametro[0];
         } else {
-            throw new \Exception(mostrar_error('Modelo', "Función <strong>'$nombre'</strong></strong> desconocida o no existe el campo <strong>'$nombre'</strong>"));
+            throw new Exception(mostrar_error('Modelo', "Función <strong>'$nombre'</strong></strong> desconocida o no existe el campo <strong>'$nombre'</strong>"));
         }
     }
 
@@ -392,7 +391,7 @@ class PK_Modelo extends PK_Conexion
             $this->orden_l[] = "SELECT sum($campo) as total_col";
             return $this;
         } else {
-            throw new \Exception(mostrar_error('Modelo', 'Se requiere del nombre de la columna a sumar, indíquelo.'));
+            throw new Exception(mostrar_error('Modelo', 'Se requiere del nombre de la columna a sumar, indíquelo.'));
         }
     }
 
@@ -682,6 +681,9 @@ class PK_Modelo extends PK_Conexion
 
     public function ejecutar($orden = '', $objeto = false)
     {
+        if ($this->config->informar_sql) {
+            informe($orden);
+        }
         return $this->bd_interface->ejecutar($orden, $objeto);
     }
 
