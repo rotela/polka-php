@@ -680,10 +680,7 @@ class PK_Modelo extends PK_Conexion
     }
 
     public function ejecutar($orden = '', $objeto = false)
-    {
-        if ($this->config->informar_sql) {
-            informe($orden);
-        }
+    {        
         return $this->bd_interface->ejecutar($orden, $objeto);
     }
 

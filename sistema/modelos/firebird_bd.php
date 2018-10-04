@@ -58,7 +58,7 @@ class firebird_bd implements bd_interface
                 }
             }
             //
-            if ($this->config->mostrar_error) {
+            if (!$this->config->mostrar_error) {
                 informe($this->con->armar_sql_insert($datos));
             }
             // se ejecuta
@@ -110,7 +110,7 @@ class firebird_bd implements bd_interface
                 }
             }
             //
-            if ($this->config->mostrar_error) {
+            if (!$this->config->mostrar_error) {
                 informe($this->con->armar_sql_editar($datos, $clave));
             }
             // se ejecuta
