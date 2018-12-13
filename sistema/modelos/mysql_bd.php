@@ -10,6 +10,7 @@ class mysql_bd implements bd_interface
     private $con;
     private $config;
     private $campos;
+    private $descripcion;
     private $tablas;
     private $modelo_vacio;
 
@@ -18,6 +19,7 @@ class mysql_bd implements bd_interface
         $this->con = $con;
         $this->config = $this->con->obt_config();
         $this->campos = array();
+        $this->descripcion = array();
         $this->tablas = array();
         $this->modelo_vacio = array();
     }
@@ -58,7 +60,7 @@ class mysql_bd implements bd_interface
                 }
             }
             //
-            if ($this->config->mostrar_error) {
+            if ($this->config->informar_sql) {
                 informe($this->con->armar_sql_insert($datos));
             }
             // se ejecuta
@@ -72,8 +74,16 @@ class mysql_bd implements bd_interface
                 }
             }
         } catch (PDOException $e) {
+            //
+            if ($this->config->mostrar_error) {
+                informe($this->con->armar_sql_insert($datos));
+            }
             $this->devolver_error($e);
         } catch (Exception $e) {
+            //
+            if ($this->config->mostrar_error) {
+                informe($this->con->armar_sql_insert($datos));
+            }
             $this->devolver_error($e);
         }
     }
@@ -106,11 +116,11 @@ class mysql_bd implements bd_interface
             $fila = array();
             foreach ($datos as $campo => $valor) {
                 if ($valor !== 'NULL') {
-                    $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
+                    $fila[':'.$campo] = $valor;
                 }
             }
             //
-            if ($this->config->mostrar_error) {
+            if ($this->config->informar_sql) {
                 informe($this->con->armar_sql_editar($datos, $clave));
             }
             // se ejecuta
@@ -123,8 +133,16 @@ class mysql_bd implements bd_interface
                 }
             }
         } catch (PDOException $e) {
+            //
+            if ($this->config->mostrar_error) {
+                informe($this->con->armar_sql_editar($datos, $clave));
+            }
             $this->devolver_error($e);
         } catch (Exception $e) {
+            //
+            if ($this->config->mostrar_error) {
+                informe($this->con->armar_sql_editar($datos, $clave));
+            }
             $this->devolver_error($e);
         }
     }
@@ -136,7 +154,9 @@ class mysql_bd implements bd_interface
         try {
             $this->con->orden = $orden;
             $resultado = $this->con->query($this->con->orden);
-
+            if ($this->config->informar_sql) {
+                informe($this->con->orden);
+            }
             if ($resultado) {
                 $this->cant_filas = $resultado->rowCount();
                 if ($objeto) {
@@ -161,22 +181,31 @@ class mysql_bd implements bd_interface
     }
     public function obt_campos()
     {
-        return array_keys($this->obt_modelo_vacio());
+        if (count($this->campos)<=0) {
+            $this->campos = array_keys($this->obt_modelo_vacio());
+        }
+        return $this->campos;
     }
 
     public function obt_ult_id($generador = '')
     {
-        $ult_id = $this->con->lastInsertId();
-        if ($ult_id == 0) {
-            $campo_primario = $this->con->obt_cam_primario();
-            $tabla = $this->con->obt_tabla();
-            $sql = "select max($campo_primario) as ult_id from $tabla";
-            $result = $this->con->ejecutar($sql);
-
-            if ($result) {
-                $f = $result[0];
-                $ult_id = $f['ult_id'];
+        try {
+            $ult_id = $this->con->lastInsertId();
+            if ($ult_id == 0) {
+                $campo_primario = $this->con->obt_cam_primario();
+                $tabla = $this->con->obt_tabla();
+                $sql = "select max($campo_primario) as ult_id from $tabla";
+                $result = $this->con->ejecutar($sql);
+                if ($result) {
+                    $f = $result[0];
+                    $ult_id = $f['ult_id'];
+                }
             }
+            return $ult_id;
+        } catch (PDOException $e) {
+            $this->devolver_error($e);
+        } catch (Exception $e) {
+            $this->devolver_error($e);
         }
         return $ult_id;
     }
@@ -189,9 +218,13 @@ class mysql_bd implements bd_interface
     //
     public function describir_tabla($tabla = '')
     {
-        $tabla = empty($tabla) ? $this->con->obt_tabla():$tabla;
-        $sql = "DESCRIBE $tabla";
-        return $this->con->ejecutar($sql);
+        if (count($this->descripcion)<=0) {
+            $tabla = empty($tabla) ? $this->con->obt_tabla():$tabla;
+            $sql = "DESCRIBE $tabla";
+            $this->descripcion = $this->con->ejecutar($sql);
+            
+        }
+        return $this->descripcion;
     }
     public function obt_modelo_vacio($tabla = '')
     {
@@ -205,6 +238,9 @@ class mysql_bd implements bd_interface
             $tipo = $tipo[0];
             switch ($tipo) {
                 case 'int':
+                    $valor = 0;
+                    break;
+                case 'tinyint':
                     $valor = 0;
                     break;
                 case 'smallint':

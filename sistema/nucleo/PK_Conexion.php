@@ -29,7 +29,7 @@ if (!defined('SISTEMA')) {
  * Si desea configurar su Base de Datos, hacer lo indicado anteriormente
  *
  * @copyright Rotelabs (c)2018
- * @author Ricardo Rotela <ricksystems->gmail.com>
+ * @author Ricardo Rotela <rotelabs->gmail.com>
  *
  * @version 1.0 2018/09/14
  */

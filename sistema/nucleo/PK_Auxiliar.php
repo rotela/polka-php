@@ -32,8 +32,8 @@ if (!defined('SISTEMA')) {
  * - $this->ayudas('html');
  *
  *
- * @author Ricardo Rotela González :: ricksystems->gmail.com ;-)
- * @copyright Ricksystems (c)2014
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
  */
 class PK_Auxiliar
 {

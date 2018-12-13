@@ -10,8 +10,8 @@ if (!defined('SISTEMA')) {
  * Controlador principal para los controladores del usuario/programadores,
  * este último debe extederse de ésta clase.
  *
- * @author Ricardo Rotela González :: ricksystems->gmail.com ;-)
- * @copyright Ricksystems (c)2014
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
  */
 class PK_Controlador
 {

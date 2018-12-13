@@ -24,8 +24,8 @@ if (!defined('SISTEMA')) {
  * Se usa en las librerías y ayudas nativas
  * Se puede usar en las librerías del usuario
  *
- * @author  Ricardo Rotela González ricksystems->gmail.com ;-)
- * @copyright Ricksystems (c)2015
+ * @author  Ricardo Rotela González rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2015
  */
 class PK_Config
 {

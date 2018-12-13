@@ -29,8 +29,8 @@ if (!defined('SISTEMA')) {
  * $sesion = obt_instancia('sistema\librerias\sesion');
  * $sesion->obt_datos();
  *
- * @author  Ricardo Rotela González ricksystems->gmail.com ;-)
- * @copyright Ricksystems (c)2014
+ * @author  Ricardo Rotela González rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
  */
 class PK_Coleccion
 {
