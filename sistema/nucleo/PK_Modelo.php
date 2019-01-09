@@ -614,8 +614,12 @@ class PK_Modelo extends PK_Conexion
 
         return $sql;
     }
-    public function guardar($devolver = true)
+    public function guardar($datos = array())
     {
+        if (count($datos) > 0) {
+            $this->env_datos($datos);
+        }
+
         $campo_primario = $this->obt_cam_primario();
         $result = false;
         $id = 0;
@@ -637,10 +641,8 @@ class PK_Modelo extends PK_Conexion
         }
         if ($result) {
             // Al guardar con éste método, se obtiene éste registro si es que devolver está en true
-            if ($devolver) {
-                $id = ($id == 0) ? $this->obt_ult_id() : $id;
-                $result = $this->buscar_por(array($campo_primario => $id));
-            }
+            $id = ($id == 0) ? $this->obt_ult_id() : $id;
+            $result = $this->buscar_por(array($campo_primario => $id));
         }
         return $result;
     }
@@ -704,6 +706,14 @@ class PK_Modelo extends PK_Conexion
     public function editar($datos = array(), $clave = array(), $simular = false)
     {
         return $this->bd_interface->editar($datos, $clave, $simular);
+    }
+    public function insertar_editar($datos = array(), $clave = "", $simular = false)
+    {
+        $sql = "UPDATE OR ";
+        $sql .= $this->armar_sql_insert($datos);
+        $sql .= " MATCHING ($clave)";
+
+        return $this->ejecutar($sql);
     }
     public function ejecutar($orden = '', $objeto = false)
     {
@@ -780,9 +790,16 @@ class PK_Modelo extends PK_Conexion
         $array = array();
 
         foreach ($result as $key => $value) {
+            $value = trim(strtoupper($value));
             $valor = '';
-            switch (trim($value)) {
+            switch ($value) {
+                case 'INT':
+                    $valor = 0;
+                    break;
                 case 'INTEGER':
+                    $valor = 0;
+                    break;
+                case 'TINYINT':
                     $valor = 0;
                     break;
                 case 'SMALLINT':
@@ -801,6 +818,9 @@ class PK_Modelo extends PK_Conexion
                     $valor = '';
                     break;
                 case 'DATE':
+                    $valor = '';
+                    break;
+                case 'DATETIME':
                     $valor = '';
                     break;
                 case 'DECIMAL':
