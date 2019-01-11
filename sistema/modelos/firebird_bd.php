@@ -223,7 +223,7 @@ class firebird_bd implements bd_interface
             $tabla = strtoupper($tabla);
             $sql = "SELECT
 	RF.RDB\$RELATION_NAME FELD_TABLE,
-	trim(RF.RDB\$FIELD_NAME) FIELD_NAME,
+	trim(RF.RDB\$FIELD_NAME) CAMPO,
 	RF.RDB\$FIELD_POSITION FIELD_POSITION,
 	CASE
 		F.RDB\$FIELD_TYPE
@@ -260,7 +260,7 @@ class firebird_bd implements bd_interface
 		WHEN 45 THEN 'BLOB_ID'
 		WHEN 261 THEN 'BLOB SUB_TYPE'
 		ELSE 'RDB\$FIELD_TYPE: ' || F.RDB\$FIELD_TYPE || '?'
-	END FIELD_TYPE,
+	END TIPO,
 	IIF(COALESCE(RF.RDB\$NULL_FLAG,0) = 0, NULL, 'NOT NULL') FIELD_NULL,
 	CH.RDB\$CHARACTER_SET_NAME FIELD_CHARSET,
 	DCO.RDB\$COLLATION_NAME FIELD_COLLATION,
@@ -296,7 +296,7 @@ ORDER BY
             $tabla = (empty($tabla)) ? strtoupper($this->con->obt_tabla()): $tabla;
 
             $result = $this->describir_tabla($tabla);
-    
+
             $array = array();
 
             foreach ($result as $key => $value) {

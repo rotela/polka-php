@@ -221,8 +221,18 @@ class mysql_bd implements bd_interface
         if (count($this->descripcion)<=0) {
             $tabla = empty($tabla) ? $this->con->obt_tabla():$tabla;
             $sql = "DESCRIBE $tabla";
-            $this->descripcion = $this->con->ejecutar($sql);
-            
+            $datos = array();
+            $result = $this->con->ejecutar($sql);
+            foreach ($result as $key => $value) {
+                array_push($datos,
+                    array(
+                        'CAMPO'=> $value['Field'],
+                        'TIPO'=> $value['Type'],
+                    )
+                );
+            }
+            $this->descripcion = $datos;
+
         }
         return $this->descripcion;
     }

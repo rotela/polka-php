@@ -40,6 +40,7 @@ if (!function_exists('escribrir_informe')) {
     function escribrir_informe(string $mensaje = '', $limpio = false)
     {
         $mtime = microtime(true);
+        
         $mtime = explode('.', $mtime);
         $ms = round($mtime[1]);
         //segundos

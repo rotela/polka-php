@@ -33,8 +33,12 @@ class estructura_bd
     }
     public function escribir($datos=array(), $tabla = '')
     {
+        $carpeta = 'aplicacion/modelos/estructuras';
+        if (!file_exists($carpeta)) {
+            mkdir($carpeta, 0777, true);
+        }
         $tabla = strtoupper($tabla);
-        $archivo = "aplicacion/modelos/estructuras/$tabla.php";
+        $archivo = "$carpeta/$tabla.php";
         $archivo = str_replace('\\', SD, $archivo);
 
         if (!file_exists($archivo)) {
@@ -50,8 +54,8 @@ class estructura_bd
 
                 $contenido .= "\$config = array(\n";
                 foreach ($datos as $key => $value) {
-                    $campo = $value['FIELD_NAME'];
-                    $tipo = $value['FIELD_TYPE'];
+                    $campo = $value['CAMPO'];
+                    $tipo = (strpos($value['TIPO'], '(') === false) ? strtoupper($value['TIPO']) : strtoupper(strstr($value['TIPO'], '(', true));                
                     $contenido .= "\t'$campo' => '$tipo',\n";
                 }
                 $contenido .= ");\n";
