@@ -11,7 +11,7 @@ if (!defined('SISTEMA')) {
  * este último debe extederse de ésta clase.
  *
  * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
- * @copyright Rotelabs (c)2014
+ * @copyright Rotelabs (c)2018
  */
 class PK_Controlador
 {
@@ -90,7 +90,7 @@ class PK_Controlador
      * Función para cargar los recursos del usuario
      * como ser autocargas de ayudas, librerías y modelos.
      *
-     * @return mised Devuelve o anida los recursos cargados
+     * @return mixed Devuelve o anida los recursos cargados
      */
     private function recursos_usuario()
     {
@@ -219,9 +219,12 @@ class PK_Controlador
             // si es array,
             if (is_array($modelos)) {
                 // recorrer el array,
-                foreach ($modelos as $value) {
-                    // si existe el modelo,
-                    $this->incluir_modelo($value, $alias);
+                foreach ($modelos as $key => $value) {
+                    if (is_string($key)) {
+                        $this->incluir_modelo($key, $value);
+                    } else {
+                        $this->incluir_modelo($value);
+                    }
                 }
             } else {
                 // si existe el modelo, y si solo es un modelo a cargar

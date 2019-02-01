@@ -566,7 +566,7 @@ class PK_Modelo extends PK_Conexion
      * @return mixed           Objeto u array asociativo, según el parámetro
      *                         anterior
      */
-    public function obtener($objeto = true, $lista = true)
+    public function obtener($objeto = false, $lista = true)
     {
         if (count($this->orden_l) <= 0) {
             $this->seleccionar()->desde();

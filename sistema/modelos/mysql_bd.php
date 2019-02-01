@@ -224,7 +224,8 @@ class mysql_bd implements bd_interface
             $datos = array();
             $result = $this->con->ejecutar($sql);
             foreach ($result as $key => $value) {
-                array_push($datos,
+                array_push(
+                    $datos,
                     array(
                         'CAMPO'=> $value['Field'],
                         'TIPO'=> $value['Type'],
@@ -232,7 +233,6 @@ class mysql_bd implements bd_interface
                 );
             }
             $this->descripcion = $datos;
-
         }
         return $this->descripcion;
     }
