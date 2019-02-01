@@ -4,7 +4,9 @@ namespace sistema\nucleo;
 if (!defined('SISTEMA')) {
     exit('No se permite acceso directo al script');
 }
+
 use sistema\nucleo\PK_Conexion;
+use sistema\librerias\estructura_bd;
 use \PDO;
 use \PDOException;
 use \Exception;
@@ -23,8 +25,8 @@ use \Exception;
  * No tocar las propiedades de ésta clase
  * Si desea configurar su Base de Datos, hacer lo indicado anteriormente
  *
- * @copyright Ricksystems (c)2017
- * @author Ricardo Rotela <ricksystems->gmail.com>
+ * @copyright Rotelabs (c)2017
+ * @author Ricardo Rotela <rotelabs->gmail.com>
  *
  * @version 2.0 2017/08/30
  */
@@ -134,14 +136,8 @@ class PK_Modelo extends PK_Conexion
     use PK_Singleton;
 
     /**
-     * Marcador para saber si está conectado.
-     */
-    private $conectado = false;
-
-    /**
     * instancia de referencia de las interfaces
     */
-
     private $bd_interface;
 
     /**
@@ -156,10 +152,11 @@ class PK_Modelo extends PK_Conexion
         parent::__construct();
         $this->bd_interface = $this->obt_interface();
         if (empty($tabla)) {
-            throw new \Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
+            throw new Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
         } else {
             $this->tabla = trim($tabla);
             $this->cam_primario = trim($campo_primario);
+            $this->estructurar();
         }
     }
     /**
@@ -179,7 +176,7 @@ class PK_Modelo extends PK_Conexion
         if (in_array($nombre, $this->campos)) {
             $this->datos[$nombre] = $parametro[0];
         } else {
-            throw new \Exception(mostrar_error('Modelo', "Función <strong>'$nombre'</strong></strong> desconocida o no existe el campo <strong>'$nombre'</strong>"));
+            throw new Exception(mostrar_error('Modelo', "Función <strong>'$nombre'</strong></strong> desconocida o no existe el campo <strong>'$nombre'</strong>"));
         }
     }
 
@@ -204,6 +201,12 @@ class PK_Modelo extends PK_Conexion
         }
     }
 
+
+    public function estructurar()
+    {
+        $datos = $this->obt_descripcion();
+        obt_coleccion('sistema\librerias\estructura_bd')::obt_instancia()->escribir($datos, $this->tabla);
+    }
     /**
      * Devuelve la fila del registro encontrado, y sus columnas como propiedades
      * Esta función es utilizada después de una búsqueda o consulta
@@ -222,8 +225,14 @@ class PK_Modelo extends PK_Conexion
         $valores = '';
         $primer = 0;
         foreach ($datos as $key => $value) {
-            switch (gettype($value)) {
+            switch (tipo_var($value)) {
                 case 'string':
+                    $valor = "'$value'";
+                    break;
+                case 'char':
+                    $valor = "'$value'";
+                    break;
+                case 'varchar':
                     $valor = "'$value'";
                     break;
                 case 'numeric':
@@ -236,6 +245,12 @@ class PK_Modelo extends PK_Conexion
                     $valor = $value;
                     break;
                 case 'integer':
+                    $valor = $value;
+                    break;
+                case 'int':
+                    $valor = $value;
+                    break;
+                case 'tinyint':
                     $valor = $value;
                     break;
                 case 'float':
@@ -256,12 +271,13 @@ class PK_Modelo extends PK_Conexion
             } else {
                 $valores = $valores.','.$valor;
             }
+
             ++$primer;
         }
 
         $tabla = (empty($tabla)) ? $this->tabla : $tabla;
 
-        $sql = 'insert into '.$tabla."($campos) values($valores)";
+        $sql = 'INSERT INTO '.$tabla."($campos) VALUES($valores)";
         $sql = str_replace("'NULL'", 'NULL', $sql);
 
         return $sql;
@@ -278,36 +294,48 @@ class PK_Modelo extends PK_Conexion
             }
         }
         foreach ($datos as $key => $value) {
-            switch (gettype($value)) {
-
+            switch (tipo_var($value)) {
                 case 'string':
                     $valor = "'$value'";
                     break;
-
+                case 'char':
+                    $valor = "'$value'";
+                    break;
+                case 'varchar':
+                    $valor = "'$value'";
+                    break;
                 case 'numeric':
                     $valor = $value;
                     break;
                 case 'decimal':
                     $valor = $value;
                     break;
+                case 'double':
+                    $valor = $value;
+                    break;
                 case 'integer':
                     $valor = $value;
                     break;
-
+                case 'int':
+                    $valor = $value;
+                    break;
+                case 'tinyint':
+                    $valor = $value;
+                    break;
                 case 'float':
                     $valor = $value;
                     break;
-
                 case 'boolean':
                     $valor = ($value == true) ? 1 : 0;
                     break;
-
                 default:
                     $valor = $value;
                     break;
             }
-
-            $campos .= empty($campos) ? $key.' = '.$valor : ', '.$key.' = '.$valor;
+            if ($key !== 0) {
+                // code...
+                $campos .= empty($campos) ? $key.' = '.$valor : ', '.$key.' = '.$valor;
+            }
         }
 
         $elwhere = '';
@@ -392,7 +420,7 @@ class PK_Modelo extends PK_Conexion
             $this->orden_l[] = "SELECT sum($campo) as total_col";
             return $this;
         } else {
-            throw new \Exception(mostrar_error('Modelo', 'Se requiere del nombre de la columna a sumar, indíquelo.'));
+            throw new Exception(mostrar_error('Modelo', 'Se requiere del nombre de la columna a sumar, indíquelo.'));
         }
     }
 
@@ -538,7 +566,7 @@ class PK_Modelo extends PK_Conexion
      * @return mixed           Objeto u array asociativo, según el parámetro
      *                         anterior
      */
-    public function obtener($objeto = true, $lista = true)
+    public function obtener($objeto = false, $lista = true)
     {
         if (count($this->orden_l) <= 0) {
             $this->seleccionar()->desde();
@@ -586,11 +614,15 @@ class PK_Modelo extends PK_Conexion
 
         return $sql;
     }
-    public function guardar($devolver = true)
+    public function guardar($datos = array())
     {
+        if (count($datos) > 0) {
+            $this->env_datos($datos);
+        }
+
         $campo_primario = $this->obt_cam_primario();
-        $clave = array($campo_primario => $this->obt_ult_id());
         $result = false;
+        $id = 0;
         // si existe un campo primario
         if (array_key_exists($campo_primario, $this->datos)) {
             $id = $this->datos[$campo_primario];
@@ -600,21 +632,17 @@ class PK_Modelo extends PK_Conexion
                 $result = $this->insertar($this->datos);
             } else {
                 // o será editado
-                $clave = array($campo_primario => $id);
-                $result = $this->editar($this->datos, $clave);
+                $mientras = array($campo_primario => $id);
+                $result = $this->editar($this->datos, $mientras);
             }
         } else {
             //será insertado un nuevo registro
             $result = $this->insertar($this->datos);
         }
-        // Al guardar con éste método, se obtiene instantáneamente
-        // el registro guardado (el último).
-
         if ($result) {
-            if ($devolver) {
-                $clave = array($campo_primario => $this->obt_ult_id());
-                $result = $this->buscar_por($clave);
-            }
+            // Al guardar con éste método, se obtiene éste registro si es que devolver está en true
+            $id = ($id == 0) ? $this->obt_ult_id() : $id;
+            $result = $this->buscar_por(array($campo_primario => $id));
         }
         return $result;
     }
@@ -679,12 +707,18 @@ class PK_Modelo extends PK_Conexion
     {
         return $this->bd_interface->editar($datos, $clave, $simular);
     }
+    public function insertar_editar($datos = array(), $clave = "", $simular = false)
+    {
+        $sql = "UPDATE OR ";
+        $sql .= $this->armar_sql_insert($datos);
+        $sql .= " MATCHING ($clave)";
 
+        return $this->ejecutar($sql);
+    }
     public function ejecutar($orden = '', $objeto = false)
     {
         return $this->bd_interface->ejecutar($orden, $objeto);
     }
-
     public function comprobar($resultado)
     {
         if ($resultado) {
@@ -712,24 +746,98 @@ class PK_Modelo extends PK_Conexion
         return $this->sum_col($columna)->desde()->obtener(true, false)->total_col;
     }
 
+    public function obt_descripcion()
+    {
+        $libreria = 'sistema\librerias\estructura_bd';
+        $estructura = obt_coleccion($libreria)::obt_instancia();
+        $datos = $estructura->obtener($this->tabla);
+
+        if (count($datos) <= 0) {
+            $datos = $this->bd_interface->describir_tabla($this->tabla);
+            $estructura->escribir($datos, $this->tabla);
+            $datos = $estructura->obtener($this->tabla);
+        }
+
+        return $datos;
+    }
+
     public function obt_campos()
     {
-        $this->campos = $this->bd_interface->obt_campos();
+        $datos = $this->obt_descripcion();
+        $campos = array();
+        foreach ($datos as $key => $value) {
+            array_push($campos, $key);
+        }
+        $this->campos = $campos;
         return $this->campos;
+
+        // $this->campos = $this->bd_interface->obt_campos();
+        // return $this->campos;
     }
 
     public function obt_cam_primario()
     {
-        $campos = $this->obt_campos();
-        return (empty($this->cam_primario)) ? $campos[0] : $this->cam_primario;
+        if (empty($this->cam_primario)) {
+            $campos = $this->obt_campos();
+            $this->cam_primario = $campos[0];
+        }
+        return $this->cam_primario;
     }
     public function obt_modelo_vacio()
     {
-        $this->campos = $this->bd_interface->obt_modelo_vacio();
-        return $this->campos;
+        $result = $this->obt_descripcion();
+
+        $array = array();
+
+        foreach ($result as $key => $value) {
+            $value = trim(strtoupper($value));
+            $valor = '';
+            switch ($value) {
+                case 'INT':
+                    $valor = 0;
+                    break;
+                case 'INTEGER':
+                    $valor = 0;
+                    break;
+                case 'TINYINT':
+                    $valor = 0;
+                    break;
+                case 'SMALLINT':
+                    $valor = 0;
+                    break;
+                case 'FLOAT':
+                    $valor = 0.0;
+                    break;
+                case 'DOUBLE':
+                    $valor = 0.0;
+                    break;
+                case 'VARCHAR':
+                    $valor = '';
+                    break;
+                case 'CHAR':
+                    $valor = '';
+                    break;
+                case 'DATE':
+                    $valor = '';
+                    break;
+                case 'DATETIME':
+                    $valor = '';
+                    break;
+                case 'DECIMAL':
+                    $valor = 0.0;
+                    break;
+                default:
+                    $valor = '';
+                    break;
+            }
+            $array[$key] = $valor;
+        }
+        return $array;
+        // $this->campos = $this->bd_interface->obt_modelo_vacio();
+        // return $this->campos;
     }
     /**
-     * Devuelve la cantidad de registristros de forma general
+     * Devuelve la cantidad de registros de forma general
      * o según las candiciones pasada como parámetro.
      *
      * @param  string $mientras Condición por las que se contarán los registros
@@ -802,7 +910,9 @@ class PK_Modelo extends PK_Conexion
             return $t;
         };
         $s = '';
+
         $detalle = $this->obt_descripcion();
+
         foreach ($datos as $key => $value) {
             $tipo = $obt_tipo($key, $detalle);
             $nulo = $obt_nulo($key, $detalle);
@@ -835,14 +945,12 @@ class PK_Modelo extends PK_Conexion
         $this->ultimo_id = $this->bd_interface->obt_ult_id($secuencia);
         return $this->ultimo_id;
     }
+
     public function obt_tabla()
     {
         return $this->tabla;
     }
-    public function obt_descripcion()
-    {
-        return $this->bd_interface->describir_tabla($this->tabla);
-    }
+
     public function obt_error()
     {
         return implode(',', $this->errorInfo());
@@ -866,6 +974,12 @@ class PK_Modelo extends PK_Conexion
                 $campos = $this->obt_campos();
                 $this->datos =  ($filtrado) ? obt_arreglo($campos, $datos) : $datos;
             }
+        }
+    }
+    public function env_orden($orden = '')
+    {
+        if (!empty($orden)) {
+            $this->orden = $orden;
         }
     }
     public function obt_config()

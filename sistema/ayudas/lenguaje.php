@@ -4,7 +4,7 @@ if (!function_exists('traducir')) {
 
     /**
      * $num    = 30;
-     * $loc    = 'Villa elisa';
+     * $loc    = 'Villa Elisa';
      * $zoo    = 2;
      * $format = 'En %2$s hay mas de %1$d monos.
      * Asi mismo, %1$d monos hay en %2$s monkeys y %3$d zoologicos.';

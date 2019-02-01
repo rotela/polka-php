@@ -12,8 +12,8 @@ use Exception;
 * Clase que supervisa qué controlador, método y argumento se está
 * recibiendo y donde debe dirigirla.
 *
-* @author Ricardo Rotela González ricksystems->gmail.com
-* @copyright Ricksystems (c)2015
+* @author Ricardo Rotela González rotelabs->gmail.com
+* @copyright Rotelabs (c)2015
 */
 class PK_Disparador
 {

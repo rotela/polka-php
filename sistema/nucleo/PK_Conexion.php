@@ -29,7 +29,7 @@ if (!defined('SISTEMA')) {
  * Si desea configurar su Base de Datos, hacer lo indicado anteriormente
  *
  * @copyright Rotelabs (c)2018
- * @author Ricardo Rotela <ricksystems->gmail.com>
+ * @author Ricardo Rotela <rotelabs->gmail.com>
  *
  * @version 1.0 2018/09/14
  */
@@ -152,9 +152,10 @@ class PK_Conexion extends PDO
                     $this->bd_interface = new mysql_bd($this);
                     break;
             }
+            // $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             $this->devolver_error($e);
-        }catch (Exception $e) {
+        } catch (Exception $e) {
             $this->devolver_error($e);
         }
     }

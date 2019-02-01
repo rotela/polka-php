@@ -10,8 +10,8 @@ if (!defined('SISTEMA')) {
  * Clase que supervisa las rutas, ésta procesará y hará las comprobaciones
  * sobre las rutas indicadas en la configuración Rutas.
  *
- * @author Ricardo Rotela González ricksystems->gmail.com
- * @copyright Ricksystems (c)2014
+ * @author Ricardo Rotela González rotelabs->gmail.com
+ * @copyright Rotelabs (c)2014
  */
 class PK_Rutas
 {
@@ -58,10 +58,7 @@ class PK_Rutas
 
         $this->url_origen = implode('/', $array_origen);
         $this->url_destino = implode('/', $array_destino);
-        /*
-                echo $this->url_origen ."<br>". url_solicitud()."<br>";
-                exit();
-                */
+
         return ($this->url_origen == url_solicitud()) ? true : false;
     }
 

@@ -85,7 +85,7 @@ class sesion
     public function obt_datos($clave = '')
     {
         if (!empty($clave)) {
-            return isset($_SESSION[$clave]) ? $_SESSION[$clave] : '';
+            return isset($_SESSION[$clave]) ? $_SESSION[$clave] : false;
         } else {
             return $_SESSION;
         }
@@ -141,5 +141,9 @@ class sesion
         $csrf_nom = obt_config('aplicacion')->csrf_nom;
         isset($_SESSION[$csrf_nom]);
         unset($_SESSION[$csrf_nom]);
+    }
+    public function limpiar($value='')
+    {
+        session_destroy();
     }
 }

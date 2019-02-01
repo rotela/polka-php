@@ -89,3 +89,17 @@ if (!function_exists('array_objeto')) {
         }
     }
 }
+if (!function_exists('array_texto')) {
+    function array_texto($array = array())
+    {
+        $t = "";
+        if (is_array($array)) {
+            if (count($array)>0) {
+                foreach ($array as $key => $value) {
+                    $t .= (empty($t)) ? "$key : $value" : ", $key : $value";
+                }
+            }
+        }
+        return $t;
+    }
+}
