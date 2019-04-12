@@ -55,7 +55,7 @@ class estructura_bd
                 $contenido .= "\$config = array(\n";
                 foreach ($datos as $key => $value) {
                     $campo = $value['CAMPO'];
-                    $tipo = (strpos($value['TIPO'], '(') === false) ? strtoupper($value['TIPO']) : strtoupper(strstr($value['TIPO'], '(', true));                
+                    $tipo = (strpos($value['TIPO'], '(') === false) ? strtoupper($value['TIPO']) : strtoupper(strstr($value['TIPO'], '(', true));
                     $contenido .= "\t'$campo' => '$tipo',\n";
                 }
                 $contenido .= ");\n";

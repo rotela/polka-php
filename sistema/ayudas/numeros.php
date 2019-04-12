@@ -8,10 +8,9 @@ function normalizar_enteros($value='')
 function sep_miles($numero = '')
 {
     if (!empty($numero)) {
-        // echo tipo_var($numero).": $numero\n";
+
         $numero = intval($numero);
-        // echo $numero;
-        // exit();
+       
         $can = strlen($numero);
         if ($can <= 3) {
             return $numero;
@@ -38,10 +37,9 @@ function sep_miles($numero = '')
             foreach ($new_num as $key => $value) {
                 $final .= $value;
             }
-            // echo "$final\n";
             return $final."";
         }
     } else {
-        return '';
+        return '0';
     }
 }
