@@ -40,7 +40,7 @@ if (!function_exists('escribrir_informe')) {
     function escribrir_informe(string $mensaje = '', $limpio = false)
     {
         $mtime = microtime(true);
-        
+
         $mtime = explode('.', $mtime);
         $ms = round($mtime[1]);
         //segundos
@@ -66,6 +66,11 @@ if (!function_exists('escribrir_informe')) {
 if (!function_exists('informe')) {
     function informe($mensaje = '')
     {
+        if (is_array($mensaje)) {
+            if (count($mensaje)>0) {
+                $mensaje = array_texto($mensaje);
+            }
+        }
         escribrir_informe($mensaje, false);
     }
 }
