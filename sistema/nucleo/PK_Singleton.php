@@ -20,7 +20,6 @@ trait PK_Singleton
                 self::$instancia = new self($parametro);
             }
         }
-
         return self::$instancia;
     }
 

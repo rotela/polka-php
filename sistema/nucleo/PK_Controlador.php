@@ -146,6 +146,10 @@ class PK_Controlador
      */
     public function librerias($librerias = '', $alias = '', $param = '')
     {
+        if (is_array($alias)) {
+            $param = $alias;
+            $alias = '';
+        }
         // si no está vacío el parámetro,
         if (!empty($librerias)) {
             // si es array,
@@ -193,7 +197,7 @@ class PK_Controlador
                 // o, si existe incluirlo si es que aún no existe como propiedad,
                 if (!method_exists($this, $alias_lib)) {
                     $libreria = 'sistema\librerias\\'.$nombre_libreria;
-                    $this->$alias_lib = PK_Coleccion::obt_instancia()->obtener($libreria);
+                    $this->$alias_lib = PK_Coleccion::obt_instancia()->obtener($libreria, $param);
                 }
             } else {
                 // o, no incluir, enviar el error al navegador.-

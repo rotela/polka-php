@@ -165,8 +165,7 @@ function explorador($dir = '', $res = array())
             }
             closedir($gestor);
         }
-    }
-    eco_ln('-> can archivos '.count($archivos));
+    }    
 
     return $archivos;
 }

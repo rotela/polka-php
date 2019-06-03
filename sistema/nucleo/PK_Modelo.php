@@ -590,8 +590,11 @@ class PK_Modelo extends PK_Conexion
 
         return $this->obtener($objeto);
     }
-    public function guardar_simulado()
+    public function guardar_simulado($datos = array())
     {
+        if (count($datos) > 0) {
+            $this->env_datos($datos);
+        }
         $campo_primario = $this->obt_cam_primario();
         $clave = array($campo_primario => $this->obt_ult_id());
         $sql = false;
@@ -611,7 +614,6 @@ class PK_Modelo extends PK_Conexion
             //será insertado un nuevo registro
             $sql = $this->armar_sql_insert($this->datos);
         }
-
         return $sql;
     }
     public function guardar($datos = array())
@@ -770,9 +772,6 @@ class PK_Modelo extends PK_Conexion
         }
         $this->campos = $campos;
         return $this->campos;
-
-        // $this->campos = $this->bd_interface->obt_campos();
-        // return $this->campos;
     }
 
     public function obt_cam_primario()

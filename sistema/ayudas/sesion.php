@@ -14,6 +14,14 @@ if (!function_exists('sesion_obt_dato_temp')) {
     }
 }
 
+if (!function_exists('sesion_env_dato_temp')) {
+    function sesion_env_dato_temp($mensaje, $clave = '')
+    {
+        $sesion = PK_Coleccion::obt_instancia()->obtener('sistema\librerias\sesion');
+        return $sesion->env_dato_temp($mensaje, $clave);
+    }
+}
+
 if (!function_exists('sesion_env_datos')) {
     function sesion_env_datos($datos, $clave = '')
     {

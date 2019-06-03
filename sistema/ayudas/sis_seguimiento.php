@@ -66,6 +66,9 @@ if (!function_exists('escribrir_informe')) {
 if (!function_exists('informe')) {
     function informe($mensaje = '')
     {
+        if ($mensaje == null) {
+            $mensaje = 'el informe es null';
+        }
         if (is_array($mensaje)) {
             if (count($mensaje)>0) {
                 $mensaje = array_texto($mensaje);
