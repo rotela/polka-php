@@ -1,5 +1,4 @@
 <?php
-
 namespace sistema\nucleo;
 
 if (!defined('SISTEMA')) {
@@ -27,13 +26,10 @@ class PK_Solicitud
             // Si No hay, procesar normalmente la url solicitada
             $url = filter_input(INPUT_GET, 'url', FILTER_SANITIZE_URL);
         }
-
         // Si hay uno de los anteriores casos, sustraer sus componentes
-
         if (!empty($url)) {
             // Se sustraen las subcarpetas si es que exite/n
             $url = explode('/', $url);
-            //$url = array_filter(explode('/', $url));
             $cadena = '';
             for ($i = 0; $i < count($url); ++$i) {
                 $cadena .= $url[$i].SD;
@@ -53,7 +49,6 @@ class PK_Solicitud
         if (empty(self::$sub_carpeta)) {
             self::configurar();
         }
-
         return self::$sub_carpeta;
     }
 
@@ -62,7 +57,6 @@ class PK_Solicitud
         if (empty(self::$controlador)) {
             self::configurar();
         }
-
         return self::$controlador;
     }
 
@@ -71,7 +65,6 @@ class PK_Solicitud
         if (empty(self::$metodo)) {
             self::configurar();
         }
-
         return self::$metodo;
     }
 
@@ -80,7 +73,6 @@ class PK_Solicitud
         if (empty(self::$argumentos)) {
             self::configurar();
         }
-
         return self::$argumentos;
     }
 }

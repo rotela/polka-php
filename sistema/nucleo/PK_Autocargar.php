@@ -6,7 +6,7 @@ if (!defined('SISTEMA')) {
  * Requerimos de php 7+
  */
 if (!defined('PHP_VERSION_ID') || PHP_VERSION_ID < 70000) {
-    exit('Polka requiere PHP 7+ o superior, lo sentimos, actual: '.PHP_VERSION_ID);
+    exit('Polka PHP requiere PHP 7+ o superior, lo sentimos, actual: '.PHP_VERSION_ID);
 }
 
 spl_autoload_register('pk_cargar');

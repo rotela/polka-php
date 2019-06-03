@@ -102,7 +102,7 @@ class firebird_bd implements bd_interface
         }
         $orden .= 'WHERE ';
         foreach ($clave as $key => $value) {
-            if ($valor !== 'NULL') {
+            if ($value !== 'NULL') {
                 $orden .= $key.'='.$value.' AND ';
             }
         }

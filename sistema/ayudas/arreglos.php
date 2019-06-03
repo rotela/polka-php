@@ -96,7 +96,11 @@ if (!function_exists('array_texto')) {
         if (is_array($array)) {
             if (count($array)>0) {
                 foreach ($array as $key => $value) {
-                    $t .= (empty($t)) ? "$key : $value" : ", $key : $value";
+                    if (is_array($value)) {
+                        array_texto($value);
+                    } else {
+                        $t .= (empty($t)) ? "$key : $value" : ", $key : $value";
+                    }
                 }
             }
         }

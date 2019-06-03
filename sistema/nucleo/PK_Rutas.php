@@ -28,7 +28,6 @@ class PK_Rutas
         if (count($this->rutas) > 0) {
             // Buscamos cohincidencias entre rutas y la url actual
             foreach ($this->rutas as $key => $value) {
-                //echo "$key -> $value<br>";
                 if ($this->subtraer($key, $value)) {
                     $this->hay = true;
                     break;
