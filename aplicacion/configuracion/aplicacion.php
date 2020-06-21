@@ -17,7 +17,7 @@ $config['ap_titulo'] = 'Polka-php';
 // Derechos Reservados de la aplicación
 $config['ap_derechos'] = 'Apache License '.date('Y');
 // Versión la aplicación
-$config['ap_version'] = '1.0';
+$config['ap_version'] = '1.8';
 // Clave del candado (es muy recomendable cambiarlo)
 $config['clave_can'] = 'polka';
 // Proteccion CSRF
