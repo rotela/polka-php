@@ -1,18 +1,17 @@
 <?php
+
 namespace sistema\nucleo;
 
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
+use sistema\modelos\firebird_bd;
+use sistema\modelos\mysql_bd;
+use sistema\modelos\pgsql_bd;
+use sistema\modelos\sqlite_bd;
+use \Exception;
 use \PDO;
 use \PDOException;
-use \Exception;
 
-use sistema\modelos\mysql_bd;
-use sistema\modelos\sqlite_bd;
-use sistema\modelos\pgsql_bd;
-use sistema\modelos\firebird_bd;
-
-if (!defined('SISTEMA')) {
-    exit('No se permite acceso directo al script');
-}
 
 /**
  * Conexion a base de datos principal del Sistema
@@ -28,18 +27,17 @@ if (!defined('SISTEMA')) {
  * No tocar las propiedades de ésta clase
  * Si desea configurar su Base de Datos, hacer lo indicado anteriormente
  *
- * @copyright Rotelabs (c)2018
- * @author Ricardo Rotela <rotelabs->gmail.com>
- *
- * @version 1.0 2018/09/14
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
+ * 
  */
 class PK_Conexion extends PDO
 {
     /**
-   * Contenedor del Nombre del Host.
-   *
-   * @var string
-   */
+     * Contenedor del Nombre del Host.
+     *
+     * @var string
+     */
     private $host = '';
 
     /**
@@ -92,20 +90,20 @@ class PK_Conexion extends PDO
     protected $config;
 
     /**
-    * instancia de referencia de las interfaces
-    */
+     * instancia de referencia de las interfaces
+     */
     private $bd_interface;
 
     /*
-    * Se utiliza Singleton para instanciar fuera del controlador
-    */
+     * Se utiliza Singleton para instanciar fuera del controlador
+     */
     use PK_Singleton;
 
     public function __construct($config = array())
     {
         // obtengo la configuración desde la configuración de bd y modelo
         if (is_array($config)) {
-            $config = (count($config)>0) ? $config : objeto_array(PK_Config::obt_instancia()->obtener('bd'));
+            $config = (count($config) > 0) ? $config : objeto_array(PK_Config::obt_instancia()->obtener('bd'));
         } else {
             $config = objeto_array(PK_Config::obt_instancia()->obtener($config));
         }
@@ -113,13 +111,13 @@ class PK_Conexion extends PDO
         $modelo = objeto_array(PK_Config::obt_instancia()->obtener('modelo'));
         $this->config = array_objeto(array_merge($config, $modelo));
         // configuro con los datos obtenidos
-        $this->host = $this->config->host;    //servidor de la base datos
-        $this->port = $this->config->port;    //puerto de la base de datos
-        $this->tipo = $this->config->tipo;    //tipo de base de datos
-        $this->user = $this->config->user;    //usuario de la base de datos
-        $this->pass = $this->config->pass;    //password de la base de datos
-        $this->base = $this->config->base;    //base de datos a utilizar
-        $this->cote = $this->config->cote;    //cotejamiento
+        $this->host = $this->config->host; //servidor de la base datos
+        $this->port = $this->config->port; //puerto de la base de datos
+        $this->tipo = $this->config->tipo; //tipo de base de datos
+        $this->user = $this->config->user; //usuario de la base de datos
+        $this->pass = $this->config->pass; //password de la base de datos
+        $this->base = $this->config->base; //base de datos a utilizar
+        $this->cote = $this->config->cote; //cotejamiento
         // según el tipo de base de datos, lo conecto,
         // por el momento se tiene preparado a mysql, pgsql, puedes extender a otros
         // tipos de base de datos, si sabes como se conecta
@@ -127,28 +125,28 @@ class PK_Conexion extends PDO
         try {
             switch ($this->tipo) {
                 case 'sqlite':
-                    parent::__construct('sqlite:'.$this->base);
-                   $this->bd_interface = new sqlite_bd($this);
+                    parent::__construct('sqlite:' . $this->base);
+                    $this->bd_interface = new sqlite_bd($this);
                     break;
 
                 case 'mysql':
-                    parent::__construct('mysql:host='.$this->host.';dbname='.$this->base, $this->user, $this->pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$this->cote));
+                    parent::__construct('mysql:host=' . $this->host . ';dbname=' . $this->base, $this->user, $this->pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $this->cote));
                     $this->bd_interface = new mysql_bd($this);
                     break;
 
                 case 'pgsql':
-                    parent::__construct('pgsql:dbname='.$this->base.';host='.$this->host, $this->user, $this->pass);
+                    parent::__construct('pgsql:dbname=' . $this->base . ';host=' . $this->host, $this->user, $this->pass);
                     $this->bd_interface = new pgsql_bd($this);
                     break;
 
                 case 'firebird':
-                    $server = 'firebird:dbname='.$this->host.'/'.$this->port.':'.$this->base;
+                    $server = 'firebird:dbname=' . $this->host . '/' . $this->port . ':' . $this->base;
                     parent::__construct($server, $this->user, $this->pass);
                     $this->bd_interface = new firebird_bd($this);
                     break;
 
                 default:
-                    parent::__construct('mysql:host='.$this->host.';dbname='.$this->base, $this->user, $this->pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES '.$this->cote));
+                    parent::__construct('mysql:host=' . $this->host . ';dbname=' . $this->base, $this->user, $this->pass, array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES ' . $this->cote));
                     $this->bd_interface = new mysql_bd($this);
                     break;
             }
@@ -159,6 +157,7 @@ class PK_Conexion extends PDO
             $this->devolver_error($e);
         }
     }
+
     public function devolver_error($e)
     {
         if (isset($this->config)) {
@@ -166,7 +165,7 @@ class PK_Conexion extends PDO
                 if ($this->config->mostrar_error) {
                     exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
                 } else {
-                    informe(utf8_encode('Modelo: '.$e->getMessage()));
+                    informe(utf8_encode('Modelo: ' . $e->getMessage()));
                     return false;
                 }
             } else {
@@ -176,14 +175,17 @@ class PK_Conexion extends PDO
             exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
         }
     }
+
     public function obt_error()
     {
         return implode(',', $this->errorInfo());
     }
+
     public function obt_config()
     {
         return $this->config;
     }
+    
     public function obt_interface()
     {
         return $this->bd_interface;

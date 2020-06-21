@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 /**
  * Muestra el contenido indicado al navegador.
  *
@@ -38,6 +36,12 @@ function eco_ln($texto = '')
 {
     echo "$texto\n";
 }
+
+function ecoln($texto = '')
+{
+    eco_ln($texto);
+}
+
 function println($texto = '')
 {
     echo "$texto\n";

@@ -1,10 +1,7 @@
 <?php
-
 namespace sistema\nucleo;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 /**
  * Colección principal de Configuraciones para el sistema y el usuario,
@@ -24,8 +21,9 @@ if (!defined('SISTEMA')) {
  * Se usa en las librerías y ayudas nativas
  * Se puede usar en las librerías del usuario
  *
- * @author  Ricardo Rotela González rotelabs->gmail.com ;-)
- * @copyright Rotelabs (c)2015
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
+ * 
  */
 class PK_Config
 {
@@ -81,7 +79,7 @@ class PK_Config
         // si no existe aún la configuracion
         if (!array_key_exists($configuracion, self::$config)) {
             $carpeta = CONFIGURACION;
-            $archivo = $carpeta.agr_ext($configuracion);
+            $archivo = $carpeta . agr_ext($configuracion);
             // si existe la configuracion en la carpeta del usuario,
             if (file_exists($archivo)) {
                 // incluirla, o,
@@ -89,14 +87,14 @@ class PK_Config
             } else {
                 // si no existe en la configuración del usuario, buscar en el sistema,
                 $carpeta = SIS_CONFIG;
-                $archivo = $carpeta.agr_ext($configuracion);
+                $archivo = $carpeta . agr_ext($configuracion);
                 // si existe en el sitema,
                 if (file_exists($archivo)) {
                     // incluirla, o,
                     return self::anidar_configuracion($archivo);
                 } else {
                     // enviar el error al navegador.-
-                    exit(mostrar_error(__CLASS__, 'No existe el archivo de configuracion '.$archivo));
+                    exit(mostrar_error(__CLASS__, 'No existe el archivo de configuracion ' . $archivo));
                 }
             }
         } else {
@@ -115,12 +113,12 @@ class PK_Config
      */
     private static function anidar_configuracion($archivo = '')
     {
-        seguir('Registrando configuracion '.$archivo);
+        seguir('Registrando configuracion ' . $archivo);
         // incluír el archivo
         include $archivo;
         // si no existe la variable $config, mostrar error
         if (!isset($config)) {
-            exit(mostrar_error('PK_Config', 'No se ha creado el arreglo $config dentro de: '.$archivo.',<br>
+            exit(mostrar_error('PK_Config', 'No se ha creado el arreglo $config dentro de: ' . $archivo . ',<br>
 				Cree un arreglo vacío por lo menos.'));
         }
         // preparo para crear un objeto de la configuración incluída

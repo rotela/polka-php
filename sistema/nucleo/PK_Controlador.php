@@ -2,16 +2,15 @@
 
 namespace sistema\nucleo;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 /**
  * Controlador principal para los controladores del usuario/programadores,
  * este último debe extederse de ésta clase.
  *
  * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
- * @copyright Rotelabs (c)2018
+ * @copyright Rotelabs (c)2014
+ * 
  */
 class PK_Controlador
 {
@@ -179,29 +178,29 @@ class PK_Controlador
     {
         $alias_lib = empty($alias) ? nom_arc_sim($libreria) : $alias;
         $carpeta = LIBRERIAS;
-        $archivo = $carpeta.agr_ext($libreria);
+        $archivo = $carpeta . agr_ext($libreria);
         $nombre_libreria = nom_arc_sim($libreria);
         // si existe la libreria,
         if (file_exists($archivo)) {
             // incluirlo,
             if (!method_exists($this, $alias_lib)) {
-                $libreria = 'aplicacion\librerias\\'.$nombre_libreria;
+                $libreria = 'aplicacion\librerias\\' . $nombre_libreria;
                 $this->$alias_lib = PK_Coleccion::obt_instancia()->obtener($libreria, $param);
                 seguir('existe la libreria del usuario pero no existe en el controlador, ahora se creará');
             }
         } else {
             // o, buscar en librerias del sistema e incluirlo,
             $carpeta = SIS_LIBRERIAS;
-            $archivo = $carpeta.agr_ext($libreria);
+            $archivo = $carpeta . agr_ext($libreria);
             if (file_exists($archivo)) {
                 // o, si existe incluirlo si es que aún no existe como propiedad,
                 if (!method_exists($this, $alias_lib)) {
-                    $libreria = 'sistema\librerias\\'.$nombre_libreria;
+                    $libreria = 'sistema\librerias\\' . $nombre_libreria;
                     $this->$alias_lib = PK_Coleccion::obt_instancia()->obtener($libreria, $param);
                 }
             } else {
                 // o, no incluir, enviar el error al navegador.-
-                exit(mostrar_error('Librerias', 'No existe la librería: '.$archivo));
+                exit(mostrar_error('Librerias', 'No existe la librería: ' . $archivo));
             }
         }
     }
@@ -250,17 +249,17 @@ class PK_Controlador
         $nombre_modelo = nom_arc_sim($modelo);
         $alias_mod = empty($alias) ? $nombre_modelo : $alias;
         $carpeta = MODELOS;
-        $archivo = $carpeta.agr_ext($modelo);
+        $archivo = $carpeta . agr_ext($modelo);
         // si existe el modelo,
         if (file_exists($archivo)) {
             // incluirlo si es que aún no exite,
             if (!method_exists($this, $alias_mod)) {
-                $modelo = "aplicacion\modelos\\".$modelo;
+                $modelo = "aplicacion\modelos\\" . $modelo;
                 $this->$alias_mod = PK_Coleccion::obt_instancia()->obtener($modelo);
             }
         } else {
             // o, enviar el error al navegador
-            exit(mostrar_error('Modelos', 'No existe el modelo: '.$archivo));
+            exit(mostrar_error('Modelos', 'No existe el modelo: ' . $archivo));
         }
     }
 
@@ -293,20 +292,20 @@ class PK_Controlador
     private function incluir_ayuda($ayuda = '')
     {
         $carpeta = AYUDAS;
-        $archivo = $carpeta.agr_ext($ayuda);
+        $archivo = $carpeta . agr_ext($ayuda);
         // si existe la ayuda,
         if (file_exists($archivo)) {
             // incluirla, o,
             include_once $archivo;
         } else {
             $carpeta = SIS_AYUDAS;
-            $archivo = $carpeta.agr_ext($ayuda);
+            $archivo = $carpeta . agr_ext($ayuda);
             // incluirla, o,
             if (file_exists($archivo)) {
                 include_once $archivo;
             } else {
                 // enviar el error al navegador.-
-                exit(mostrar_error('Ayudas', 'No existe el archivo de ayuda '.$ayuda));
+                exit(mostrar_error('Ayudas', 'No existe el archivo de ayuda ' . $ayuda));
             }
         }
     }
@@ -320,6 +319,7 @@ class PK_Controlador
     {
         return self::$tipo;
     }
+
     public function obt_entradas()
     {
         if (!function_exists('obt_entradas_peticion')) {
@@ -327,6 +327,7 @@ class PK_Controlador
         }
         return obt_entradas_peticion();
     }
+    
     public function es_ajax()
     {
         if (!function_exists('es_ajax')) {

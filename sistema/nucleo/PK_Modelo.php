@@ -1,15 +1,13 @@
 <?php
+
 namespace sistema\nucleo;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite acceso directo al script');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 use sistema\nucleo\PK_Conexion;
-use sistema\librerias\estructura_bd;
+use \Exception;
 use \PDO;
 use \PDOException;
-use \Exception;
 
 /**
  * Modelo Principal del Sistema
@@ -25,10 +23,9 @@ use \Exception;
  * No tocar las propiedades de ésta clase
  * Si desea configurar su Base de Datos, hacer lo indicado anteriormente
  *
- * @copyright Rotelabs (c)2017
- * @author Ricardo Rotela <rotelabs->gmail.com>
- *
- * @version 2.0 2017/08/30
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
+ * 
  */
 class PK_Modelo extends PK_Conexion
 {
@@ -130,15 +127,21 @@ class PK_Modelo extends PK_Conexion
      * @var [array]
      */
     protected $config;
-    /*
-    * Se utiliza Singleton para instanciar fuera del controlador
-    */
-    use PK_Singleton;
 
     /**
-    * instancia de referencia de las interfaces
-    */
+     * Propiedad de mensaje de guardado
+     */
+    private $mensaje;
+
+    /**
+     * instancia de referencia de las interfaces
+     */
     private $bd_interface;
+
+    /*
+     * Se utiliza Singleton para instanciar fuera del controlador
+     */
+    use PK_Singleton;
 
     /**
      * El contructor requiere o espera el nombre de la tabla a utilizar
@@ -150,6 +153,8 @@ class PK_Modelo extends PK_Conexion
     public function __construct($tabla = '', $campo_primario = '')
     {
         parent::__construct();
+        obt_ayuda('sis_sql');
+
         $this->bd_interface = $this->obt_interface();
         if (empty($tabla)) {
             throw new Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
@@ -159,6 +164,7 @@ class PK_Modelo extends PK_Conexion
             $this->estructurar();
         }
     }
+
     /**
      * Se utiliza para asignar a un valor a un campo
      * como si fuera una funcion, ej.
@@ -201,7 +207,6 @@ class PK_Modelo extends PK_Conexion
         }
     }
 
-
     public function estructurar()
     {
         $datos = $this->obt_descripcion();
@@ -218,6 +223,7 @@ class PK_Modelo extends PK_Conexion
     {
         return $this->fila;
     }
+
     public function armar_sql_insert($datos = array(), $tabla = '')
     {
         $sql = '';
@@ -264,12 +270,12 @@ class PK_Modelo extends PK_Conexion
                     break;
             }
 
-            $campos .= empty($campos) ? $key : ','.$key;
+            $campos .= empty($campos) ? $key : ',' . $key;
 
             if ($primer == 0) {
                 $valores = $valor;
             } else {
-                $valores = $valores.','.$valor;
+                $valores = $valores . ',' . $valor;
             }
 
             ++$primer;
@@ -277,11 +283,12 @@ class PK_Modelo extends PK_Conexion
 
         $tabla = (empty($tabla)) ? $this->tabla : $tabla;
 
-        $sql = 'INSERT INTO '.$tabla."($campos) VALUES($valores)";
+        $sql = 'INSERT INTO ' . $tabla . "($campos) VALUES($valores)";
         $sql = str_replace("'NULL'", 'NULL', $sql);
 
         return $sql;
     }
+
     public function armar_sql_editar($datos = array(), $mientras = array(), $tabla = '')
     {
         $sql = '';
@@ -334,23 +341,24 @@ class PK_Modelo extends PK_Conexion
             }
             if ($key !== 0) {
                 // code...
-                $campos .= empty($campos) ? $key.' = '.$valor : ', '.$key.' = '.$valor;
+                $campos .= empty($campos) ? $key . ' = ' . $valor : ', ' . $key . ' = ' . $valor;
             }
         }
 
         $elwhere = '';
 
         foreach ($mientras as $key => $value) {
-            $elwhere = $key.' = '.$value;
+            $elwhere = $key . ' = ' . $value;
         }
 
         $tabla = (empty($tabla)) ? $this->tabla : $tabla;
 
-        $sql = 'UPDATE '.$tabla." SET $campos WHERE $elwhere";
+        $sql = 'UPDATE ' . $tabla . " SET $campos WHERE $elwhere";
         $sql = str_replace("'NULL'", 'NULL', $sql);
 
         return $sql;
     }
+
     /**
      * Busca un registro con los datos pasados como parámetros,
      * Esta función es ideal para encontrar registros únicos o específicos
@@ -358,47 +366,55 @@ class PK_Modelo extends PK_Conexion
      *
      * @param  array   $datos  Parámetro de búsqueda ej.
      *                         $this->buscar_por(array('id'=>8));
-     *                         Lo anterior buscará el registro con la columna
-     *                         id = 8
-     * @param bool          Se indica false si desea el resultado como array
-     *                         asociativo o true en caso de objeto
+     *                         Lo anterior buscará el registro con la columna id = 8
+     * @param  array   $columnas  Parámetro de las columanas que desea recuperar
      *
-     * @return  mixed $objeto  Devuelve el resultado o false si no encontró
+     * @return  array   Devuelve el resultado o false si no encontró.
      */
-    public function buscar_por($datos = array(), $objeto = false, $columnas = array())
+    public function buscar_por($datos = array(), $columnas = array())
     {
+        $orden = '';
         // preparo la orden
         if (count($columnas) == 0) {
-            $orden = 'SELECT * FROM '.$this->tabla.' WHERE ';
+            $orden = 'SELECT * FROM ' . $this->tabla . ' WHERE ';
         } else {
-            $orden = 'SELECT '.implode(', ', $columnas).' FROM '.$this->tabla.' WHERE ';
+            $orden = 'SELECT ' . implode(', ', $columnas) . ' FROM ' . $this->tabla . ' WHERE ';
         }
         $m = '';
-        foreach ($datos as $campos => $valor) {
-            $m .= empty($m) ? $campos.'=:'.$campos : ' AND '.$campos.'=:'.$campos;
+        if (is_array($datos)) {
+            foreach ($datos as $campos => $valor) {
+                if ($valor !== 'NULL') {
+                    $m .= empty($m) ? "$campos=:$campos" : ' AND ' . "$campos=:$campos";
+                }
+            }
+        } else {
+            $m = $datos;
         }
+
         $orden .= $m;
+
         $this->orden = $orden;
         try {
             $query = $this->prepare($this->orden);
-            // paso los parámetros
-            foreach ($datos as $campo => $valor) {
-                $query->bindValue(":$campo", $valor);
+
+            $filax = array();
+            if (is_array($datos)) {
+                foreach ($datos as $campo => $valor) {
+                    if ($valor !== 'NULL') {
+                        $filax[":$campo"] = $valor;
+                        // $filax[":$campo"] = mb_convert_encoding($valor, "ISO-8859-1");
+                    }
+                }
             }
             // ejecuto
-            $resultados = $query->execute();
+            $resultados = $query->execute($filax);
             // compruebo los resultados
             if ($this->comprobar($resultados)) {
                 $fila = $query->fetchAll(PDO::FETCH_ASSOC);
                 $this->cant_filas = count($fila);
-
                 if ($this->cant_filas > 0) {
                     $this->fila = $fila[0];
-                    if ($objeto) {
-                        return (object) $this->fila;
-                    } else {
-                        return $this->fila;
-                    }
+                    return $this->fila;
                 } else {
                     return false;
                 }
@@ -410,15 +426,84 @@ class PK_Modelo extends PK_Conexion
         }
     }
     /**
-     * Función que devuleve la suma de una columna especificada como parámetro
+     * Busca/filtra los registros con los datos pasados como parámetros,
+     *
+     * @param   array    $datos Parámetro de búsqueda ej.
+     *                          $this->listar_por(array('id'=>8));
+     *                          Lo anterior buscará los registros con la columna id = 8
+     *
+     * @return  array   $datos  Devuelve los resultados o false si no encontró
+     */
+    public function listar_por($datos = array(), $columnas = array())
+    {
+        $orden = '';
+        // preparo la orden
+        if (count($columnas) == 0) {
+            $orden = 'SELECT * FROM ' . $this->tabla . ' WHERE ';
+        } else {
+            $orden = 'SELECT ' . implode(', ', $columnas) . ' FROM ' . $this->tabla . ' WHERE ';
+        }
+        $m = '';
+        if (is_array($datos)) {
+            foreach ($datos as $campos => $valor) {
+                if ($valor !== 'NULL') {
+                    $m .= empty($m) ? "$campos=:$campos" : ' AND ' . "$campos=:$campos";
+                }
+            }
+        } else {
+            $m = $datos;
+        }
+        $orden .= $m;
+
+        $this->orden = $orden;
+        try {
+            $query = $this->prepare($this->orden);
+            $filax = array();
+            if (is_array($datos)) {
+                foreach ($datos as $campo => $valor) {
+                    if ($valor !== 'NULL') {
+                        $filax[":$campo"] = mb_convert_encoding($valor, "ISO-8859-1");
+                    }
+                }
+            }
+            // ejecuto
+            $resultados = $query->execute($filax);
+            // compruebo los resultados
+            if ($this->comprobar($resultados)) {
+                $fila = $query->fetchAll(PDO::FETCH_ASSOC);
+                $this->cant_filas = count($fila);
+                if ($this->cant_filas > 0) {
+                    $this->fila = $fila;
+                    return $this->fila;
+                } else {
+                    return false;
+                }
+            }
+        } catch (PDOException $e) {
+            $this->devolver_error($e);
+        } catch (Exception $e) {
+            $this->devolver_error($e);
+        }
+    }
+
+    /**
+     * Función que devuelve la suma de una columna especificada como parámetro
      * @param  string $campo que se desea sumar
      * @return integer resultado de la suma
      */
     public function sum_col($campo = '')
     {
+        $sum = 0;
         if (isset($campo)) {
-            $this->orden_l[] = "SELECT sum($campo) as total_col";
-            return $this;
+            $sql = "SELECT sum($campo) as total_col";
+            $this->orden_l[] = $sql;
+            $result = $this->ejecutar($sql);
+            if ($result) {
+                if (count($result) > 0) {
+                    $sum = $result[0];
+                }
+            }
+            return $sum;
         } else {
             throw new Exception(mostrar_error('Modelo', 'Se requiere del nombre de la columna a sumar, indíquelo.'));
         }
@@ -447,13 +532,13 @@ class PK_Modelo extends PK_Conexion
         $this->orden_l = array();
         if (is_array($campos)) {
             if (count($campos) > 0) {
-                $this->orden_l[] = 'select '.implode(', ', $campos);
+                $this->orden_l[] = 'select ' . implode(', ', $campos);
             } else {
                 $this->orden_l[] = 'select *';
             }
         } else {
             if (!empty($campos)) {
-                $this->orden_l[] = 'select '.$campos;
+                $this->orden_l[] = 'select ' . $campos;
             } else {
                 $this->orden_l[] = 'select *';
             }
@@ -465,9 +550,9 @@ class PK_Modelo extends PK_Conexion
     public function desde($tabla = '')
     {
         if (!empty($tabla)) {
-            $this->orden_l[] = 'from '.$tabla;
+            $this->orden_l[] = 'from ' . $tabla;
         } else {
-            $this->orden_l[] = 'from '.$this->tabla;
+            $this->orden_l[] = 'from ' . $this->tabla;
         }
 
         return $this;
@@ -530,17 +615,17 @@ class PK_Modelo extends PK_Conexion
             $limite = '';
             switch ($this->tipo) {
                 case 'mysql':
-                    $limite = ' LIMIT '.$segmento.', '.$limite;
+                    $limite = ' LIMIT ' . $segmento . ', ' . $limite;
                     break;
                 case 'pgsql':
-                    $limite = ' LIMIT '.$limite.' OFFSET '.$segmento;
+                    $limite = ' LIMIT ' . $limite . ' OFFSET ' . $segmento;
                     break;
                 case 'firebird':
                     //$limite = ' LIMIT '.$limite.' OFFSET '.$segmento;
-                    $this->orden = str_replace('SELECT', 'SELECT First '.$limite, $this->orden);
+                    $this->orden = str_replace('SELECT', 'SELECT First ' . $limite, $this->orden);
                     break;
                 default:
-                    $limite = ' LIMIT '.$segmento.', '.$limite;
+                    $limite = ' LIMIT ' . $segmento . ', ' . $limite;
                     break;
             }
         }
@@ -590,6 +675,7 @@ class PK_Modelo extends PK_Conexion
 
         return $this->obtener($objeto);
     }
+
     public function guardar_simulado($datos = array())
     {
         if (count($datos) > 0) {
@@ -616,37 +702,47 @@ class PK_Modelo extends PK_Conexion
         }
         return $sql;
     }
+
     public function guardar($datos = array())
     {
-        if (count($datos) > 0) {
-            $this->env_datos($datos);
-        }
+        if (is_array($datos)) {
 
-        $campo_primario = $this->obt_cam_primario();
-        $result = false;
-        $id = 0;
-        // si existe un campo primario
-        if (array_key_exists($campo_primario, $this->datos)) {
-            $id = $this->datos[$campo_primario];
-            unset($this->datos[$campo_primario]);
-            // preguntamos, si es cero (nuevo) será insertado un nuevo registro
-            if ($id == 0) {
-                $result = $this->insertar($this->datos);
-            } else {
-                // o será editado
-                $mientras = array($campo_primario => $id);
-                $result = $this->editar($this->datos, $mientras);
+            if (count($datos) > 0) {
+                $this->env_datos($datos);
             }
+
+            $campo_primario = $this->obt_cam_primario();
+            $result = false;
+            $id = 0;
+            // si existe un campo primario
+            if (array_key_exists($campo_primario, $this->datos)) {
+                $id = $this->datos[$campo_primario];
+                unset($this->datos[$campo_primario]);
+                // preguntamos, si es cero (nuevo) será insertado un nuevo registro
+                if ($id == 0) {
+                    $result = $this->insertar($this->datos);
+                    $this->mensaje = 'Se ha insertado un registro';
+                } else {
+                    // o será editado
+                    $mientras = array($campo_primario => $id);
+                    $result = $this->editar($this->datos, $mientras);
+                    $this->mensaje = 'Se ha modificado un registro';
+                }
+            } else {
+                //será insertado un nuevo registro
+                $result = $this->insertar($this->datos);
+            }
+            if ($result) {
+                // Al guardar con éste método, se obtiene éste registro si es que devolver está en true
+                $id = ($id == 0) ? $this->obt_ult_id() : $id;
+                $result = $this->buscar_por(array($campo_primario => $id));
+            }
+            return $result;
         } else {
-            //será insertado un nuevo registro
-            $result = $this->insertar($this->datos);
+            informe('pk_modelo -> guardar dice:');
+            informe('Error al intentar guardar, se requiere de array para guardar');
+            return false;
         }
-        if ($result) {
-            // Al guardar con éste método, se obtiene éste registro si es que devolver está en true
-            $id = ($id == 0) ? $this->obt_ult_id() : $id;
-            $result = $this->buscar_por(array($campo_primario => $id));
-        }
-        return $result;
     }
 
     public function eliminar_por($datos = array())
@@ -675,7 +771,7 @@ class PK_Modelo extends PK_Conexion
                     break;
             }
         }
-        $orden = 'DELETE FROM '.$this->tabla.' WHERE ';
+        $orden = 'DELETE FROM ' . $this->tabla . ' WHERE ';
         $this->orden = $orden . $mientras;
         $cantidad = $this->exec($this->orden);
         $this->cant_filas = $cantidad;
@@ -717,10 +813,12 @@ class PK_Modelo extends PK_Conexion
 
         return $this->ejecutar($sql);
     }
+
     public function ejecutar($orden = '', $objeto = false)
     {
-        return $this->bd_interface->ejecutar($orden, $objeto);
+        return $this->bd_interface->ejecutar(upper_sql($orden), $objeto);
     }
+
     public function comprobar($resultado)
     {
         if ($resultado) {
@@ -728,12 +826,12 @@ class PK_Modelo extends PK_Conexion
         } else {
             if (isset($this->config->error)) {
                 if ($this->config->error) {
-                    exit(mostrar_error('Modelo', 'Error: '.$this->obt_error()));
+                    exit(mostrar_error('Modelo', 'Error: ' . $this->obt_error()));
                 } else {
                     return false;
                 }
             } else {
-                exit(mostrar_error('Modelo', 'Error: '.$this->obt_error()));
+                exit(mostrar_error('Modelo', 'Error: ' . $this->obt_error()));
             }
         }
     }
@@ -745,7 +843,7 @@ class PK_Modelo extends PK_Conexion
 
     public function obt_sum_col($columna = '')
     {
-        return $this->sum_col($columna)->desde()->obtener(true, false)->total_col;
+        return $this->sum_col($columna);
     }
 
     public function obt_descripcion()
@@ -782,6 +880,7 @@ class PK_Modelo extends PK_Conexion
         }
         return $this->cam_primario;
     }
+
     public function obt_modelo_vacio()
     {
         $result = $this->obt_descripcion();
@@ -849,10 +948,12 @@ class PK_Modelo extends PK_Conexion
     {
         if (is_array($mientras)) {
             if (count($mientras) > 0) {
-                $orden = 'SELECT COUNT(*) as CANT FROM '.$this->tabla.' WHERE ';
+                $orden = 'SELECT COUNT(*) as CANT FROM ' . $this->tabla . ' WHERE ';
+                $campos = '';
                 foreach ($mientras as $campo => $valor) {
-                    $orden .= $campo.'=:'.$campo.', ';
+                    $orden .= $campo . '=:' . $campo . ', ';
                 }
+                $orden .= $campos;
                 $orden = preg_replace('/, $/', '', $orden);
                 $this->orden = $orden;
                 // se prepara la plantilla
@@ -860,12 +961,12 @@ class PK_Modelo extends PK_Conexion
                 // se arma la fila con los datos ingresados
                 $fila = array();
                 foreach ($mientras as $campo => $valor) {
-                    $fila[':'.$campo] = $valor;
+                    $fila[':' . $campo] = $valor;
                 }
                 // se ejecuta
                 $sentencia->execute($fila);
                 $resultados = $sentencia->fetchall(PDO::FETCH_ASSOC);
-                if (count($resultados)>0) {
+                if (count($resultados) > 0) {
                     return $resultados[0]['CANT'];
                 } else {
                     return 0;
@@ -873,20 +974,21 @@ class PK_Modelo extends PK_Conexion
             }
         } else {
             if (empty($mientras)) {
-                $this->orden = 'SELECT COUNT(*) as CANT FROM '.$this->tabla;
+                $this->orden = 'SELECT COUNT(*) as CANT FROM ' . $this->tabla;
             } else {
-                $this->orden = 'SELECT COUNT(*) as CANT FROM '.$this->tabla.' WHERE '.$mientras;
+                $this->orden = 'SELECT COUNT(*) as CANT FROM ' . $this->tabla . ' WHERE ' . $mientras;
             }
             // se ejecuta
             $resultados = $this->ejecutar($this->orden);
-            if (count($resultados)>0) {
+            if (count($resultados) > 0) {
                 return $resultados[0]['CANT'];
             } else {
                 return 0;
             }
         }
     }
-    public function consistencia($datos=array())
+
+    public function consistencia($datos = array())
     {
         $obt_nulo = function ($campo, $detalle) {
             $t = '';
@@ -919,6 +1021,7 @@ class PK_Modelo extends PK_Conexion
         }
         return $s;
     }
+
     public function obt_lista($offset = 0, $limite = 0)
     {
         $this->orden_l = array();
@@ -954,41 +1057,54 @@ class PK_Modelo extends PK_Conexion
     {
         return implode(',', $this->errorInfo());
     }
+
     public function obt_orden()
     {
         return $this->orden;
     }
+
     public function obt_orden_l()
     {
         return implode(' ', $this->orden_l);
     }
+
     public function obt_datos()
     {
         return $this->datos;
     }
-    public function env_datos($datos=array(), $filtrado=true)
+
+    public function env_datos($datos = array(), $filtrado = true)
     {
         if (is_array($datos)) {
-            if (count($datos)>0) {
+            if (count($datos) > 0) {
                 $campos = $this->obt_campos();
-                $this->datos =  ($filtrado) ? obt_arreglo($campos, $datos) : $datos;
+                $this->datos = ($filtrado) ? obt_arreglo($campos, $datos) : $datos;
             }
         }
     }
+
     public function env_orden($orden = '')
     {
         if (!empty($orden)) {
             $this->orden = $orden;
         }
     }
+
     public function obt_config()
     {
         return $this->config;
     }
+
     public function obt_orden_hist()
     {
         return $this->orden_hist;
     }
+
+    public function obt_mensaje()
+    {
+        return $this->mensaje;
+    }
+
     public function devolver_error($e)
     {
         if (isset($this->config)) {
@@ -996,7 +1112,7 @@ class PK_Modelo extends PK_Conexion
                 if ($this->config->mostrar_error) {
                     exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
                 } else {
-                    informe(utf8_encode('Modelo: '.$e->getMessage()));
+                    informe(utf8_encode('Modelo: ' . $e->getMessage()));
                     return false;
                 }
             } else {

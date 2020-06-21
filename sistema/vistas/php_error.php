@@ -7,11 +7,11 @@ function extraer_error($mensaje)
         if (is_array($value)) {
             extraer_error($mensaje);
         } else {
-            $e.="<dt>$key</dt>\n";
+            $e .= "<dt>$key</dt>\n";
             if ($key == 'type') {
-                $e.="<dd>" . tipo_error($value) . "</dd>\n";
+                $e .= "<dd>" . tipo_error($value) . "</dd>\n";
             } else {
-                $e.="<dd>$value</dd>\n";
+                $e .= "<dd>$value</dd>\n";
             }
         }
     }
@@ -46,7 +46,7 @@ function tipo_error($clave = 0)
     <div class="panel-heading">Detalle</div>
     <div class="panel-body">
         <dl class="dl-horizontal">
-<?php extraer_error($mensaje); ?>
+            <?php extraer_error($mensaje); ?>
         </dl>
     </div>
 </div>

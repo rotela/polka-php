@@ -2,22 +2,15 @@
 
 namespace sistema\librerias;
 
-use sistema\nucleo\PK_Controlador as PK_Controlador;
-
-if (!defined('NUCLEO')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 class paginador
 {
-    private $tg;
     private $info;
 
     public function iniciar($config)
     {
-        if (!function_exists('ancla')) {
-            PK_Controlador::obt_instancia()->ayudas('html');
-        }
+        obt_ayuda('html');
         $tot_reg = $config['total_reg'];
         $reg_pag = $config['reg_por_pag'];
         $seg = $config['url_seg'];
@@ -31,9 +24,9 @@ class paginador
         // si la cantidad de registros es menor o igual a la cantidad de reg por pag
         // se envia solo una pag
         if ($tot_reg <= $reg_pag) {
-            $ul = '<ul class="pagination">'."\n";
-            $ul .= '<li class="active"><a href="#">1<span class="sr-only">(current)</span></a></li>'."\n";
-            $ul .= '</ul>'."\n";
+            $ul = '<ul class="pagination">' . "\n";
+            $ul .= '<li class="active"><a href="#">1<span class="sr-only">(current)</span></a></li>' . "\n";
+            $ul .= '</ul>' . "\n";
 
             return $ul;
         }
@@ -55,27 +48,27 @@ class paginador
             $eti = $c + 1;
             if ($eti <= $can_pag) {
                 if ($act != $i) {
-                    $tt .= '<li>'.ancla($eti, $url.$i)."</li>\n";
+                    $tt .= '<li>' . ancla($eti, $url . $i) . "</li>\n";
                 } else {
-                    $tt .= '<li class="active"><a href="#">'.$eti.' <span class="sr-only">(current)</span></a>'."</li>\n";
+                    $tt .= '<li class="active"><a href="#">' . $eti . ' <span class="sr-only">(current)</span></a>' . "</li>\n";
                     $a = $c - 1;
                     $s = $c + 1;
                     if (array_key_exists($a, $pag)) {
-                        $ant = '<li>'.ancla('<', $url.$pag[$a])."</li>\n";
-                        $ini = '<li>'.ancla('<<', $url.reset($pag))."</li>\n";
+                        $ant = '<li>' . ancla('<', $url . $pag[$a]) . "</li>\n";
+                        $ini = '<li>' . ancla('<<', $url . reset($pag)) . "</li>\n";
                     }
                     if ($eti <= $can_pag) {
                         if (array_key_exists($s, $pag)) {
-                            $sig = '<li>'.ancla('>', $url.$pag[$s])."</li>\n";
-                            $fin = '<li>'.ancla('>>', $url.end($pag))."</li>\n";
+                            $sig = '<li>' . ancla('>', $url . $pag[$s]) . "</li>\n";
+                            $fin = '<li>' . ancla('>>', $url . end($pag)) . "</li>\n";
                         }
                     }
                 }
             }
         }
-        $ul = '<ul class="pagination">'."\n";
-        $ulf = '</ul>'."\n";
-        $link = $ul.$ini.$ant.$tt.$sig.$fin.$ulf;
+        $ul = '<ul class="pagination">' . "\n";
+        $ulf = '</ul>' . "\n";
+        $link = $ul . $ini . $ant . $tt . $sig . $fin . $ulf;
         $this->tg = $pag;
 
         return $link;

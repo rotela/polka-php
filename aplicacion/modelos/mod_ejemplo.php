@@ -2,9 +2,7 @@
 
 namespace aplicacion\modelos;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('APLICACION')) ? exit('No se permite el acceso directo al script.') : false;
 
 use sistema\nucleo\PK_Modelo as PK_Modelo;
 
@@ -14,7 +12,7 @@ class mod_ejemplo extends PK_Modelo
 
     public function __construct()
     {
-        parent::__construct(self::$tabla);
+        parent::__construct(self::$tabla, 'idcampoprimario');
     }
 
     public function tufuncion()

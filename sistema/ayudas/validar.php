@@ -1,5 +1,7 @@
 <?php
 
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
 if (!function_exists('requerido')) {
     function requerido($requeridos = array(), $entradas = array(), $estricto = true)
     {

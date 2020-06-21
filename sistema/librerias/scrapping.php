@@ -2,9 +2,7 @@
 
 namespace sistema\librerias;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 class scrapping
 {
@@ -55,7 +53,7 @@ class scrapping
         $this->_includeHeader = $includeHeader;
         $this->_binaryTransfer = $binaryTransfer;
 
-        $this->_cookieFileLocation = dirname(__FILE__).'/cookie.txt';
+        $this->_cookieFileLocation = dirname(__FILE__) . '/cookie.txt';
     }
 
     public function setReferer($referer)
@@ -97,7 +95,7 @@ class scrapping
         curl_setopt($s, CURLOPT_COOKIEFILE, $this->_cookieFileLocation);
 
         if ($this->authentication == 1) {
-            curl_setopt($s, CURLOPT_USERPWD, $this->auth_name.':'.$this->auth_pass);
+            curl_setopt($s, CURLOPT_USERPWD, $this->auth_name . ':' . $this->auth_pass);
         }
         if ($this->_post) {
             curl_setopt($s, CURLOPT_POST, true);

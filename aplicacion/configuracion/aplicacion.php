@@ -1,8 +1,7 @@
 <?php
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('APLICACION')) ? exit('No se permite el acceso directo al script.') : false;
+
 // Url del proyecto
 $config['url_base'] = 'http://localhost/polka-php/';
 // Controlador principal que se dispará al introducir la url,

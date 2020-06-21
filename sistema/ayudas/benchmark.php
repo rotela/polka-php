@@ -1,8 +1,6 @@
 <?php
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 if (!function_exists('tiempo_inicio')) {
     function tiempo_inicio()
@@ -14,6 +12,7 @@ if (!function_exists('tiempo_inicio')) {
         $starttime = $mtime;
     }
 }
+
 if (!function_exists('tiempo_fin')) {
     function tiempo_fin()
     {
@@ -26,6 +25,7 @@ if (!function_exists('tiempo_fin')) {
         return round($trans, 4);
     }
 }
+
 if (!function_exists('memoria_inicio')) {
     function memoria_inicio()
     {
@@ -44,6 +44,7 @@ if (!function_exists('memoria_usada_libre')) {
         return @round($men_total / pow(1024, ($i = floor(log($men_total, 1024)))), 2).' '.$unit[$i];
     }
 }
+
 if (!function_exists('memoria_usada')) {
     function memoria_usada()
     {
@@ -52,6 +53,7 @@ if (!function_exists('memoria_usada')) {
         return @round($size / pow(1024, ($i = floor(log($size, 1024)))), 2).' '.$unit[$i];
     }
 }
+
 if (!function_exists('memoria_usada_b')) {
     function memoria_usada_b()
     {

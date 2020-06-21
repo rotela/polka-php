@@ -1,9 +1,4 @@
-<IfModule mod_php5.c>
-php_value always_populate_raw_post_data -1
-</IfModule>
-# Make sure directory listing is disabled
 Options +FollowSymLinks -Indexes
-# disable the Apache MultiViews directive if it is enabled on the server. It plays havoc with URL rewriting
 Options -MultiViews
 
 RewriteEngine on
@@ -11,5 +6,4 @@ RewriteCond %{SCRIPT_FILENAME} !-d
 RewriteCond %{SCRIPT_FILENAME} !-f
 RewriteCond $1 !^(index.php)
 
-
-RewriteRule ^([a-zA-Z0-9_/-]+)$ index.php?url=$1 [L]
+RewriteRule ^([a-zA-Z0-9_/-]+)$ index.php?url=$1 [QSA,L]

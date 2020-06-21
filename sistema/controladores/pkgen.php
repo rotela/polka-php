@@ -2,9 +2,7 @@
 
 namespace sistema\controladores;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite acceso directo al script');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 use sistema\nucleo\PK_Controlador;
 

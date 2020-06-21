@@ -1,4 +1,5 @@
 <?php
+
 namespace sistema\modelos;
 
 use \PDO;
@@ -11,8 +12,6 @@ class mysql_bd implements bd_interface
     private $config;
     private $campos;
     private $descripcion;
-    private $tablas;
-    private $modelo_vacio;
 
     public function __construct($con)
     {
@@ -23,6 +22,7 @@ class mysql_bd implements bd_interface
         $this->tablas = array();
         $this->modelo_vacio = array();
     }
+
     public function insertar($datos = array(), $simular = false)
     {
         // se filtran los datos propios de la tabla
@@ -34,16 +34,16 @@ class mysql_bd implements bd_interface
             unset($datos[$campo_primario]);
         }
         // se arma la plantilla
-        $orden = 'INSERT INTO '.$this->con->obt_tabla().' (';
+        $orden = 'INSERT INTO ' . $this->con->obt_tabla() . ' (';
         foreach ($datos as $campo => $valor) {
             if ($valor !== 'NULL') {
-                $orden .= $campo.', ';
+                $orden .= $campo . ', ';
             }
         }
         $orden .= ') VALUES (';
         foreach ($datos as $campo => $valor) {
             if ($valor !== 'NULL') {
-                $orden .= ':'.$campo.', ';
+                $orden .= ':' . $campo . ', ';
             }
         }
         $orden .= ')';
@@ -56,7 +56,7 @@ class mysql_bd implements bd_interface
             $fila = array();
             foreach ($datos as $campo => $valor) {
                 if ($valor !== 'NULL') {
-                    $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
+                    $fila[':' . $campo] = mb_convert_encoding($valor, "ISO-8859-1");
                 }
             }
             //
@@ -87,22 +87,23 @@ class mysql_bd implements bd_interface
             $this->devolver_error($e);
         }
     }
+
     public function editar($datos = array(), $clave = array(), $simular = false)
     {
         // se obtiene solo los campos correspondiente a la tabla
         $campos = $this->con->obt_campos();
         $datos = obt_arreglo($campos, $datos);
         // se arma la plantilla
-        $orden = 'UPDATE '.$this->con->obt_tabla().' SET ';
+        $orden = 'UPDATE ' . $this->con->obt_tabla() . ' SET ';
         foreach ($datos as $campo => $valor) {
             if ($valor !== 'NULL') {
-                $orden .= $campo.'=:'.$campo.', ';
+                $orden .= $campo . '=:' . $campo . ', ';
             }
         }
         $orden .= 'WHERE ';
         foreach ($clave as $key => $value) {
             if ($valor !== 'NULL') {
-                $orden .= $key.'='.$value.' AND ';
+                $orden .= $key . '=' . $value . ' AND ';
             }
         }
         $orden = preg_replace('/AND $/', '', $orden);
@@ -116,7 +117,7 @@ class mysql_bd implements bd_interface
             $fila = array();
             foreach ($datos as $campo => $valor) {
                 if ($valor !== 'NULL') {
-                    $fila[':'.$campo] = $valor;
+                    $fila[':' . $campo] = $valor;
                 }
             }
             //
@@ -146,6 +147,7 @@ class mysql_bd implements bd_interface
             $this->devolver_error($e);
         }
     }
+
     public function ejecutar($orden = '', $objeto = false)
     {
         if ($this->config->informar_sql) {
@@ -154,9 +156,6 @@ class mysql_bd implements bd_interface
         try {
             $this->con->orden = $orden;
             $resultado = $this->con->query($this->con->orden);
-            if ($this->config->informar_sql) {
-                informe($this->con->orden);
-            }
             if ($resultado) {
                 $this->cant_filas = $resultado->rowCount();
                 if ($objeto) {
@@ -179,9 +178,10 @@ class mysql_bd implements bd_interface
             $this->devolver_error($e);
         }
     }
+
     public function obt_campos()
     {
-        if (count($this->campos)<=0) {
+        if (count($this->campos) <= 0) {
             $this->campos = array_keys($this->obt_modelo_vacio());
         }
         return $this->campos;
@@ -209,33 +209,40 @@ class mysql_bd implements bd_interface
         }
         return $ult_id;
     }
+
     public function limite($limite = 0, $segmento = 0)
     {
     }
+
     public function obt_tablas($obt = true)
     {
     }
-    //
+
     public function describir_tabla($tabla = '')
     {
-        if (count($this->descripcion)<=0) {
-            $tabla = empty($tabla) ? $this->con->obt_tabla():$tabla;
+        if (count($this->descripcion) <= 0) {
+            $tabla = empty($tabla) ? $this->con->obt_tabla() : $tabla;
             $sql = "DESCRIBE $tabla";
             $datos = array();
             $result = $this->con->ejecutar($sql);
-            foreach ($result as $key => $value) {
-                array_push(
-                    $datos,
-                    array(
-                        'CAMPO'=> $value['Field'],
-                        'TIPO'=> $value['Type'],
-                    )
-                );
+            if ($result) {
+                if (count($result) > 0) {
+                    foreach ($result as $value) {
+                        array_push(
+                            $datos,
+                            array(
+                                'CAMPO' => $value['Field'],
+                                'TIPO' => $value['Type'],
+                            )
+                        );
+                    }
+                    $this->descripcion = $datos;
+                }
             }
-            $this->descripcion = $datos;
         }
         return $this->descripcion;
     }
+
     public function obt_modelo_vacio($tabla = '')
     {
         $result = $this->describir_tabla();
@@ -282,6 +289,7 @@ class mysql_bd implements bd_interface
         }
         return $array;
     }
+
     public function devolver_error($e)
     {
         if (isset($this->config)) {
@@ -289,7 +297,7 @@ class mysql_bd implements bd_interface
                 if ($this->config->mostrar_error) {
                     exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
                 } else {
-                    informe(utf8_encode('Modelo: '.$e->getMessage()));
+                    informe(utf8_encode('Modelo: ' . $e->getMessage()));
                     return false;
                 }
             } else {

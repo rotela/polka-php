@@ -2,6 +2,8 @@
 
 namespace sistema\librerias;
 
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
 class imagen
 {
     private $errores = array();
@@ -69,12 +71,12 @@ class imagen
         }
     }
 
-    public function obt_error($value = '')
+    public function obt_error()
     {
         return $this->errores;
     }
 
-    public function obt_reporte($value = '')
+    public function obt_reporte()
     {
         $this->reporte['kb'] = round($this->reporte['tamano'] / 1024);
 

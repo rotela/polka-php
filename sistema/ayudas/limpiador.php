@@ -1,4 +1,7 @@
 <?php
+
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
 /**
 * función que sanea una entrada de texto
 * es importante usarlo para entradas de formulario o datos

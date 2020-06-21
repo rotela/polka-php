@@ -1,8 +1,7 @@
 <?php
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('APLICACION')) ? exit('No se permite el acceso directo al script.') : false;
+
 // Servidor de la base datos
 $config['host'] = '127.0.0.1';
 // Puerto de la base datos

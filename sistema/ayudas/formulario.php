@@ -13,6 +13,7 @@ if (!function_exists('agr_selector')) {
         return $combo;
     }
 }
+
 if (!function_exists('obt_valor')) {
     function obt_valor($nom = '', $xdef = '')
     {
@@ -27,6 +28,7 @@ if (!function_exists('obt_valor')) {
         }
     }
 }
+
 if (!function_exists('obt_error')) {
     function obt_error($clave)
     {
@@ -34,6 +36,7 @@ if (!function_exists('obt_error')) {
         return $pk->error($clave);
     }
 }
+
 if (!function_exists('obt_errores')) {
     function obt_errores()
     {
@@ -41,6 +44,7 @@ if (!function_exists('obt_errores')) {
         return $pk->errores();
     }
 }
+
 if (!function_exists('buscar_errores')) {
     function buscar_errores()
     {
@@ -48,12 +52,13 @@ if (!function_exists('buscar_errores')) {
         $mx = '';
         if ($errores) {
             foreach ($errores as $value) {
-                $mx .= alerta_peligro($value);
+                $mx .= "$value</br>";
             }
         }
         return $mx;
     }
 }
+
 if (!function_exists('obt_csrf')) {
     function obt_csrf()
     {

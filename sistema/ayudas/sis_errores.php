@@ -1,13 +1,12 @@
 <?php
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
 if (!function_exists('pk_titulo')) {
     require 'vista.php';
 }
-if (!function_exists('mostrar_error')) {
 
+if (!function_exists('mostrar_error')) {
     /**
      * Muestra un mensaje de error.
      *
@@ -27,14 +26,14 @@ if (!function_exists('mostrar_error')) {
             echo json_encode($datos);
         } else {
             $url = url_base('sistema/vistas/');
-            $css = $url.'css/';
-            $js = $url.'js/';
+            $css = $url . 'css/';
+            $js = $url . 'js/';
             $error = array(
-              'url' => $url,
-              'css' => $css,
-              'js' => $js,
-              'contenido' => ver_error($capa, $datos, false),
-          );
+                'url' => $url,
+                'css' => $css,
+                'js' => $js,
+                'contenido' => ver_error($capa, $datos, false),
+            );
             ver_error('index', $error);
         }
     }
@@ -56,7 +55,7 @@ if (!function_exists('ver_error')) {
     {
         extract($d);
         ob_start();
-        require 'sistema/vistas/'.agr_ext($p);
+        require 'sistema/vistas/' . agr_ext($p);
         if ($render) {
             echo ob_get_clean();
         } else {

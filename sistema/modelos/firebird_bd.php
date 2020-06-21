@@ -1,9 +1,9 @@
 <?php
 namespace sistema\modelos;
 
+use \Exception;
 use \PDO;
 use \PDOException;
-use \Exception;
 
 class firebird_bd implements bd_interface
 {
@@ -34,16 +34,16 @@ class firebird_bd implements bd_interface
             unset($datos[$campo_primario]);
         }
         // se arma la plantilla
-        $orden = 'INSERT INTO '.$this->con->obt_tabla().' (';
+        $orden = 'INSERT INTO ' . $this->con->obt_tabla() . ' (';
         foreach ($datos as $campo => $valor) {
             if ($valor !== 'NULL') {
-                $orden .= $campo.', ';
+                $orden .= $campo . ', ';
             }
         }
         $orden .= ') VALUES (';
         foreach ($datos as $campo => $valor) {
             if ($valor !== 'NULL') {
-                $orden .= ':'.$campo.', ';
+                $orden .= ':' . $campo . ', ';
             }
         }
         $orden .= ')';
@@ -56,7 +56,8 @@ class firebird_bd implements bd_interface
             $fila = array();
             foreach ($datos as $campo => $valor) {
                 if ($valor !== 'NULL') {
-                    $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
+                    $fila[':' . $campo] = $valor;
+                    // $fila[':' . $campo] = mb_convert_encoding($valor, "ISO-8859-1");
                 }
             }
             //
@@ -94,16 +95,16 @@ class firebird_bd implements bd_interface
         $datos = obt_arreglo($campos, $datos);
         unset($datos['0']);
         // se arma la plantilla
-        $orden = 'UPDATE '.$this->con->obt_tabla().' SET ';
+        $orden = 'UPDATE ' . $this->con->obt_tabla() . ' SET ';
         foreach ($datos as $campo => $valor) {
             if ($valor !== 'NULL') {
-                $orden .= $campo.'=:'.$campo.', ';
+                $orden .= $campo . '=:' . $campo . ', ';
             }
         }
         $orden .= 'WHERE ';
         foreach ($clave as $key => $value) {
             if ($value !== 'NULL') {
-                $orden .= $key.'='.$value.' AND ';
+                $orden .= $key . '=' . $value . ' AND ';
             }
         }
         $orden = preg_replace('/AND $/', '', $orden);
@@ -117,7 +118,8 @@ class firebird_bd implements bd_interface
             $fila = array();
             foreach ($datos as $campo => $valor) {
                 if ($valor !== 'NULL') {
-                    $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
+                    $fila[':' . $campo] = $valor;
+                    // $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
                 }
             }
             //
@@ -145,13 +147,16 @@ class firebird_bd implements bd_interface
             $this->devolver_error($e);
         }
     }
+
     public function ejecutar($orden = '', $objeto = false)
     {
         try {
-            $this->con->env_orden(mb_convert_encoding($orden, "ISO-8859-1"));
-            $resultado = $this->con->query($this->con->obt_orden());
+            // $this->con->env_orden(mb_convert_encoding($orden, "ISO-8859-1"));
+            // $resultado = $this->con->query($this->con->obt_orden());
+            $this->con->orden = $orden;
+            $resultado = $this->con->query($this->con->orden);
             if ($this->config->informar_sql) {
-                informe($this->con->obt_orden());
+                informe($this->con->orden);
             }
             if ($resultado) {
                 $this->cant_filas = $resultado->rowCount();
@@ -175,9 +180,10 @@ class firebird_bd implements bd_interface
             $this->devolver_error($e);
         }
     }
+
     public function obt_campos()
     {
-        if (count($this->campos)<=0) {
+        if (count($this->campos) <= 0) {
             $this->campos = array_keys($this->obt_modelo_vacio());
         }
         return $this->campos;
@@ -293,7 +299,7 @@ ORDER BY
         if (count($this->modelo_vacio) > 0) {
             return $this->modelo_vacio;
         } else {
-            $tabla = (empty($tabla)) ? strtoupper($this->con->obt_tabla()): $tabla;
+            $tabla = (empty($tabla)) ? strtoupper($this->con->obt_tabla()) : $tabla;
 
             $result = $this->describir_tabla($tabla);
 
@@ -344,7 +350,7 @@ ORDER BY
                 if ($this->config->mostrar_error) {
                     exit(mostrar_error('Modelo', utf8_encode($e->getMessage())));
                 } else {
-                    informe(utf8_encode('Modelo: '.$e->getMessage()));
+                    informe(utf8_encode('Modelo: ' . $e->getMessage()));
                     return false;
                 }
             } else {

@@ -1,5 +1,7 @@
 <?php
 
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
 if (!function_exists('filtrar_arreglo')) {
     function filtrar_arreglo($filtros, $arreglo)
     {
@@ -26,6 +28,7 @@ if (!function_exists('filtrar_arreglo_con')) {
     }
 }
 
+
 if (!function_exists('obt_arreglo')) {
     function obt_arreglo($filtros, $arreglo)
     {
@@ -42,6 +45,18 @@ if (!function_exists('obt_arreglo')) {
         }
     }
 }
+
+if (!function_exists('obt_columnas')) {
+    function obt_columnas($filtros, $arreglo)
+    {
+        $nuevo = array();
+        foreach ($arreglo as $key => $value) {
+            $nuevo[] = obt_arreglo($filtros, $value);
+        }
+        return $nuevo;
+    }
+}
+
 if (!function_exists('convertir_utf8')) {
     function convertir_utf8($array)
     {
@@ -94,7 +109,7 @@ if (!function_exists('array_texto')) {
     {
         $t = "";
         if (is_array($array)) {
-            if (count($array)>0) {
+            if (count($array) > 0) {
                 foreach ($array as $key => $value) {
                     if (is_array($value)) {
                         array_texto($value);
