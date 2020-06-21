@@ -2,6 +2,14 @@
 
 namespace sistema\nucleo;
 
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
+/**
+ * 
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
+ * 
+ */
 abstract class PK_Servicios extends PK_Controlador
 {
     private static $tipo = 'servicio';
@@ -37,6 +45,7 @@ abstract class PK_Servicios extends PK_Controlador
     abstract protected function _get($id = 0);
     // Propiedades
     private $entradas = array();
+    // Funciones
     public function __construct()
     {
         parent::__construct();
@@ -44,39 +53,39 @@ abstract class PK_Servicios extends PK_Controlador
         $texto = html_entity_decode(@file_get_contents('php://input'), ENT_QUOTES, 'UTF-8');
 
         switch (es_metodo()) {
-      case 'POST':
-          if (count($_POST) > 0) {
-              $entradas = array_merge($entradas, $_POST);
-          } else {
-              $otros = (array) json_decode($texto);
-              if (count($otros) > 0) {
-                  $entradas = array_merge($entradas, $otros);
-              }
-          }
-          break;
+            case 'POST':
+                if (count($_POST) > 0) {
+                    $entradas = array_merge($entradas, $_POST);
+                } else {
+                    $otros = (array) json_decode($texto);
+                    if (count($otros) > 0) {
+                        $entradas = array_merge($entradas, $otros);
+                    }
+                }
+                break;
 
-      case 'GET':
-          $entradas = array_merge($entradas, $_GET);
-          break;
+            case 'GET':
+                $entradas = array_merge($entradas, $_GET);
+                break;
 
-      case 'PUT':
-          $otros = (array) json_decode($texto);
+            case 'PUT':
+                $otros = (array) json_decode($texto);
 
-          if (count($otros) > 0) {
-              $entradas = array_merge($entradas, $otros);
-          } else {
-              parse_str($texto, $entradas);
-          }
-          $entradas = array_merge($entradas, $_GET);
-          break;
+                if (count($otros) > 0) {
+                    $entradas = array_merge($entradas, $otros);
+                } else {
+                    parse_str($texto, $entradas);
+                }
+                $entradas = array_merge($entradas, $_GET);
+                break;
 
-      default:
-          $otros = (array) $texto;
-          if (count($otros) > 0) {
-              $entradas = array_merge($entradas, $otros);
-          }
-          break;
-    }
+            default:
+                $otros = (array) $texto;
+                if (count($otros) > 0) {
+                    $entradas = array_merge($entradas, $otros);
+                }
+                break;
+        }
         if (isset($entradas['url'])) {
             unset($entradas['url']);
         }
@@ -86,37 +95,36 @@ abstract class PK_Servicios extends PK_Controlador
 
     public function hab_cors()
     {
-        
         hab_cors();
     }
-
 
     public function principal($param = '')
     {
         switch (es_metodo()) {
-    case 'GET':
-    $this->_get($param);
-    break;
-    case 'POST':
-    // METODO SAVE (ALTA)
-    $this->_post();
-    break;
-    case 'PUT':
-    // METODO PUT (MODIFICACION)
-    $this->_put($param);
-    break;
-    case 'DELETE':
-    // METODO DESTROY (BAJA)
-    $this->_delete($param);
-    break;
-    default:
-    return $this->_get($param);
-    break;
-  }
+            case 'GET':
+                $this->_get($param);
+                break;
+            case 'POST':
+                // METODO SAVE (ALTA)
+                $this->_post();
+                break;
+            case 'PUT':
+                // METODO PUT (MODIFICACION)
+                $this->_put($param);
+                break;
+            case 'DELETE':
+                // METODO DESTROY (BAJA)
+                $this->_delete($param);
+                break;
+            default:
+                return $this->_get($param);
+                break;
+        }
     }
+
     public function responder($datos = array(), $tipo = 'json', $codigo = 200)
     {
-        cargar('sistema/ayudas/xml_json');
+        obt_ayuda('sistema/ayudas/xml_json');
         if (is_array($datos)) {
             // si hay datos y es de tipo array, procesarlo normamente
             if (count($datos) > 0) {
@@ -127,10 +135,12 @@ abstract class PK_Servicios extends PK_Controlador
             env_cabecera(404, $tipo);
         }
     }
+
     public function entradas()
     {
         return $this->entradas;
     }
+
     public static function obtTipo()
     {
         return self::$tipo;

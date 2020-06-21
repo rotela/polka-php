@@ -2,7 +2,7 @@
 
 namespace sistema\librerias;
 
-defined('SISTEMA') or exit('No se permite el acceso directo al script.');
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 class sesion
 {
@@ -13,8 +13,6 @@ class sesion
     {
         if (!isset($_SESSION['sesion_id'])) {
             $sesion = obt_config('aplicacion');
-            //session_set_cookie_params($sesion->ses_tiempo,'/',url_base(),true,true);
-            @session_start();
             $this->id = session_id();
             $_SESSION['sesion_id'] = $this->id;
             // destruyo las alertas temporales
@@ -26,7 +24,7 @@ class sesion
 
     private function expiracion($tiempo = 0)
     {
-        if (isset($_SESSION['sesion_id'])) {
+        if (session_status() == PHP_SESSION_NONE) {
             if ($tiempo) {
                 if (!isset($_SESSION['expira'])) {
                     $_SESSION['expira'] = time() + $tiempo;
@@ -71,6 +69,7 @@ class sesion
                 }
             } else {
                 session_destroy();
+                $_SESSION = array();
             }
         } else {
             unset($_SESSION[$clave]);
@@ -102,11 +101,11 @@ class sesion
                 if (!empty($clave)) {
                     $_SESSION[$clave] = $datos;
                 } else {
-                    exit(mostrar_error('Sesión', 'Se requiere la clave para la sesión.'));
+                    exit(mostrar_error('Sesión', 'Se requiere la clave para la sesión x.'));
                 }
             }
         } else {
-            exit(mostrar_error('Sesión', 'Se requiere de los datos para la sesión.'));
+            exit(mostrar_error('Sesión', 'Se requiere de los datos para la sesión y.'));
         }
     }
 
@@ -133,17 +132,19 @@ class sesion
     public function env_csrf($token = '')
     {
         $csrf_nom = obt_config('aplicacion')->csrf_nom;
-        $_SESSION[$csrf_nom] = (empty($token)) ? md5(uniqid(mt_rand(), true)).md5(uniqid(mt_rand(), true)) : $token;
+        $_SESSION[$csrf_nom] = (empty($token)) ? md5(uniqid(mt_rand(), true)) . md5(uniqid(mt_rand(), true)) : $token;
     }
 
     public function borrar_csrf()
     {
         $csrf_nom = obt_config('aplicacion')->csrf_nom;
-        isset($_SESSION[$csrf_nom]);
-        unset($_SESSION[$csrf_nom]);
+        if (isset($_SESSION)) {
+            isset($_SESSION[$csrf_nom]);
+            unset($_SESSION[$csrf_nom]);
+        }
     }
-    public function limpiar($value='')
+    public function limpiar($value = '')
     {
-        session_destroy();
+        @session_destroy();
     }
 }

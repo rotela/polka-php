@@ -1,10 +1,17 @@
 <?php
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 use sistema\nucleo\PK_Solicitud;
+
+function urls($arg = '')
+{
+    if (empty($arg)) {
+        return $_GET;
+    } else {
+        return isset($_GET[$arg]) ? $_GET[$arg] : false;
+    }
+}
 
 function dominio()
 {
@@ -13,20 +20,22 @@ function dominio()
 
 function url_solicitud()
 {
-    $url = str_replace(url_base().'/', '', url_texto());
+    $url = str_replace(url_base() . '/', '', url_texto());
 
     return $url;
 }
+
 function url_protocolo()
 {
     $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? 'https://' : 'http://';
 
     return strtolower($protocol);
 }
+
 function url_seg($seg = 0)
 {
     $cfg = obt_config('aplicacion');
-    $url = url_protocolo().$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    $url = url_protocolo() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     $segmentos = str_replace($cfg->url_base, '', $url);
     $segmentos = explode('/', $segmentos);
     if ($seg == 0) {
@@ -58,15 +67,17 @@ function url_seg($seg = 0)
         }
     }
 }
+
 function url_protocolo_definido()
 {
     preg_match('/^[htps]*:\/\//i', url_base(), $encontrado);
 
     return (count($encontrado) > 0) ? $encontrado[0] : '';
 }
+
 function url_texto()
 {
-    $url = url_protocolo().$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    $url = url_protocolo() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 
     return $url;
 }
@@ -74,7 +85,7 @@ function url_texto()
 function url_seg_cant()
 {
     $cfg = obt_config('aplicacion');
-    $url = url_protocolo().$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+    $url = url_protocolo() . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
     $segmentos = str_replace($cfg->url_base, '', $url);
     $segmentos = explode('/', $segmentos);
     foreach ($segmentos as $key => $value) {
@@ -91,12 +102,12 @@ function url_base($agr = '')
 {
     $cfg = obt_config('aplicacion');
     if (empty($cfg->url_base)) {
-        $url = url_protocolo().dominio();
+        $url = url_protocolo() . dominio();
     } else {
-        $url = (preg_match('/\/$/', $cfg->url_base) != 0) ? $cfg->url_base : $cfg->url_base.'/';
+        $url = (preg_match('/\/$/', $cfg->url_base) != 0) ? $cfg->url_base : $cfg->url_base . '/';
     }
 
-    return empty($agr) ? $url : $url.$agr;
+    return empty($agr) ? $url : $url . $agr;
 }
 
 if (!function_exists('url_ctrl')) {
@@ -106,14 +117,15 @@ if (!function_exists('url_ctrl')) {
         $sub_carpeta = str_replace('\\', '/', $sub_carpeta);
         $ctrl = PK_Solicitud::obt_controlador();
         if (empty($value)) {
-            return empty($sub_carpeta) ? url_base($ctrl) : url_base($sub_carpeta.$ctrl);
+            return empty($sub_carpeta) ? url_base($ctrl) : url_base($sub_carpeta . $ctrl);
         } else {
             $value = "/$value";
 
-            return empty($sub_carpeta) ? url_base($ctrl.$value) : url_base($sub_carpeta.$ctrl.$value);
+            return empty($sub_carpeta) ? url_base($ctrl . $value) : url_base($sub_carpeta . $ctrl . $value);
         }
     }
 }
+
 if (!function_exists('url_ctrl_solo')) {
     function url_ctrl_solo($value = '')
     {
@@ -121,12 +133,13 @@ if (!function_exists('url_ctrl_solo')) {
         $sub_carpeta = str_replace('\\', SD, $sub_carpeta);
         $ctrl = PK_Solicitud::obt_controlador();
         if (empty($value)) {
-            return empty($sub_carpeta) ? $ctrl : $sub_carpeta.$ctrl;
+            return empty($sub_carpeta) ? $ctrl : $sub_carpeta . $ctrl;
         } else {
-            return empty($sub_carpeta) ? $ctrl.'/'.$value : $sub_carpeta.$ctrl.$value;
+            return empty($sub_carpeta) ? $ctrl . '/' . $value : $sub_carpeta . $ctrl . $value;
         }
     }
 }
+
 if (!function_exists('url_peticion')) {
     function url_peticion()
     {
@@ -134,6 +147,7 @@ if (!function_exists('url_peticion')) {
         return str_replace(':/', '://', $url);
     }
 }
+
 if (!function_exists('es_local')) {
     function es_local()
     {
@@ -154,15 +168,16 @@ if (!function_exists('redirigir')) {
 
         switch ($method) {
             case 'refresh':
-                header('Refresh:0;url='.$url);
+                header('Refresh:0;url=' . $url);
                 break;
             default:
-                header('Location: '.$url, true, $http_response_code);
+                header('Location: ' . $url, true, $http_response_code);
                 break;
         }
         die();
     }
 }
+
 if (!function_exists('url_amigable')) {
     function url_amigable($url)
     {

@@ -1,10 +1,15 @@
 <?php
+
 namespace sistema\nucleo;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
+/**
+ * 
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
+ * 
+ */
 class PK_Solicitud
 {
     private static $controlador = '';
@@ -32,13 +37,13 @@ class PK_Solicitud
             $url = explode('/', $url);
             $cadena = '';
             for ($i = 0; $i < count($url); ++$i) {
-                $cadena .= $url[$i].SD;
-                if (is_dir(CONTROLADORES.$cadena)) {
+                $cadena .= $url[$i] . SD;
+                if (is_dir(CONTROLADORES . $cadena)) {
                     self::$sub_carpeta = $cadena;
                     unset($url[$i]);
                 }
             }
-            self::$controlador = array_shift($url);
+            self::$controlador = str_replace('-', '_', array_shift($url));
             self::$metodo = array_shift($url);
             self::$argumentos = $url;
         }

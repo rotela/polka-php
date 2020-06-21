@@ -2,9 +2,7 @@
 
 namespace sistema\librerias;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 class candado
 {
@@ -14,6 +12,7 @@ class candado
     {
         $this->clave = obt_config('aplicacion')->clave_can;
     }
+    
     public function procesar($accion, $entrada = '', $clave = '')
     {
         $output = false;
@@ -39,29 +38,5 @@ class candado
     public function cerrar($valor = '', $clave = '')
     {
         return $this->procesar('cerrar', $valor, $clave);
-    }
-
-    private function pad_key($key)
-    {
-        // si key es muy largo
-        if (strlen($key) > 32) {
-            return false;
-        }
-        // definiendo largor
-        $sizes = array(16, 24, 32);
-
-        foreach ($sizes as $s) {
-            // se recorre cada largor y se compara con el de la clave, por cada
-            // largor menor se agrega una cadena "\0"
-            while (strlen($key) < $s) {
-                $key = $key."\0";
-            }
-            // terminando si la clave encuentra su valor
-            if (strlen($key) == $s) {
-                break;
-            }
-        }
-
-        return $key;
     }
 }

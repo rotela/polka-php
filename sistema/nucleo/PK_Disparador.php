@@ -1,63 +1,63 @@
 <?php
+
 namespace sistema\nucleo;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
-use sistema\controladores\Errores;
 use Exception;
+use sistema\controladores\Errores;
 
 /**
-* Clase que supervisa qué controlador, método y argumento se está
-* recibiendo y donde debe dirigirla.
-*
-* @author Ricardo Rotela González rotelabs->gmail.com
-* @copyright Rotelabs (c)2015
-*/
+ * Clase que supervisa qué controlador, método y argumento se está
+ * recibiendo y donde debe dirigirla.
+ *
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
+ * 
+ */
 class PK_Disparador
 {
     /**
-    * Contenedor para el nombre del controlador.
-    *
-    * @var string
-    */
+     * Contenedor para el nombre del controlador.
+     *
+     * @var string
+     */
     private static $controlador;
 
     /**
-    * Contenedor para el nombre del método.
-    *
-    * @var string
-    */
+     * Contenedor para el nombre del método.
+     *
+     * @var string
+     */
     private static $metodo;
 
     /**
-    * Contenedor para la ruta del controlador.
-    *
-    * @var string
-    */
+     * Contenedor para la ruta del controlador.
+     *
+     * @var string
+     */
     private static $rutaControlador;
 
     /**
-    * Contenedor para el nombre de espacio.
-    *
-    * @var string
-    */
+     * Contenedor para el nombre de espacio.
+     *
+     * @var string
+     */
     private static $nombre_spacio;
 
     use PK_Singleton;
 
     /**
-    * Función principal que inicia el sistema,
-    * se solicitará los datos a PK_Solicitud para
-    * saber a que controlador y método delegar lo solicitado
-    * desde el navegador.
-    *
-    * ATENCIÓN
-    *
-    * Esta función no devuelve nada, sin embargo ejecuta
-    * el controlador o clase y/o método solicitado desde el navegador
-    */
+     * Función principal que inicia el sistema,
+     * se solicitará los datos a PK_Solicitud para
+     * saber a que controlador y método delegar lo solicitado
+     * desde el navegador.
+     *
+     * ATENCIÓN
+     *
+     * Esta función no devuelve nada, sin embargo ejecuta
+     * el controlador o clase y/o método solicitado desde el navegador
+     */
     public static function iniciar()
     {
         $config = PK_Config::obt_instancia()->obtener('aplicacion');
@@ -81,9 +81,9 @@ class PK_Disparador
         // EJECUTANDO GANCHO, SI EXISTE.
         if ($config->gancho) {
             foreach ($config->ganchos as $clase => $metodo) {
-                $clase = GANCHOS.$clase;
+                $clase = GANCHOS . $clase;
                 $clase = str_replace('/', '\\', $clase);
-                seguir('disparando gancho '.$clase);
+                seguir('disparando gancho ' . $clase);
                 $clase = new $clase();
                 call_user_func(array($clase, $metodo));
             }
@@ -92,18 +92,18 @@ class PK_Disparador
         // Redirigiendo a la subcarpeta, si es que las hay.
         $espacio = str_replace('\\', SD, "aplicacion\controladores\\");
         if (empty(PK_Solicitud::$sub_carpeta)) {
-            self::$rutaControlador = CONTROLADORES.self::$controlador.'.php';
-            self::$nombre_spacio = $espacio.self::$controlador;
+            self::$rutaControlador = CONTROLADORES . self::$controlador . '.php';
+            self::$nombre_spacio = $espacio . self::$controlador;
         } else {
-            self::$rutaControlador = CONTROLADORES.PK_Solicitud::$sub_carpeta.self::$controlador.'.php';
-            self::$nombre_spacio = $espacio.PK_Solicitud::$sub_carpeta.self::$controlador;
+            self::$rutaControlador = CONTROLADORES . PK_Solicitud::$sub_carpeta . self::$controlador . '.php';
+            self::$nombre_spacio = $espacio . PK_Solicitud::$sub_carpeta . self::$controlador;
         }
         self::disparar();
     }
 
     /**
-    * Se dispara el controlador solicitado con su respectivo método y/o argumentos.
-    */
+     * Se dispara el controlador solicitado con su respectivo método y/o argumentos.
+     */
     private static function disparar()
     {
         $rutaControlador = self::$rutaControlador;
@@ -135,7 +135,7 @@ class PK_Disparador
                         }
                     }
                 } else {
-                    throw new Exception(mostrar_error('Metodo', 'El Método '.self::$metodo.' no existe.'));
+                    throw new Exception(mostrar_error('Metodo', 'El Método ' . self::$metodo . ' no existe.'));
                 }
             } else {
                 if (self::$metodo != 'principal') {
@@ -155,7 +155,7 @@ class PK_Disparador
                 }
             }
         } else {
-            throw new Exception(mostrar_error('no encontrado :-(', 'La página <strong>'.self::$controlador.'</strong> no existe '));
+            throw new Exception(mostrar_error('no encontrado :-(', 'La página <strong>' . self::$controlador . '</strong> no existe '));
         }
     }
 
@@ -166,7 +166,7 @@ class PK_Disparador
 
     public static function obt_obj_controlador()
     {
-        return self::$obj_controlador;
+        return self::$controlador;
     }
 }
 

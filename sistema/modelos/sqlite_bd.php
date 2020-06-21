@@ -1,9 +1,8 @@
 <?php
+
 namespace sistema\modelos;
 
 use \PDO;
-use \PDOException;
-use \Exception;
 
 class sqlite_bd implements bd_interface
 {
@@ -13,6 +12,7 @@ class sqlite_bd implements bd_interface
     {
         $this->con = $con;
     }
+
     public function insertar($datos = array(), $simular = false)
     {
         // se filtran los datos propios de la tabla
@@ -24,16 +24,16 @@ class sqlite_bd implements bd_interface
             unset($datos[$campo_primario]);
         }
         // se arma la plantilla
-        $orden = 'INSERT INTO '.$this->con->obt_tabla().' (';
+        $orden = 'INSERT INTO ' . $this->con->obt_tabla() . ' (';
         foreach ($datos as $campo => $valor) {
             if ($valor != 'NULL') {
-                $orden .= $campo.', ';
+                $orden .= $campo . ', ';
             }
         }
         $orden .= ') VALUES (';
         foreach ($datos as $campo => $valor) {
             if ($valor != 'NULL') {
-                $orden .= ':'.$campo.', ';
+                $orden .= ':' . $campo . ', ';
             }
         }
         $orden .= ')';
@@ -46,7 +46,7 @@ class sqlite_bd implements bd_interface
         $fila = array();
         foreach ($datos as $campo => $valor) {
             if ($valor != 'NULL') {
-                $fila[':'.$campo] = $valor;
+                $fila[':' . $campo] = $valor;
             }
         }
         // se ejecuta
@@ -60,21 +60,22 @@ class sqlite_bd implements bd_interface
             }
         }
     }
+
     public function editar($datos = array(), $clave = array(), $simular = false)
     {
         // se obtiene solo los campos correspondiente a la tabla
         $campos = $this->con->obt_campos();
         $datos = obt_arreglo($campos, $datos);
         // se arma la plantilla
-        $orden = 'UPDATE '.$this->con->obt_tabla().' SET ';
+        $orden = 'UPDATE ' . $this->con->obt_tabla() . ' SET ';
         foreach ($datos as $campo => $valor) {
             if ($valor != 'NULL') {
-                $orden .= $campo.'=:'.$campo.', ';
+                $orden .= $campo . '=:' . $campo . ', ';
             }
         }
         $orden .= 'WHERE ';
         foreach ($clave as $key => $value) {
-            $orden .= $key.'='.$value.' AND ';
+            $orden .= $key . '=' . $value . ' AND ';
         }
         $orden = preg_replace('/AND $/', '', $orden);
         $orden = str_replace(', WHERE', ' WHERE', $orden);
@@ -85,7 +86,7 @@ class sqlite_bd implements bd_interface
         $fila = array();
         foreach ($datos as $campo => $valor) {
             if ($valor != 'NULL') {
-                $fila[':'.$campo] = $valor;
+                $fila[':' . $campo] = $valor;
             }
         }
         // se ejecuta
@@ -100,6 +101,7 @@ class sqlite_bd implements bd_interface
             }
         }
     }
+
     public function ejecutar($orden = '', $objeto = false)
     {
         $this->con->orden = $orden;
@@ -113,6 +115,7 @@ class sqlite_bd implements bd_interface
             }
         }
     }
+
     public function obt_campos()
     {
         $datos = array();
@@ -122,6 +125,7 @@ class sqlite_bd implements bd_interface
         }
         return $datos;
     }
+
     public function obt_ult_id($generador = '')
     {
         $ult_id = $this->con->lastInsertId();
@@ -139,18 +143,22 @@ class sqlite_bd implements bd_interface
         }
         return $ult_id;
     }
+
     public function limite($limite = 0, $segmento = 0)
     {
     }
+
     public function obt_tablas($obt = true)
     {
     }
+
     public function describir_tabla($tabla = '')
     {
         $sql = "DESCRIBE $tabla";
         return $this->con->ejecutar($sql);
     }
-    public function obt_modelo_vacio($tabla='')
+
+    public function obt_modelo_vacio($tabla = '')
     {
     }
 }

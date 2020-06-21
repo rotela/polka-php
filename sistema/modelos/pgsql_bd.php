@@ -1,9 +1,6 @@
 <?php
-namespace sistema\modelos;
 
-use \PDO;
-use \PDOException;
-use \Exception;
+namespace sistema\modelos;
 
 class pgsql_bd implements bd_interface
 {
@@ -13,6 +10,7 @@ class pgsql_bd implements bd_interface
     {
         $this->con = $con;
     }
+
     public function obt_campos()
     {
         $datos = array();
@@ -22,6 +20,7 @@ class pgsql_bd implements bd_interface
         }
         return $datos;
     }
+
     public function obt_ult_id($generador = '')
     {
         $ult_id = 0;
@@ -48,13 +47,15 @@ class pgsql_bd implements bd_interface
         }
         return $ult_id;
     }
+
     public function limite($limite = 0, $segmento = 0)
     {
     }
+
     public function obt_tablas($obt = true)
     {
     }
-    //
+
     public function describir_tabla($tabla = '')
     {
         $sql = "select column_name, data_type, character_maximum_length
@@ -63,6 +64,7 @@ class pgsql_bd implements bd_interface
 
         return $result;
     }
+
     public function obt_modelo_vacio()
     {
     }

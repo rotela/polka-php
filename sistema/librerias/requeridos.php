@@ -1,5 +1,8 @@
 <?php
+
 namespace sistema\librerias;
+
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 /**
  * Clase que supervisa parámetros requeridos para validaciones
@@ -9,7 +12,7 @@ class requeridos
     private $errores;
     private $entradas;
 
-    function __construct($entradas = array())
+    public function __construct($entradas = array())
     {
         $this->entradas = $entradas;
         $this->errores = array();
@@ -81,5 +84,9 @@ class requeridos
     public function obt_errores()
     {
         return $this->errores;
+    }
+    public function adjuntar($error)
+    {
+        array_push($this->errores, $error);
     }
 }

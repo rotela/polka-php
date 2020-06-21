@@ -2,9 +2,7 @@
 
 namespace aplicacion\ganchos;
 
-if (!defined('NUCLEO')) {
-    exit('No se permite acceso directo al script');
-}
+(!defined('NUCLEO')) ? exit('No se permite el acceso directo al script.') : false;
 
 class comprobar
 {
@@ -14,5 +12,5 @@ class comprobar
     }
 }
 
-/* Final de archivo tema.php */
+/* Final de archivo comprobar.php */
 /* Ubicación: gancho/comprobar.php */

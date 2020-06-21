@@ -2,9 +2,15 @@
 
 namespace sistema\librerias;
 
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
+/**
+ * Class genxml
+ */
+
 class genxml
 {
-    public function mostrar($result, $tipo = 'xml', $codigo = 200)
+    public function mostrar(array $result, string $tipo = 'xml', int $codigo = 200)
     {
         $this->env_cabecera($codigo, $tipo);
         if (strtolower($tipo) == 'json') {
@@ -20,7 +26,7 @@ class genxml
         }
     }
 
-    private function xmlExplorador($xml_array, $parent)
+    private function xmlExplorador(array $xml_array, string $parent)
     {
         foreach ($xml_array as $tag => $value) {
             if ((int) $tag === $tag) {
@@ -36,13 +42,13 @@ class genxml
         }
     }
 
-    private function env_cabecera($codigo = 200, $tipo = 'json')
+    private function env_cabecera(int $codigo = 200, string $tipo = 'json')
     {
         header('HTTP/1.1 '.$codigo.' '.$this->obt_estado($codigo));
         header('Content-type:application/'.$tipo.';charset=utf-8');
     }
 
-    private function obt_estado($codigo)
+    private function obt_estado(int $codigo = 200)
     {
         $estado = array(
             200 => 'OK',

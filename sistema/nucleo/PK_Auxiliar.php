@@ -34,6 +34,7 @@ if (!defined('SISTEMA')) {
  *
  * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
  * @copyright Rotelabs (c)2014
+ * 
  */
 class PK_Auxiliar
 {

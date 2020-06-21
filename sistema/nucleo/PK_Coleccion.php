@@ -13,9 +13,7 @@ if (!defined('SISTEMA')) {
  *
  * ADVERTENCIA
  *
- * Para obtener una librerías/modelos (clases) debe indicar su nombre completo de espacio,
- * PHP 5.4 vino con varios soportes tanto para los trait, namespace y los registros
- * de autoloads, utilicémoslo. ;-)
+ * Para obtener una librerías/modelos (clases) debe indicar su nombre completo de espacio
  *
  * USOS
  *
@@ -29,8 +27,9 @@ if (!defined('SISTEMA')) {
  * $sesion = obt_instancia('sistema\librerias\sesion');
  * $sesion->obt_datos();
  *
- * @author  Ricardo Rotela González rotelabs->gmail.com ;-)
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
  * @copyright Rotelabs (c)2014
+ * 
  */
 class PK_Coleccion
 {
@@ -57,6 +56,7 @@ class PK_Coleccion
     private static function cargar($libreria = '', $param = '')
     {
         if (empty($param)) {
+            $libreria = str_replace('.php', '', $libreria);
             self::$librerias[$libreria] = new $libreria();
         } else {
             self::$librerias[$libreria] = new $libreria($param);
@@ -80,10 +80,10 @@ class PK_Coleccion
         }
         $libreria = self::verificar($libreria);
         if (array_key_exists($libreria, self::$librerias)) {
-            seguir('Instanciando '.$libreria);
+            seguir('Instanciando ' . $libreria);
             return self::$librerias[$libreria];
         } else {
-            seguir('Obteniendo '.$libreria);
+            seguir('Obteniendo ' . $libreria);
             if (empty($param)) {
                 return self::cargar($libreria);
             } else {

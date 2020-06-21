@@ -2,10 +2,14 @@
 
 namespace sistema\nucleo;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
+/**
+ * 
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
+ *  
+ */
 trait PK_Singleton
 {
     private static $instancia;
@@ -13,7 +17,7 @@ trait PK_Singleton
     public static function obt_instancia($parametro = '')
     {
         if (!self::$instancia instanceof self) {
-            seguir('Instanciando '.__CLASS__);
+            seguir('Instanciando ' . __CLASS__);
             if (empty($parametro)) {
                 self::$instancia = new self();
             } else {
@@ -25,6 +29,6 @@ trait PK_Singleton
 
     public function __clone()
     {
-        exit(mostrar_error('PK_Singleton', 'Clone no se permite en '.__CLASS__));
+        exit(mostrar_error('PK_Singleton', 'Clone no se permite en ' . __CLASS__));
     }
 }

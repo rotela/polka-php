@@ -76,8 +76,8 @@ if (!function_exists('agr_barra')) {
         }
     }
 }
-if (!function_exists('obt_archivos')) {
 
+if (!function_exists('obt_archivos')) {
     /**
      * Lee todos los nombre de archivos y las devuelve.
      *

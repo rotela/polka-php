@@ -38,7 +38,7 @@ class formulario
         return (array_key_exists($propiedad, $this->entradas)) ? $this->entradas[$propiedad] : '';
     }
 
-    private function comprobar_token()
+    public function comprobar_token()
     {
         $config = obt_config('aplicacion');
         $csrf_nom = $config->csrf_nom;
@@ -129,7 +129,7 @@ class formulario
         }
     }
 
-    private function requerido($campo = '', $alias = '')
+    public function requerido($campo = '', $alias = '')
     {
         $alias = empty($alias) ? $campo : $alias;
         $this->alias[$campo] = $alias;
@@ -142,7 +142,7 @@ class formulario
         }
     }
 
-    private function validar_email($campo = '', $alias = '')
+    public function validar_email($campo = '', $alias = '')
     {
         $alias = empty($alias) ? $campo : $alias;
         if (array_key_exists($campo, $this->entradas)) {
@@ -155,7 +155,7 @@ class formulario
         }
     }
 
-    private function validar_entero($campo = '', $alias = '')
+    public function validar_entero($campo = '', $alias = '')
     {
         $alias = empty($alias) ? $campo : $alias;
         if (array_key_exists($campo, $this->entradas)) {
@@ -168,7 +168,7 @@ class formulario
         }
     }
 
-    private function validar_ip($campo = '', $alias = '')
+    public function validar_ip($campo = '', $alias = '')
     {
         $alias = empty($alias) ? $campo : $alias;
         if (array_key_exists($campo, $this->entradas)) {
@@ -181,7 +181,7 @@ class formulario
         }
     }
 
-    private function texto_min($campo = '', $alias = '', $cant = 0)
+    public function texto_min($campo = '', $alias = '', $cant = 0)
     {
         $alias = empty($alias) ? $campo : $alias;
         if (array_key_exists($campo, $this->entradas)) {
@@ -194,7 +194,7 @@ class formulario
         }
     }
 
-    private function texto_max($campo = '', $alias = '', $max = 0)
+    public function texto_max($campo = '', $alias = '', $max = 0)
     {
         $alias = empty($alias) ? $campo : $alias;
         if (array_key_exists($campo, $this->entradas)) {
@@ -207,7 +207,7 @@ class formulario
         }
     }
 
-    private function espejo($campo = '', $alias = '', $esp = '')
+    public function espejo($campo = '', $alias = '', $esp = '')
     {
         $alias = empty($alias) ? $campo : $alias;
         if (array_key_exists($campo, $this->entradas)) {
@@ -338,6 +338,7 @@ class formulario
         $pk = obt_coleccion('sistema\librerias\sesion');
         $pk->borrar_csrf();
     }
+    
     public function obt_entradas()
     {
         $entradas = array();

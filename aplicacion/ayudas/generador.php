@@ -1,4 +1,7 @@
 <?php
+
+(!defined('APLICACION')) ? exit('No se permite el acceso directo al script.') : false;
+
 /**
  * Este es un ejemplo de archivo de ayuda propio del usuario
  * text_generador(par 1, par 2)

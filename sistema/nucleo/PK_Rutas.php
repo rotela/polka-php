@@ -2,16 +2,16 @@
 
 namespace sistema\nucleo;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 /**
+ * 
  * Clase que supervisa las rutas, ésta procesará y hará las comprobaciones
  * sobre las rutas indicadas en la configuración Rutas.
  *
- * @author Ricardo Rotela González rotelabs->gmail.com
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
  * @copyright Rotelabs (c)2014
+ * 
  */
 class PK_Rutas
 {

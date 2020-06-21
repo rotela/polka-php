@@ -1,6 +1,7 @@
 <?php (!defined('APLICACION')) ? exit('No se permite acceso directo al script') : false; ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="utf-8">
     <title><?= ap_titulo(); ?></title>
@@ -8,8 +9,8 @@
     <link rel="stylesheet" href="<?= vista_css('w3.css'); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
-<body>
 
+<body>
 
     <header class="w3-row">
         <div class="w3-col w3-container" style="width:20%"></div>
@@ -25,17 +26,17 @@
 
             <div class="w3-panel w3-light-grey">
                 <h1>Polka-php</h1>
-                <h3>es fácil, rápido, seguro, gratis y en tú Idioma!!!</h3>
+                <h3>es fácil, rápido, seguro, gratis y en tú idioma!!!</h3>
                 <a class="w3-btn w3-green" href="https://github.com/rotela/polka-php">
-                <span class="fa fa-github"></span> github</a>
+                    <span class="fa fa-github"></span> github</a>
                 <a class="w3-btn w3-blue" href="https://github.com/rotela/polka-php/wiki">
-                <span class="fa fa-wikipedia-w"></span> wiki</a>
+                    <span class="fa fa-wikipedia-w"></span> wiki</a>
                 <br>
                 <p></p>
             </div>
 
             <p>
-              Polka-php es un marco de desarrollo hecho en y para php. Permite desarrollar aplicaciones web/api mucho más rápido ya que no es necesario empezar desde cero. Polka-php brinda varias herramientas para el desarrollo de aplicaciones web, cuenta con poderosas librerías, ayudantes y varios componentes que hará más placentero escribir código, dejando al programador concentrarse en la lógica de negocio y no en la estructura principal ya que ésta brinda una estructura básica pero poderosa sobre la cual se puede desarrollar aplicaciones simple como complejas.
+                Polka-php es un marco de desarrollo hecho en y para php. Permite desarrollar aplicaciones web/api mucho más rápido ya que no es necesario empezar desde cero. Polka-php brinda varias herramientas para el desarrollo de aplicaciones web, cuenta con poderosas librerías, ayudantes y varios componentes que hará más placentero escribir código, dejando al programador concentrarse en la lógica de negocio y no en la estructura principal ya que ésta brinda una estructura básica pero poderosa sobre la cual se puede desarrollar aplicaciones simple o complejas.
             </p>
 
             <div class="w3-row">
@@ -58,10 +59,11 @@
                 <div class="w3-col s4">
                     <h4>Soporte para bases de datos:</h4>
                     <ul class="w3-ul">
-                        <li>Mysql 3, 4 y 5</li>
+                        <li>Mysql 4, 5+</li>
+                        <li>Firebird</li>
                         <li>PostgreSQL</li>
                         <li>Oracle CAll Interface</li>
-                        <li>SQLite 2 y 3</li>
+                        <li>SQLite 2, 3+</li>
                         <li>ODBC v3</li>
                         <li>Microsoft SQL Server / SQL Azure</li>
                         <li><a href="http://php.net/manual/es/pdo.drivers.php">otros</a></li>
@@ -90,10 +92,11 @@
     <footer class="w3-row">
         <div class="w3-col w3-container" style="width:20%"></div>
         <div class="w3-col w3-container w3-blue-grey" style="width:60%">
-            <p>Estructura de desarrollo, página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada(); ?><br><?= ap_titulo().' '.ap_version(); ?> | <?= ap_derechos(); ?></p>
+            <p>Estructura de desarrollo, página renderizada en <?= tiempo_fin(); ?> s/ms con <?= memoria_usada(); ?><br><?= ap_titulo() . ' ' . ap_version(); ?> | <?= ap_derechos(); ?></p>
         </div>
         <div class="w3-col w3-container" style="width:20%"></div>
     </footer>
 
 </body>
+
 </html>

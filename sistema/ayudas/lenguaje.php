@@ -1,7 +1,8 @@
 <?php
 
-if (!function_exists('traducir')) {
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
+if (!function_exists('traducir')) {
     /**
      * $num    = 30;
      * $loc    = 'Villa Elisa';

@@ -2,6 +2,8 @@
 
 namespace sistema\librerias;
 
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
+
 class subidor
 {
     private $errores = array();
@@ -13,6 +15,7 @@ class subidor
 
     public function subir($config = array())
     {
+        $campo = $config['campo'];
         if (!array_key_exists('destino', $config)) {
             $this->errores[] = 'No se ha definido el destino del fichero';
             return false;
@@ -26,6 +29,11 @@ class subidor
             $this->errores[] = 'No se ha definido el nombre del campo';
             return false;
         }
+        if (!isset($_FILES[$campo])) {
+            $this->errores[] = 'No existe el campo '.$campo;
+            return false;
+        }
+
         $uploaddir = str_replace('\\', SD, $config['destino']);
         $campo = $config['campo'];
         $uploadfile = $uploaddir.basename($_FILES[$campo]['name']);
@@ -39,12 +47,16 @@ class subidor
                 $this->reporte[$this->sinn($key)] = $value;
             }
         }
-
-        if (move_uploaded_file($_FILES[$campo]['tmp_name'], $uploadfile)) {
-            $this->reporte['destino'] = $uploaddir;
-            $this->reporte['mensaje'] = 'El archivo fue cargado exitosamente';
-            $this->reporte['url'] = str_replace('\\', '/', $config['destino']).$this->reporte['nombre'];
-            return true;
+        if (isset($_FILES[$campo])) {
+            if (move_uploaded_file($_FILES[$campo]['tmp_name'], $uploadfile)) {
+                $this->reporte['destino'] = $uploaddir;
+                $this->reporte['mensaje'] = 'El archivo fue cargado exitosamente';
+                $this->reporte['url'] = str_replace('\\', '/', $config['destino']).$this->reporte['nombre'];
+                return true;
+            } else {
+                $this->errores['mensaje'] = 'El archivo sobre pasa lo máximo permitido';
+                return false;
+            }
         } else {
             $this->errores['mensaje'] = 'El archivo sobre pasa lo máximo permitido';
             return false;
@@ -67,12 +79,12 @@ class subidor
         }
     }
 
-    public function obt_error($value = '')
+    public function obt_error()
     {
         return $this->errores;
     }
 
-    public function obt_reporte($value = '')
+    public function obt_reporte()
     {
         $this->reporte['kb'] = round($this->reporte['peso'] / 1024);
         return $this->reporte;

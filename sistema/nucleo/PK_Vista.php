@@ -2,9 +2,7 @@
 
 namespace sistema\nucleo;
 
-if (!defined('SISTEMA')) {
-    exit('No se permite el acceso directo al script.');
-}
+(!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 use Exception;
 
@@ -12,6 +10,10 @@ use Exception;
  * Clase individual para manejo de vistas,
  * esta clase es usada dentro del controlador
  * y puede ser invocada con la cláusula $this.
+ * 
+ * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
+ * @copyright Rotelabs (c)2014
+ * 
  */
 class PK_Vista
 {
@@ -40,9 +42,9 @@ class PK_Vista
     public function ver($p, $d = array(), $render = true)
     {
         if ($this->sis) {
-            $pagina = SISTEMA.SD.'vistas'.SD.agr_ext($p);
+            $pagina = SISTEMA . SD . 'vistas' . SD . agr_ext($p);
         } else {
-            $pagina = VISTAS.$this->seccion.SD.$this->tema.SD.agr_ext($p);
+            $pagina = VISTAS . $this->seccion . SD . $this->tema . SD . agr_ext($p);
         }
 
         if (file_exists($pagina)) {
@@ -96,7 +98,7 @@ class PK_Vista
                 foreach ($js as $value) {
                     $archivo = agr_ext($value, '.js');
                     $url = vista_js($archivo, $pub);
-                    $this->arch_js[] = '<script src="'.$url.'"></script>';
+                    $this->arch_js[] = '<script src="' . $url . '"></script>';
                 }
             } else {
                 $this->arch_js = $aux;
@@ -105,7 +107,7 @@ class PK_Vista
             if (!empty($js)) {
                 $archivo = agr_ext($js, '.js');
                 $url = vista_js($archivo, $pub);
-                $this->arch_js[] = '<script src="'.$url.'"></script>';
+                $this->arch_js[] = '<script src="' . $url . '"></script>';
             } else {
                 $this->arch_js[] = $aux;
             }
@@ -120,7 +122,7 @@ class PK_Vista
                 foreach ($css as $value) {
                     $archivo = agr_ext($value, '.css');
                     $url = vista_css($archivo, $pub);
-                    $this->arch_css[] = '<link href="'.$url.'">';
+                    $this->arch_css[] = '<link href="' . $url . '">';
                 }
             } else {
                 $this->arch_css = $aux;
@@ -129,7 +131,7 @@ class PK_Vista
             if (!empty($css)) {
                 $archivo = agr_ext($css, '.css');
                 $url = vista_css($archivo, $pub);
-                $this->arch_css[] = '<link href="'.$url.'">';
+                $this->arch_css[] = '<link href="' . $url . '">';
             } else {
                 $this->arch_css[] = $aux;
             }
@@ -139,7 +141,7 @@ class PK_Vista
     public function obt_arc_js()
     {
         if (count($this->arch_js) > 0) {
-            return implode("\n", $this->arch_js)."\t\n";
+            return implode("\n", $this->arch_js) . "\t\n";
         } else {
             return '';
         }
@@ -148,7 +150,7 @@ class PK_Vista
     public function obt_arc_css()
     {
         if (count($this->arch_css) > 0) {
-            return implode("\n", $this->arch_css)."\t\n";
+            return implode("\n", $this->arch_css) . "\t\n";
         } else {
             return '';
         }
