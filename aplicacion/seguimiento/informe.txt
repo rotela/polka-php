@@ -1,0 +1,3 @@
+09-03-2021 15:09:29:6995 > SQLSTATE[HY000] [1045] Access denied for user ''@'localhost' (using password: YES)
+09-03-2021 15:09:29:6996 > Modelo: SQLSTATE[HY000] [1045] Access denied for user ''@'localhost' (using password: YES)
+09-03-2021 15:09:29:6997 > No hay interface, revise su conexión

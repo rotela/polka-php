@@ -2,7 +2,7 @@
 
 (!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 // cargar ayudas
-$config['ayudas']    = array('ecos','recursos','sis_sql','sql');
+$config['ayudas']    = array('ecos','recursos','sis_sql','sql', 'arreglos');
 // cargar librerias
 $config['librerias'] = array();
 // carga de modelos

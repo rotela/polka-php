@@ -11,8 +11,10 @@ $config['tipo'] = 'mysql';
 // Usuario de la base de datos
 $config['user'] = 'root';
 // Password de la base de datos
-$config['pass'] = '123';
+$config['pass'] = '1234';
 // Base de datos a utilizar
-$config['base'] = 'test';
+$config['base'] = 'tubd';
 // Cotejamiento de la datos a utilizar
 $config['cote'] = 'utf8';
+// Cotejamiento de la datos a utilizar
+$config['sufi'] = 'app_';

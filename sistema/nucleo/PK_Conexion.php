@@ -110,28 +110,7 @@ class PK_Conexion extends PDO
         // obtengo la configuración desde la configuración de bd y modelo
         // si es que no se recibe del exterior
         if (is_null($configx)) {
-            $config = (array) obt_config('aplicacion');
-            $dinamica = $config['bd_dinamica'];
-            if (isset($dinamica)) {
-                if (!$dinamica) {
-                    if (isset($config['bd_config'])) {
-                        $config = (array) obt_config($config['bd_config']);
-                    }
-                } else {
-                    $cfg = call_user_func($config['bd_config_fnc']);
-                    if ($cfg) {
-                        $config = $cfg;
-                    } else {
-                        if (isset($config['bd_config'])) {
-                            $config = (array) obt_config($config['bd_config']);
-                        }
-                    }
-                }
-            } else {
-                if (isset($config['bd_config'])) {
-                    $config = (array) obt_config($config['bd_config']);
-                }
-            }
+            $config = (array) obt_config('bd');
         } else {
             if (is_string($configx)) {
                 $config = (array) obt_config($configx);
