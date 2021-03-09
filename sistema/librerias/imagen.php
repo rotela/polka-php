@@ -24,10 +24,19 @@ class imagen
                 return false;
             }
         }
+
         if (!array_key_exists('campo', $config)) {
             $this->errores[] = 'No se ha definido el nombre del campo';
             return false;
         }
+
+        $campo = $config['campo'];
+
+        if (!isset($_FILES[$campo]['name'])) {
+            $this->errores[] = "No se existe el campo: $campo o no se pudo subir";
+            return false;
+        }
+
         $uploaddir = str_replace('\\', SD, $config['destino']);
         $campo = $config['campo'];
         $uploadfile = $uploaddir.basename($_FILES[$campo]['name']);
@@ -79,7 +88,6 @@ class imagen
     public function obt_reporte()
     {
         $this->reporte['kb'] = round($this->reporte['tamano'] / 1024);
-
         return $this->reporte;
     }
 }

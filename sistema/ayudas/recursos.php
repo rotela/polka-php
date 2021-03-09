@@ -6,37 +6,53 @@ if (!function_exists('cliente_ip')) {
     function cliente_ip()
     {
         $local = isset($_SERVER["HTTP_X_REAL_IP"]) ? $_SERVER["HTTP_X_REAL_IP"] : '127.0.0.1';
-        return ($_SERVER['REMOTE_ADDR'] == '::1') ? $local : $_SERVER['REMOTE_ADDR'];
+        if (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+            return ($_SERVER['REMOTE_ADDR'] == '::1') ? $local : $_SERVER['HTTP_X_FORWARDED_FOR'];
+        } else {
+            return ($_SERVER['REMOTE_ADDR'] == '::1') ? $local : $_SERVER['REMOTE_ADDR'];
+        }
+    }
+}
+
+if (!function_exists('es_proxy')) {
+    function es_proxy()
+    {
+        return isset($_SERVER["HTTP_X_FORWARDED_FOR"]);
     }
 }
 
 if (!function_exists('cliente_nav')) {
     function cliente_nav()
     {
-        return $_SERVER['HTTP_USER_AGENT'];
+        $nav = obt_navegador();
+        $res = 'nav: ' . $nav['name'] . ', ver: ' . $nav['version'] . ', so:' . $nav['platform'];
+        return $res;
     }
 }
 
-if (!function_exists('obtNavegador')) {
-    function obtNavegador()
+if (!function_exists('obt_navegador')) {
+    function obt_navegador()
     {
-        $u_agent = cliente_nav();
-        $bname = 'Unknown';
+        $u_agent = $_SERVER['HTTP_USER_AGENT'];
+        $bname = 'Desconocido';
         $ub = '';
-        $platform = 'Unknown';
+        $platform = 'Desconocido';
         $version = "";
+        $mobile = preg_match("/(android|avantgo|blackberry|bolt|boost|cricket|docomo|fone|hiptop|mini|mobi|palm|phone|pie|tablet|up\.browser|up\.link|webos|wos)/i", $u_agent);
 
-        //First get the platform?
-        if (preg_match('/linux/i', $u_agent)) {
+        // primero tenemos la plataforma
+        if (preg_match('/linux/i', $u_agent) && !$mobile) {
             $platform = 'linux';
+        } elseif ($mobile) {
+            $platform = 'android';
         } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
             $platform = 'mac';
         } elseif (preg_match('/windows|win32/i', $u_agent)) {
             $platform = 'windows';
         }
 
-        // Next get the name of the useragent yes seperately and for good reason
-        if (preg_match('/MSIE/i', $u_agent) && !preg_match('/Opera/i', $u_agent)) {
+        // Luego obtenga el nombre del agente de uso sí por separado y por una buena razón
+        if (preg_match('/MSIE/i', $u_agent) && !preg_match('/Explorer/i', $u_agent)) {
             $bname = 'Internet Explorer';
             $ub = "MSIE";
         } elseif (preg_match('/Firefox/i', $u_agent)) {
@@ -62,29 +78,36 @@ if (!function_exists('obtNavegador')) {
             $ub = "MSIE";
         }
 
-        // finally get the correct version number
+        // finalmente obtenemos la versión correcta
         $known = array('Version', $ub, 'other');
-        $pattern = '#(?<browser>' . join('|', $known) .
-            ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+        $pattern = '#(?<browser>' . join('|', $known) . ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+
         if (!preg_match_all($pattern, $u_agent, $matches)) {
-            // we have no matching number just continue
+            // solo continuamos
         }
-        // see how many we have
-        $i = count($matches['browser']);
-        if ($i != 1) {
-            //we will have two since we are not using 'other' argument yet
-            //see if version is before or after the name
-            if (strripos($u_agent, "Version") < strripos($u_agent, $ub)) {
-                $version = $matches['version'][0];
+
+        if (is_array($matches)) {
+            // vemos cuanto tenemos
+            $i = count($matches['browser']);
+            if ($i !== 1) {
+                // tendremos dos ya que todavía no estamos usando el argumento 'otro'.
+                // ver si la versión es anterior o posterior al nombre
+                if (strripos($u_agent, "Version") < strripos($u_agent, $ub)) {
+                    $version = (count($matches['version']) > 0) ? $matches['version'][0] : '0';
+                } else {
+                    $version = (count($matches['version']) > 0) ? $matches['version'][1] : '0';
+                }
             } else {
-                $version = $matches['version'][1];
+                $version = $matches['version'][0];
             }
         } else {
             $version = $matches['version'][0];
         }
 
-        // check if we have a number
-        if ($version == null || $version == "") {$version = "?";}
+        // chekeamos si tenemos numero
+        if ($version == null || $version == "") {
+            $version = "?";
+        }
 
         return array(
             'userAgent' => $u_agent,
@@ -100,7 +123,11 @@ if (!function_exists('es_ajax')) {
     function es_ajax()
     {
         if (isset($_SERVER['HTTP_X_REQUESTED_WITH'])) {
-            if (strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
+            if (
+                strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest' ||
+                $_SERVER['HTTP_X_REQUESTED_WITH'] == 'X-Requested-With' ||
+                $_SERVER['X-Requested-With'] == 'X-Requested-With'
+            ) {
                 return true;
             } else {
                 return false;
@@ -108,7 +135,11 @@ if (!function_exists('es_ajax')) {
         } else {
             $headers = apache_request_headers();
             if (isset($headers['X-Requested-With'])) {
-                if (strtolower($headers['X-Requested-With']) == 'xmlhttprequest') {
+                if (
+                    strtolower($headers['X-Requested-With']) == 'xmlhttprequest' ||
+                    $headers['HTTP_X_REQUESTED_WITH'] == 'X-Requested-With' ||
+                    $headers['X-Requested-With'] == 'X-Requested-With'
+                ) {
                     return true;
                 } else {
                     return false;
@@ -212,11 +243,11 @@ if (!function_exists('array_normalizar')) {
                         break;
 
                     case 'decimal':
-                        $elemento[$key] = (double) $value;
+                        $elemento[$key] = (float) $value;
                         break;
 
                     case 'double':
-                        $elemento[$key] = (double) $value;
+                        $elemento[$key] = (float) $value;
                         break;
 
                     case 'string':
@@ -233,12 +264,14 @@ if (!function_exists('array_normalizar')) {
         return $elemento;
     }
 }
+
 if (!function_exists('obt_entradas')) {
     function obt_entradas()
     {
         return obt_entradas_peticion();
     }
 }
+
 if (!function_exists('obt_entradas_peticion')) {
     function obt_entradas_peticion()
     {
@@ -271,7 +304,7 @@ if (!function_exists('obt_entradas_peticion')) {
                 } else {
                     parse_str($texto, $entradas);
                 }
-                  $entradas = array_merge($entradas, $_GET);
+                $entradas = array_merge($entradas, $_GET);
                 break;
 
             default:
@@ -301,6 +334,6 @@ if (!function_exists('bytes_a')) {
             $bytes /= 1024;
             $index++;
         }
-        return("".round($bytes, 2)." ".$tipo[$index]."Bytes");
+        return ("" . round($bytes, 2) . " " . $tipo[$index] . "Bytes");
     }
 }

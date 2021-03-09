@@ -7,6 +7,10 @@ use \PDO;
 class sqlite_bd implements bd_interface
 {
     private $con;
+    private $config;
+    private $campos;
+    private $descripcion = array();
+    private $orden_hist = array();
 
     public function __construct($con)
     {
@@ -37,9 +41,11 @@ class sqlite_bd implements bd_interface
             }
         }
         $orden .= ')';
+
         // se limpia
-        $this->con->orden = str_replace(', )', ')', $orden);
-        $this->con->orden_hist[] = $this->con->orden;
+        $sql = str_replace(', )', ')', $orden);
+        $this->con->orden = $sql;
+        // $this->con->orden_hist[] = $this->con->orden;
         // se prepara la plantilla
         $sentencia = $this->con->prepare($this->con->orden);
         // se arma la fila con los datos ingresados
@@ -120,7 +126,7 @@ class sqlite_bd implements bd_interface
     {
         $datos = array();
         $resultado = $this->describir_tabla($this->con->obt_tabla());
-        foreach ($resultado as $key => $value) {
+        foreach ($resultado as $value) {
             $datos[] = $value->Field;
         }
         return $datos;
@@ -128,21 +134,19 @@ class sqlite_bd implements bd_interface
 
     public function obt_ult_id($generador = '')
     {
-        $ult_id = $this->con->lastInsertId();
+        $ult_id = 0;
+        $campo_primario = $this->con->obt_cam_primario();
+        $tabla = $this->con->obt_tabla();
+        $sql = "select max($campo_primario) as ult_id from $tabla";
+        $result = $this->con->ejecutar($sql);
 
-        if ($ult_id == 0) {
-            $campo_primario = $this->con->obt_cam_primario();
-            $tabla = $this->con->obt_tabla();
-            $sql = "select max($campo_primario) as ult_id from $tabla";
-            $result = $this->con->ejecutar($sql);
-
-            if ($result) {
-                $f = $result[0];
-                $ult_id = $f->ult_id;
-            }
+        if ($result) {
+            $f = $result[0];
+            $ult_id = $f['ult_id'];
         }
         return $ult_id;
     }
+
 
     public function limite($limite = 0, $segmento = 0)
     {
@@ -154,8 +158,27 @@ class sqlite_bd implements bd_interface
 
     public function describir_tabla($tabla = '')
     {
-        $sql = "DESCRIBE $tabla";
-        return $this->con->ejecutar($sql);
+        if (count($this->descripcion) <= 0) {
+            $tabla = empty($tabla) ? $this->con->obt_tabla() : $tabla;
+            $sql = "PRAGMA table_info([$tabla])";
+            $datos = array();
+            $result = $this->con->ejecutar($sql);
+            if ($result) {
+                if (count($result) > 0) {
+                    foreach ($result as $value) {
+                        array_push(
+                            $datos,
+                            array(
+                                'CAMPO' => $value['name'],
+                                'TIPO' => $value['type'],
+                            )
+                        );
+                    }
+                    $this->descripcion = $datos;
+                }
+            }
+        }
+        return $this->descripcion;
     }
 
     public function obt_modelo_vacio($tabla = '')

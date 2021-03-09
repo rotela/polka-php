@@ -8,11 +8,12 @@ use sistema\nucleo\PK_Conexion;
 use \Exception;
 use \PDO;
 use \PDOException;
+use sistema\librerias\estructura_bd;
 
 /**
  * Modelo Principal del Sistema
  * De ésta debe extenderse los modelos del usuario,
- * de esa forma tendrá heredadas todos los métodos o funciones
+ * de esa forma tendrá heredados todos los métodos o funciones
  * que contienen ésta clase.
  *
  * CONFIGURACION
@@ -25,7 +26,7 @@ use \PDOException;
  *
  * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
  * @copyright Rotelabs (c)2014
- * 
+ *
  */
 class PK_Modelo extends PK_Conexion
 {
@@ -148,13 +149,15 @@ class PK_Modelo extends PK_Conexion
      * por el modelo, se debe indicar el nombre de la tabla
      * en el constructor del modelo hijo o clase hija.
      *
-     * @param string $tabla [description]
+     * @param string $tabla Nombre de la tabla que manejará el modelo
+     * @param string $campo_primario Nombre del campo primario de la tabla
      */
-    public function __construct($tabla = '', $campo_primario = '')
+    public function __construct($tabla = '', $campo_primario = '', $config = null)
     {
-        parent::__construct();
+        parent::__construct($config);
         obt_ayuda('sis_sql');
 
+        //
         $this->bd_interface = $this->obt_interface();
         if (empty($tabla)) {
             throw new Exception(mostrar_error('Modelo', 'Se requiere del nombre de la tabla a utilizar por éste modelo.'));
@@ -210,7 +213,9 @@ class PK_Modelo extends PK_Conexion
     public function estructurar()
     {
         $datos = $this->obt_descripcion();
-        obt_coleccion('sistema\librerias\estructura_bd')::obt_instancia()->escribir($datos, $this->tabla);
+        $sufi = $this->obt_config()->sufi;
+
+        obt_coleccion('sistema\librerias\estructura_bd')::obt_instancia()->escribir($datos, $this->tabla, $sufi);
     }
     /**
      * Devuelve la fila del registro encontrado, y sus columnas como propiedades
@@ -231,6 +236,7 @@ class PK_Modelo extends PK_Conexion
         $valores = '';
         $primer = 0;
         foreach ($datos as $key => $value) {
+            $valor = '';
             switch (tipo_var($value)) {
                 case 'string':
                     $valor = "'$value'";
@@ -293,14 +299,15 @@ class PK_Modelo extends PK_Conexion
     {
         $sql = '';
         $campos = '';
-        $valores = '';
-        $primer = 0;
+
         foreach ($mientras as $key => $value) {
             if (array_key_exists($key, $datos)) {
                 unset($datos[$key]);
             }
         }
+
         foreach ($datos as $key => $value) {
+            $valor = '';
             switch (tipo_var($value)) {
                 case 'string':
                     $valor = "'$value'";
@@ -339,8 +346,8 @@ class PK_Modelo extends PK_Conexion
                     $valor = $value;
                     break;
             }
+
             if ($key !== 0) {
-                // code...
                 $campos .= empty($campos) ? $key . ' = ' . $valor : ', ' . $key . ' = ' . $valor;
             }
         }
@@ -402,7 +409,6 @@ class PK_Modelo extends PK_Conexion
                 foreach ($datos as $campo => $valor) {
                     if ($valor !== 'NULL') {
                         $filax[":$campo"] = $valor;
-                        // $filax[":$campo"] = mb_convert_encoding($valor, "ISO-8859-1");
                     }
                 }
             }
@@ -775,7 +781,7 @@ class PK_Modelo extends PK_Conexion
         $this->orden = $orden . $mientras;
         $cantidad = $this->exec($this->orden);
         $this->cant_filas = $cantidad;
-
+        $this->mensaje = "$cantidad Registro/s eliminado correctamente";
         return $this->cant_filas;
     }
 
@@ -845,19 +851,80 @@ class PK_Modelo extends PK_Conexion
     {
         return $this->sum_col($columna);
     }
-
+    /**
+     * obt_descripcion Devuelve la descripción, campos con sus tipos de datos
+     */
     public function obt_descripcion()
     {
-        $libreria = 'sistema\librerias\estructura_bd';
-        $estructura = obt_coleccion($libreria)::obt_instancia();
-        $datos = $estructura->obtener($this->tabla);
+        // se obtiene la estructura de tabla desde el archivo estructura
+        $estructura = new estructura_bd();
+        $sufi = $this->obt_config()->sufi;
+        $datos = $estructura->obtener($this->tabla, $sufi);
 
+        // si no existe, se realiza una consulta para obtener los datos
         if (count($datos) <= 0) {
             $datos = $this->bd_interface->describir_tabla($this->tabla);
-            $estructura->escribir($datos, $this->tabla);
-            $datos = $estructura->obtener($this->tabla);
+            $nv = array();
+            foreach ($datos as $value) {
+                $nv[$value['CAMPO']] = $value['TIPO'];
+            }
+            $datos = $nv;
         }
 
+        return $datos;
+    }
+    /**
+     * obt_esctructura Devuelve la estructura con campos y sus valores iniciales por defecto
+     */
+    public function obt_estructura()
+    {
+        $datos = $this->obt_descripcion();
+
+        $nv = array();
+        foreach ($datos as $key => $value) {
+            $val = trim(strtoupper($value));
+            $valor = '';
+            switch ($val) {
+                case 'INT':
+                    $valor = 0;
+                    break;
+                case 'INTEGER':
+                    $valor = 0;
+                    break;
+                case 'TINYINT':
+                    $valor = 0;
+                    break;
+                case 'SMALLINT':
+                    $valor = 0;
+                    break;
+                case 'FLOAT':
+                    $valor = 0.0;
+                    break;
+                case 'DOUBLE':
+                    $valor = 0.0;
+                    break;
+                case 'VARCHAR':
+                    $valor = "";
+                    break;
+                case 'CHAR':
+                    $valor = "";
+                    break;
+                case 'DATE':
+                    $valor = "";
+                    break;
+                case 'DATETIME':
+                    $valor = "";
+                    break;
+                case 'DECIMAL':
+                    $valor = 0.0;
+                    break;
+                default:
+                    $valor = "";
+                    break;
+            }
+            $nv[$key] = $valor;
+        }
+        $datos = $nv;
         return $datos;
     }
 
@@ -883,56 +950,8 @@ class PK_Modelo extends PK_Conexion
 
     public function obt_modelo_vacio()
     {
-        $result = $this->obt_descripcion();
-
-        $array = array();
-
-        foreach ($result as $key => $value) {
-            $value = trim(strtoupper($value));
-            $valor = '';
-            switch ($value) {
-                case 'INT':
-                    $valor = 0;
-                    break;
-                case 'INTEGER':
-                    $valor = 0;
-                    break;
-                case 'TINYINT':
-                    $valor = 0;
-                    break;
-                case 'SMALLINT':
-                    $valor = 0;
-                    break;
-                case 'FLOAT':
-                    $valor = 0.0;
-                    break;
-                case 'DOUBLE':
-                    $valor = 0.0;
-                    break;
-                case 'VARCHAR':
-                    $valor = '';
-                    break;
-                case 'CHAR':
-                    $valor = '';
-                    break;
-                case 'DATE':
-                    $valor = '';
-                    break;
-                case 'DATETIME':
-                    $valor = '';
-                    break;
-                case 'DECIMAL':
-                    $valor = 0.0;
-                    break;
-                default:
-                    $valor = '';
-                    break;
-            }
-            $array[$key] = $valor;
-        }
-        return $array;
-        // $this->campos = $this->bd_interface->obt_modelo_vacio();
-        // return $this->campos;
+        $result = $this->obt_estructura();
+        return $result;
     }
     /**
      * Devuelve la cantidad de registros de forma general

@@ -18,7 +18,7 @@ class gentoken
         $ap = obt_config('aplicacion');
         $this->clave = $ap->clave_can;
         $this->segundos = $ap->ses_tiempo;
-        $this->candado = obt_coleccion('sistema\librerias\candado');
+        $this->candado = new candado();
     }
 
     public function generar(array $datos = array(), string $clave = '', int $tiempo = 0): string
@@ -46,7 +46,7 @@ class gentoken
         $r = array();
         if (strpos($d, ';') !== false) {
             $a = explode(';', $d);
-            foreach ($a as $key => $value) {
+            foreach ($a as $value) {
                 if (strpos($value, ':') !== false) {
                     $i = explode(':', $value);
                     $r[$i[0]] = $i[1];

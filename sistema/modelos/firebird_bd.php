@@ -23,6 +23,7 @@ class firebird_bd implements bd_interface
         $this->tablas = array();
         $this->modelo_vacio = array();
     }
+
     public function insertar($datos = array(), $simular = false)
     {
         // se filtran los datos propios de la tabla
@@ -88,6 +89,7 @@ class firebird_bd implements bd_interface
             $this->devolver_error($e);
         }
     }
+
     public function editar($datos = array(), $clave = array(), $simular = false)
     {
         // se obtiene solo los campos correspondiente a la tabla
@@ -119,7 +121,6 @@ class firebird_bd implements bd_interface
             foreach ($datos as $campo => $valor) {
                 if ($valor !== 'NULL') {
                     $fila[':' . $campo] = $valor;
-                    // $fila[':'.$campo] = mb_convert_encoding($valor, "ISO-8859-1");
                 }
             }
             //
@@ -292,8 +293,10 @@ ORDER BY
 
             $this->descripcion = $this->con->ejecutar($sql);
         }
+
         return $this->descripcion;
     }
+
     public function obt_modelo_vacio($tabla = '')
     {
         if (count($this->modelo_vacio) > 0) {

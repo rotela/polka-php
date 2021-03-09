@@ -2,6 +2,8 @@
 
 namespace sistema\nucleo;
 
+use sistema\librerias\comodin;
+
 (!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;
 
 /**
@@ -10,7 +12,7 @@ namespace sistema\nucleo;
  *
  * @author Ricardo Rotela González :: rotelabs->gmail.com ;-)
  * @copyright Rotelabs (c)2014
- * 
+ *
  */
 class PK_Controlador
 {
@@ -221,6 +223,7 @@ class PK_Controlador
         if (!empty($modelos)) {
             // si es array,
             if (is_array($modelos)) {
+                $mods = array();
                 // recorrer el array,
                 foreach ($modelos as $key => $value) {
                     if (is_string($key)) {
@@ -228,10 +231,19 @@ class PK_Controlador
                     } else {
                         $this->incluir_modelo($value);
                     }
+                    array_push($mods, $value);
                 }
+                // retorno si se necesita
+                $xmods = new comodin();
+                foreach ($mods as $mod) {
+                    $xmods->$mod = $this->$mod;
+                }
+                return $xmods;
             } else {
                 // si existe el modelo, y si solo es un modelo a cargar
                 $this->incluir_modelo($modelos, $alias);
+                $mod = (!empty($alias)) ? $alias : $modelos;
+                return $this->$mod;
             }
         } else {
             // si está vacio el parámetro de librería, mostrar el error
@@ -254,7 +266,7 @@ class PK_Controlador
         if (file_exists($archivo)) {
             // incluirlo si es que aún no exite,
             if (!method_exists($this, $alias_mod)) {
-                $modelo = "aplicacion\modelos\\" . $modelo;
+                $modelo = "aplicacion\modelos\\$modelo";
                 $this->$alias_mod = PK_Coleccion::obt_instancia()->obtener($modelo);
             }
         } else {
@@ -327,7 +339,7 @@ class PK_Controlador
         }
         return obt_entradas_peticion();
     }
-    
+
     public function es_ajax()
     {
         if (!function_exists('es_ajax')) {

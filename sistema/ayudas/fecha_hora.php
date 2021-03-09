@@ -29,14 +29,16 @@ if (!function_exists('dma_amd')) {
         return (empty($fecha)) ? '' : date_format(date_create_from_format($formato_ori, $fecha), $formato);
     }
 }
+
 if (!function_exists('amd_dma')) {
     function amd_dma($fecha, $formato = 'd-m-Y', $formato_ori = 'Y-m-d')
     {
         return (empty($fecha)) ? '' : date_format(date_create_from_format($formato_ori, $fecha), $formato);
     }
 }
+
 if (!function_exists('fecha_a')) {
-    function fecha_a($fecha, $formato = 'd-m-Y', $formato_ori = 'Y-m-d')
+    function fecha_a($fecha, $formato = 'd-m-Y')
     {
         return (empty($fecha)) ? '' : date($formato, strtotime($fecha));
     }
@@ -64,6 +66,7 @@ if (!function_exists('faltan_dias')) {
         return $datos;
     }
 }
+
 if (!function_exists('minutos_pasaron')) {
     function minutos_pasaron($start, $end = null)
     {
@@ -186,6 +189,7 @@ if (!function_exists('fecha_hace')) {
         return $x;
     }
 }
+
 if (!function_exists('dif_hms')) {
     function dif_hms($fecha1, $fecha2, $alcance = 6)
     {

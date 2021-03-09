@@ -28,20 +28,28 @@ if (!function_exists('obt_config')) {
 if (!function_exists('obt_ayuda')) {
     function obt_ayuda($ayuda = '')
     {
-        $carpeta = AYUDAS;
-        $archivo = $carpeta . agr_ext($ayuda);
-        // si existe la ayuda,
-        if (file_exists($archivo)) {
-            // incluirla, o,
-            include_once $archivo;
-        } else {
-            $carpeta = SIS_AYUDAS;
+        if (is_string($ayuda)) {
+            $carpeta = AYUDAS;
             $archivo = $carpeta . agr_ext($ayuda);
-            // incluirla
+            // si existe la ayuda,
             if (file_exists($archivo)) {
+                // incluirla, o,
                 include_once $archivo;
             } else {
-                exit(mostrar_error('Ayudas', 'No existe el archivo de ayuda ' . $ayuda));
+                $carpeta = SIS_AYUDAS;
+                $archivo = $carpeta . agr_ext($ayuda);
+                // incluirla
+                if (file_exists($archivo)) {
+                    include_once $archivo;
+                } else {
+                    exit(mostrar_error('Ayudas', 'No existe el archivo de ayuda ' . $ayuda));
+                }
+            }
+        } else {
+            if (is_array($ayuda)) {
+                foreach ($ayuda as $arc) {
+                    obt_ayuda($arc);
+                }
             }
         }
     }

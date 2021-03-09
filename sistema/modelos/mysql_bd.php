@@ -17,6 +17,9 @@ class mysql_bd implements bd_interface
     {
         $this->con = $con;
         $this->config = $this->con->obt_config();
+        if (is_array($this->config)) {
+            $this->config = array_objeto($this->config);
+        }
         $this->campos = array();
         $this->descripcion = array();
         $this->tablas = array();
@@ -224,6 +227,9 @@ class mysql_bd implements bd_interface
             $tabla = empty($tabla) ? $this->con->obt_tabla() : $tabla;
             $sql = "DESCRIBE $tabla";
             $datos = array();
+            if (!$this->con) {
+                informe('no hay conexion');
+            }
             $result = $this->con->ejecutar($sql);
             if ($result) {
                 if (count($result) > 0) {
@@ -245,11 +251,15 @@ class mysql_bd implements bd_interface
 
     public function obt_modelo_vacio($tabla = '')
     {
-        $result = $this->describir_tabla();
+        if (is_array($tabla)) {
+            $result = $tabla;
+        } else {
+            $result = $this->describir_tabla($tabla);
+        }
 
         $array = array();
 
-        foreach ($result as $key => $value) {
+        foreach ($result as $value) {
             $valor = '';
             $tipo = explode('(', trim($value['Type']));
             $tipo = $tipo[0];
@@ -267,22 +277,25 @@ class mysql_bd implements bd_interface
                     $valor = 0.0;
                     break;
                 case 'var':
-                    $valor = '';
+                    $valor = "''";
                     break;
                 case 'varchar':
-                    $valor = '';
+                    $valor = "''";
                     break;
                 case 'char':
-                    $valor = '';
+                    $valor = "''";
                     break;
                 case 'date':
-                    $valor = '';
+                    $valor = "''";
+                    break;
+                case 'datetime':
+                    $valor = "''";
                     break;
                 case 'DECIMAL':
                     $valor = 0.0;
                     break;
                 default:
-                    $valor = '';
+                    $valor = "''";
                     break;
             }
             $array[$value['Field']] = $valor;

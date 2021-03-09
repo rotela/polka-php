@@ -1,4 +1,5 @@
 <?php
+
 namespace sistema\nucleo;
 
 (!defined('SISTEMA')) ? exit('No se permite el acceso directo al script.') : false;

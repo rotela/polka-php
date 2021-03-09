@@ -14,8 +14,14 @@ class estructura_bd
     use PK_Singleton;
     private $tablas = array();
 
-    public function obtener(string $tabla = '')
+    function __construct()
     {
+        obt_ayuda('fecha_hora');
+    }
+
+    public function obtener(string $tabla = '', string $sufi = '')
+    {
+        $tabla = (!empty($sufi)) ? $sufi . '_' . $tabla : $tabla;
         $tabla = strtoupper($tabla);
 
         if (array_key_exists($tabla, $this->tablas)) {
@@ -33,14 +39,14 @@ class estructura_bd
         }
     }
 
-    public function escribir(array $datos = array(), string $tabla = '')
+    public function escribir(array $datos = array(), string $tabla = '', string $sufi = '')
     {
         $carpeta = 'aplicacion/modelos/estructuras';
 
         if (!file_exists($carpeta)) {
             mkdir($carpeta, 0777, true);
         }
-        
+        $tabla = (!empty($sufi)) ? $sufi . '_' . $tabla : $tabla;
         $tabla = strtoupper($tabla);
         $archivo = "$carpeta/$tabla.php";
         $archivo = str_replace('\\', SD, $archivo);
@@ -56,9 +62,8 @@ class estructura_bd
                 $contenido .= "\$config = array(\n";
 
                 foreach ($datos as $key => $value) {
-                    $campo = $value['CAMPO'];
-                    $tipo = (strpos($value['TIPO'], '(') === false) ? strtoupper($value['TIPO']) : strtoupper(strstr($value['TIPO'], '(', true));
-                    $contenido .= "\t'$campo' => '$tipo',\n";
+                    $tipo = (strpos($value, '(') === false) ? $value : strstr($value, '(', true);
+                    $contenido .= "\t'$key' => '$tipo',\n";
                 }
 
                 $contenido .= ");\n";
@@ -77,6 +82,8 @@ class estructura_bd
                 // cerramos el archivo
                 fclose($gestor);
             }
+        } else {
+            // informe("existe " . $tabla . " no se creará");
         }
     }
 }

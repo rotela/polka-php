@@ -98,7 +98,7 @@ if (!function_exists('hab_cors')) {
         header('Access-Control-Max-Age: 86400');
         header('Access-Control-Allow-Methods: GET, FILES, POST, PUT, DELETE, OPTIONS');
         header("Allow: GET, POST, OPTIONS, PUT, DELETE");
-
+        header('X-Frame-Options: SAMEORIGIN');
         if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
             header("Access-Control-Allow-Headers: {$_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']}");
         }

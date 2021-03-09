@@ -50,7 +50,7 @@ if (!function_exists('obt_columnas')) {
     function obt_columnas($filtros, $arreglo)
     {
         $nuevo = array();
-        foreach ($arreglo as $key => $value) {
+        foreach ($arreglo as $value) {
             $nuevo[] = obt_arreglo($filtros, $value);
         }
         return $nuevo;
@@ -69,6 +69,7 @@ if (!function_exists('convertir_utf8')) {
         return $array;
     }
 }
+
 if (!function_exists('decodificar_utf8')) {
     function decodificar_utf8($array)
     {
@@ -81,6 +82,7 @@ if (!function_exists('decodificar_utf8')) {
         return $array;
     }
 }
+
 if (!function_exists('objeto_array')) {
     function objeto_array($d)
     {
@@ -94,6 +96,7 @@ if (!function_exists('objeto_array')) {
         }
     }
 }
+
 if (!function_exists('array_objeto')) {
     function array_objeto($d)
     {
@@ -104,6 +107,7 @@ if (!function_exists('array_objeto')) {
         }
     }
 }
+
 if (!function_exists('array_texto')) {
     function array_texto($array = array())
     {

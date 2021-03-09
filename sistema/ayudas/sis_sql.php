@@ -6,44 +6,38 @@ if (!function_exists('upper_sql')) {
     function upper_sql($var = '')
     {
         $a = array(
-            'select',
-            'first',
-            'skip',
-            'insert',
-            'update',
-            'from',
-            'set',
-            'values',
-            'where',
-            'join',
-            'left',
-            ' as ',
-            'order',
-            ' asc',
-            ' desc',
-            'group by',
+            'select' => 'SELECT',
+            'insert' => 'INSERT',
+            'update' => 'UPDATE',
+            ' round(' => ' ROUND(',
+            ' count(' => ' COUNT(',
+            ' first ' => ' FIRST ',
+            'skip ' => 'SKIP ',
+            'from ' => 'FROM ',
+            'set ' => 'SET ',
+            'values' => 'VALUES',
+            'where ' => 'WHERE ',
+            ' like' => ' LIKE',
+            ' between' => ' BETWEEN',
+            'inner join' => 'INNER JOIN',
+            'left join' => 'LEFT JOIN',
+            'right join' => 'RIGHT JOIN',
+            'inner ' => 'INNER ',
+            'left ' => 'LEFT ',
+            'right ' => 'RIGHT ',
+            'join ' => 'JOIN ',
+            ' using ' => ' USING ',
+            ' as ' => ' AS ',
+            ' on ' => ' ON ',
+            ' asc' => ' ASC',
+            ' desc ' => ' DESC ',
+            'group by' => 'GROUP BY',
+            'order by' => 'ORDER BY',
         );
 
-        $b = array(
-            'SELECT',
-            'FIRST',
-            'SKIP',
-            'INSERT',
-            'UPDATE',
-            'FROM',
-            'SET',
-            'VALUES',
-            'WHERE',
-            'JOIN',
-            'LEFT',
-            ' AS ',
-            'ORDER',
-            ' ASC ',
-            ' DESC',
-            'GROUP BY',
-        );
+        $sql = str_replace(array_keys($a), array_values($a), $var);
 
-        return str_replace($a, $b, $var);
+        return $sql;
     }
 }
 

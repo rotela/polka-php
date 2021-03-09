@@ -107,12 +107,14 @@ if (!function_exists('informe')) {
         escribrir_informe($mensaje, false);
     }
 }
+
 if (!function_exists('informe_limpio')) {
     function informe_limpio($mensaje = '')
     {
         escribrir_informe($mensaje, true);
     }
 }
+
 if (!function_exists('obt_informe')) {
     function obt_informe()
     {
@@ -130,6 +132,7 @@ if (!function_exists('obt_informe')) {
         return $linea;
     }
 }
+
 if (!function_exists('limpiar_informe')) {
     function limpiar_informe()
     {
